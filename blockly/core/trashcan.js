@@ -179,11 +179,15 @@ Blockly.Trashcan.prototype.createDom = function() {
 /**
  * Initialize the trash can.
  */
-Blockly.Trashcan.prototype.init = function() {
+Blockly.Trashcan.prototype.init = function(verticalSpacing) {
+  this.verticalSpacing_ = this.MARGIN_BOTTOM_ + verticalSpacing;
+
   this.setOpen_(false);
   this.position_();
   // If the document resizes, reposition the trash can.
   Blockly.bindEvent_(window, 'resize', this, this.position_);
+
+  return this.verticalSpacing_ + this.BODY_HEIGHT_ + this.LID_HEIGHT_;
 };
 
 /**
@@ -218,7 +222,7 @@ Blockly.Trashcan.prototype.position_ = function() {
         this.WIDTH_ - this.MARGIN_SIDE_;
   }
   this.top_ = metrics.viewHeight + metrics.absoluteTop -
-      (this.BODY_HEIGHT_ + this.LID_HEIGHT_) - this.MARGIN_BOTTOM_;
+      (this.BODY_HEIGHT_ + this.LID_HEIGHT_) - this.verticalSpacing_;
   this.svgGroup_.setAttribute('transform',
       'translate(' + this.left_ + ',' + this.top_ + ')');
 };

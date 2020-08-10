@@ -28,6 +28,27 @@ goog.provide('Blockly.Css');
 
 goog.require('goog.cssom');
 
+/**
+ * Has CSS already been injected?
+ * @type {boolean}
+ * @private
+ */
+Blockly.Css.injected_ = false;
+
+/**
+ * Add some CSS to the blob that will be injected later.  Allows optional
+ * components such as fields and the toolbox to store separate CSS.
+ * The provided array of CSS will be destroyed by this function.
+ * @param {!Array.<string>} cssArray Array of CSS strings.
+ */
+Blockly.Css.register = function(cssArray) {
+  if (Blockly.Css.injected_) {
+    throw Error('CSS already injected');
+  }
+  // Concatenate cssArray onto Blockly.Css.CONTENT.
+  Array.prototype.push.apply(Blockly.Css.CONTENT, cssArray);
+  cssArray.length = 0;  // Garbage collect provided CSS content.
+};
 
 /**
  * Inject the CSS into the DOM.  This is preferable over using a regular CSS
@@ -37,6 +58,11 @@ goog.require('goog.cssom');
  * c) The CSS content may be made dynamic depending on init options.
  */
 Blockly.Css.inject = function() {
+  // Only inject the CSS once.
+  if (Blockly.Css.injected_) {
+    return;
+  }
+  Blockly.Css.injected_ = true;
   var text = Blockly.Css.CONTENT.join('\n');
   // Strip off any trailing slash (either Unix or Windows).
   var path = Blockly.pathToBlockly.replace(/[\\\/]$/, '');

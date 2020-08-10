@@ -455,7 +455,9 @@ Blockly.init_ = function() {
     Blockly.mainWorkspace.scrollbar.resize();
   }
 
-  Blockly.mainWorkspace.addTrashcan();
+  var verticalSpacing = Blockly.Scrollbar.scrollbarThickness;
+  verticalSpacing = Blockly.mainWorkspace.addTrashcan(verticalSpacing);
+  Blockly.mainWorkspace.addZoomControls(verticalSpacing);
 
   // Load the sounds.
   Blockly.loadAudio_(

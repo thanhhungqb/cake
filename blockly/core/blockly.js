@@ -53,6 +53,7 @@ goog.require('Blockly.Workspace');
 goog.require('Blockly.inject');
 goog.require('Blockly.utils');
 
+
 // Closure dependencies.
 goog.require('goog.color');
 goog.require('goog.dom');
@@ -84,12 +85,12 @@ Blockly.HTML_NS = 'http://www.w3.org/1999/xhtml';
  * The richness of block colours, regardless of the hue.
  * Must be in the range of 0 (inclusive) to 1 (exclusive).
  */
-Blockly.HSV_SATURATION = 0.60;
+Blockly.HSV_SATURATION = 0.45;
 /**
  * The intensity of block colours, regardless of the hue.
  * Must be in the range of 0 (inclusive) to 1 (exclusive).
  */
-Blockly.HSV_VALUE = 0.82;
+Blockly.HSV_VALUE = 0.65;
 
 /**
  * Convert a hue (HSV model) into an RGB hex triplet.
@@ -99,6 +100,15 @@ Blockly.HSV_VALUE = 0.82;
 Blockly.makeColour = function(hue) {
   return goog.color.hsvToHex(hue, Blockly.HSV_SATURATION,
       Blockly.HSV_VALUE * 256);
+};
+
+/**
+ * Sprited icons and images.
+ */
+Blockly.SPRITE = {
+  width: 96,
+  height: 124,
+  url: 'sprites.png'
 };
 
 /**

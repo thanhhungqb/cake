@@ -31,6 +31,9 @@ goog.provide('Blockly.Workspace');
 goog.require('Blockly.ScrollbarPair');
 goog.require('Blockly.Trashcan');
 goog.require('Blockly.Xml');
+// If zoom controls aren't required, then Blockly.inject's
+// "zoom"/"controls" configuration must be false.
+goog.require('Blockly.ZoomControls');
 
 
 /**
@@ -142,13 +145,29 @@ Blockly.Workspace.prototype.dispose = function() {
 /**
  * Add a trashcan.
  */
-Blockly.Workspace.prototype.addTrashcan = function() {
+Blockly.Workspace.prototype.addTrashcan = function(verticalSpacing) {
   if (Blockly.hasTrashcan && !Blockly.readOnly) {
     this.trashcan = new Blockly.Trashcan(this);
     var svgTrashcan = this.trashcan.createDom();
     this.svgGroup_.insertBefore(svgTrashcan, this.svgBlockCanvas_);
-    this.trashcan.init();
+    return this.trashcan.init(verticalSpacing);
   }
+};
+
+/**
+ * Add zoom controls.
+ * @package
+ */
+Blockly.Workspace.prototype.addZoomControls = function(verticalSpacing) {
+  if (!Blockly.ZoomControls) {
+    throw Error('Missing require for Blockly.ZoomControls');
+  }
+  /** @type {Blockly.ZoomControls} */
+  this.zoomControls_ = new Blockly.ZoomControls(this);
+  var svgZoomControls = this.zoomControls_.createDom();
+  this.svgGroup_.insertBefore(svgZoomControls, this.svgBlockCanvas_);
+  //this.svgGroup_.appendChild(svgZoomControls);
+  return this.zoomControls_.init(verticalSpacing);
 };
 
 /**
@@ -397,3 +416,119 @@ Blockly.Workspace.prototype.remainingCapacity = function() {
 
 // Export symbols that would otherwise be renamed by Closure compiler.
 Blockly.Workspace.prototype['clear'] = Blockly.Workspace.prototype.clear;
+
+/**
+ * Zooms the workspace in or out relative to/centered on the given (x, y)
+ * coordinate.
+ * @param {number} x X coordinate of center, in pixel units relative to the
+ *     top-left corner of the parentSVG.
+ * @param {number} y Y coordinate of center, in pixel units relative to the
+ *     top-left corner of the parentSVG.
+ * @param {number} amount Amount of zooming. The formula for the new scale
+ *     is newScale = currentScale * (scaleSpeed^amount). scaleSpeed is set in
+ *     the workspace options. Negative amount values zoom out, and positive
+ *     amount values zoom in.
+ */
+Blockly.Workspace.prototype.zoom = function(x, y, amount) {
+  // Scale factor.
+  var speed = this.options.zoomOptions.scaleSpeed;
+  var scaleChange = Math.pow(speed, amount);
+  var newScale = this.scale * scaleChange;
+  if (this.scale == newScale) {
+    return;  // No change in zoom.
+  }
+
+  // Clamp scale within valid range.
+  if (newScale > this.options.zoomOptions.maxScale) {
+    scaleChange = this.options.zoomOptions.maxScale / this.scale;
+  } else if (newScale < this.options.zoomOptions.minScale) {
+    scaleChange = this.options.zoomOptions.minScale / this.scale;
+  }
+
+  // Transform the x/y coordinates from the parentSVG's space into the
+  // canvas' space, so that they are in workspace units relative to the top
+  // left of the visible portion of the workspace.
+  var matrix = this.getCanvas().getCTM();
+  var center = this.getParentSvg().createSVGPoint();
+  center.x = x;
+  center.y = y;
+  center = center.matrixTransform(matrix.inverse());
+  x = center.x;
+  y = center.y;
+
+  // Find the new scrollX/scrollY so that the center remains in the same
+  // position (relative to the center) after we zoom.
+  // newScale and matrix.a should be identical (within a rounding error).
+  matrix = matrix.translate(x * (1 - scaleChange), y * (1 - scaleChange))
+      .scale(scaleChange);
+  // scrollX and scrollY are in pixels.
+  // The scrollX and scrollY still need to have absoluteLeft and absoluteTop
+  // subtracted from them, but we'll leave that for setScale so that they're
+  // correctly updated for the new flyout size if we have a simple toolbox.
+  this.scrollX = matrix.e;
+  this.scrollY = matrix.f;
+  this.setScale(newScale);
+};
+
+/**
+ * Zooming the blocks centered in the center of view with zooming in or out.
+ * @param {number} type Type of zooming (-1 zooming out and 1 zooming in).
+ */
+Blockly.Workspace.prototype.zoomCenter = function(type) {
+  var metrics = this.getMetrics();
+  if (this.flyout_) {
+    // If you want blocks in the center of the view (visible portion of the
+    // workspace) to stay centered when the size of the view decreases (i.e.
+    // when the size of the flyout increases) you need the center of the
+    // *blockly div* to stay in the same pixel-position.
+    // Note: This only works because of how scrollCenter positions blocks.
+    var x = metrics.svgWidth ? metrics.svgWidth / 2 : 0;
+    var y = metrics.svgHeight ? metrics.svgHeight / 2 : 0;
+  } else {
+    var x = (metrics.viewWidth / 2) + metrics.absoluteLeft;
+    var y = (metrics.viewHeight / 2) + metrics.absoluteTop;
+  }
+  this.zoom(x, y, type);
+};
+
+/**
+ * Zoom the blocks to fit in the workspace if possible.
+ */
+Blockly.Workspace.prototype.zoomToFit = function() {
+  if (!this.isMovable()) {
+    console.warn('Tried to move a non-movable workspace. This could result' +
+        ' in blocks becoming inaccessible.');
+    return;
+  }
+
+  var metrics = this.getMetrics();
+  var workspaceWidth = metrics.viewWidth;
+  var workspaceHeight = metrics.viewHeight;
+  var blocksBox = this.getBlocksBoundingBox();
+  var blocksWidth = blocksBox.right - blocksBox.left;
+  var blocksHeight = blocksBox.bottom - blocksBox.top;
+  if (!blocksWidth) {
+    return;  // Prevents zooming to infinity.
+  }
+  if (this.flyout_) {
+    // We have to add the flyout size to both the workspace size and the
+    // block size because the blocks we want to resize include the blocks in
+    // the flyout, and the area we want to fit them includes the portion of
+    // the workspace that is behind the flyout.
+    if (this.horizontalLayout) {
+      workspaceHeight += this.flyout_.getHeight();
+      // Convert from pixels to workspace coordinates.
+      blocksHeight += this.flyout_.getHeight() / this.scale;
+    } else {
+      workspaceWidth += this.flyout_.getWidth();
+      // Convert from pixels to workspace coordinates.
+      blocksWidth += this.flyout_.getWidth() / this.scale;
+    }
+  }
+
+  // Scale Units: (pixels / workspaceUnit)
+  var ratioX = workspaceWidth / blocksWidth;
+  var ratioY = workspaceHeight / blocksHeight;
+  this.setScale(Math.min(ratioX, ratioY));
+  this.scrollCenter();
+};
