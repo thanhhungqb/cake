@@ -259,8 +259,8 @@ Blockly.Css.CONTENT = [
   '}',
 
   '.blocklyHtmlInput {',
-  '  font-family: "Source Code Pro","Nanum Gothic Coding",Menlo,Monaco,Consolas,"Courier New",monospace;',
-  '  font-size: 10pt;',
+  //'  font-family: "Source Code Pro","Nanum Gothic Coding",Menlo,Monaco,Consolas,"Courier New",monospace;',
+  //'  font-size: 10pt;',
   '  border: none;',
   '  outline: none;',
   '  width: 100%',
@@ -334,7 +334,7 @@ Blockly.Css.CONTENT = [
   /* Override the default Closure URL. */
   '.blocklyWidgetDiv .goog-option-selected .goog-menuitem-checkbox,',
   '.blocklyWidgetDiv .goog-option-selected .goog-menuitem-icon {',
-  '  background: url(<<<PATH>>>/media/sprites.png) no-repeat 0 0 !important;',
+  '  background: url(<<<PATH>>>/media/sprites.png) no-repeat -48px -16px !important;',
   '}',
 
   /* Category tree in Toolbox. */
