@@ -614,8 +614,10 @@ Blockly.Blocks['procedures_defreturn'] = {
         this.appendValueInput('RETURN')
             .appendField(Blockly.Msg.PROCEDURES_DEFRETURN_RETURN)
             .appendField(new Blockly.FieldDropdown(TYPE), 'TYPES')
-            .appendField(new Blockly.FieldDropdown(DIST), 'DISTS')
+//            .appendField(new Blockly.FieldDropdown(DIST), 'DISTS')
+            .appendField('variable', 'DISTS')
             .setAlign(Blockly.ALIGN_RIGHT);
+        this.getField_('DISTS').setVisible(false);
         this.setMutator(new Blockly.Mutator(['procedures_mutatorarg', 'procedures_mutatorarg_pointer', 'procedures_mutatorarg_array']));
         this.setTooltip(Blockly.Msg.PROCEDURES_DEFRETURN_TOOLTIP);
         this.arguments_ = [];

@@ -1907,23 +1907,11 @@ Blockly.Blocks.CNameValidator = function(newVar) {
  */
 
 Blockly.Blocks.CreateMainBlock = function(){
-  var flyout = this;
-  this.workspace_ = new Blockly.Workspace(
-      function() {return flyout.getMetrics_();},
-      function(ratio) {return flyout.setMetrics_(ratio);});
-
-  var block = Blockly.Block.obtain(this.workspace_, 'main_block');
-
-  //main_block attribute setting
-  block.deletable_ = false;
-  block.movable_ = false;
-  block.editable_ = true;
-
-  var xmlBlock = Blockly.Xml.blockToDom_(block);
-  Blockly.Xml.domToBlock(Blockly.mainWorkspace, xmlBlock).moveBy(20, 100);
-
-  //main_block attribute setting
-  xmlBlock.setAttribute('deletable', false);
-  xmlBlock.setAttribute('movable', false);
-  xmlBlock.setAttribute('editable', true);
+  var xml = '<xml xmlns="http://www.w3.org/1999/xhtml">' +
+            '<block type="procedures_defreturn" deletable="false" movable="false">' +
+            '<field name="NAME">do_something</field>' +
+            '<field name="TYPES">int</field>' +
+            '<field name="DISTS">variable</field>' +
+            '</block></xml>';
+  Blockly.Xml.domToWorkspace(Blockly.mainWorkspace, Blockly.Xml.textToDom(xml))
 };

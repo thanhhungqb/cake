@@ -11,9 +11,14 @@ function start() {
       }
   );
   Blockly.addChangeListener(renderContent);
-  Blockly.Blocks.CreateMainBlock();
-
-  BlocklyApps.loadBlocks('');
+  //Blockly.Blocks.CreateMainBlock();
+  var xml = '<xml xmlns="http://www.w3.org/1999/xhtml">' +
+            '<block type="procedures_defreturn" deletable="false" movable="false">' +
+            '<field name="NAME">do_something</field>' +
+            '<field name="TYPES">int</field>' +
+            '<field name="DISTS">variable</field>' +
+            '</block></xml>';
+  BlocklyApps.loadBlocks(xml);
 
   if ('BlocklyStorage' in window) {
     // Hook a save function onto unload.
@@ -43,7 +48,7 @@ function discard() {
   var count = Blockly.mainWorkspace.getAllBlocks().length;
   if (count < 2 || window.confirm("Remove all blocks?")) {
     Blockly.mainWorkspace.clear();
-    Blockly.Blocks.CreateMainBlock();
+    //Blockly.Blocks.CreateMainBlock();
     window.location.hash = '';
   }
 }
