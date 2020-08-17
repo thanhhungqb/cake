@@ -57,6 +57,17 @@ Blockly.cake['controls_doWhile'] = function(block) {
     return 'do {\n' + branch + '} while (' + argument0 + ');\n';
 };
 
+Blockly.cake['controls_repeat'] = function(block) {
+  // Counting loop.
+  var countVar = Blockly.cake.variableDB_.getDistinctName('i', Blockly.Variables.NAME_TYPE);
+  var argument0 = Blockly.cake.valueToCode(block, 'TIMES',
+    Blockly.cake.ORDER_ASSIGNMENT) || '0';
+  var branch = Blockly.cake.statementToCode(block, 'DO');
+  branch = Blockly.cake.addLoopTrap(branch, block.id);
+  return 'for (int ' + countVar + ' = 0; ' + countVar + ' < '+ argument0 + '; ++' + countVar +
+         ') {\n' + branch + '}\n';
+}
+
 Blockly.cake['controls_for'] = function(block) {
   // For loop.
   var variable0 = Blockly.cake.variableDB_.getName(

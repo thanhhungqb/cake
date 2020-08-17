@@ -380,14 +380,14 @@ BlocklyApps.loadBlocks = function(defaultXml) {
     delete window.sessionStorage.loadOnceBlocks;
     var xml = Blockly.Xml.textToDom(loadOnce);
     Blockly.Xml.domToWorkspace(Blockly.mainWorkspace, xml);
-  } else if (defaultXml) {
-    // Load the editor with default starting blocks.
-    var xml = Blockly.Xml.textToDom(defaultXml);
-    Blockly.Xml.domToWorkspace(Blockly.mainWorkspace, xml);
   } else if ('BlocklyStorage' in window) {
     // Restore saved blocks in a separate thread so that subsequent
     // initialization is not affected from a failed load.
     window.setTimeout(BlocklyStorage.restoreBlocks, 0);
+  } else if (defaultXml) {
+    // Load the editor with default starting blocks.
+    var xml = Blockly.Xml.textToDom(defaultXml);
+    Blockly.Xml.domToWorkspace(Blockly.mainWorkspace, xml);
   }
 };
 

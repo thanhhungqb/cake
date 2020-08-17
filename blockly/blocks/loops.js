@@ -58,7 +58,7 @@ Blockly.Blocks['controls_whileUntil'] = {
       return TOOLTIPS[op];
     });
   },
-  //when the block is changed, 
+  //when the block is changed,
   onchange: Blockly.Blocks.requireInFunction
 };
 
@@ -93,6 +93,33 @@ Blockly.Blocks['controls_doWhile'] = {
     },
     //when the block is changed,
     onchange: Blockly.Blocks.requireInFunction
+};
+
+Blockly.Blocks['controls_repeat'] = {
+  /**
+   * Block for 'for' loop.
+   * @this Blockly.Block
+   */
+  init: function() {
+    this.setColour(220);
+    this.appendDummyInput()
+    this.interpolateMsg(Blockly.Msg.CONTROLS_REPEAT_TITLE,
+      ['TIMES', ['Number', 'Variable', 'INT', 'NEGATIVE', 'VAR_INT', 'VAR_UNINT'], Blockly.ALIGN_RIGHT],
+      Blockly.ALIGN_RIGHT);
+    this.appendStatementInput('DO')
+        .appendField(Blockly.Msg.CONTROLS_FOR_INPUT_DO);
+    this.setPreviousStatement(true);
+    this.setNextStatement(true);
+    this.setInputsInline(true);
+    // Assign 'this' to a variable for use in the tooltip closure below.
+    var thisBlock = this;
+      this.tag = Blockly.Msg.CONTROLS_REPEAT_TITLE;
+    this.setTooltip(function() {
+      return Blockly.Msg.CONTROLS_REPEAT_TOOLTIP;
+    });
+  },
+  //when the block is changed,
+  onchange: Blockly.Blocks.requireInFunction
 };
 
 Blockly.Blocks['controls_for'] = {
@@ -162,7 +189,7 @@ Blockly.Blocks['controls_for'] = {
     }
   },
 
-  //when the block is changed, 
+  //when the block is changed,
   onchange: Blockly.Blocks.requireInFunction
 };
 
