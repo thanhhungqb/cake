@@ -1917,7 +1917,7 @@ Blockly.Blocks.CreateMainBlock = function(){
   //main_block attribute setting
   block.deletable_ = false;
   block.movable_ = false;
-  block.editable_ = false;
+  block.editable_ = true;
 
   var xmlBlock = Blockly.Xml.blockToDom_(block);
   Blockly.Xml.domToBlock(Blockly.mainWorkspace, xmlBlock).moveBy(20, 100);
@@ -1925,5 +1925,5 @@ Blockly.Blocks.CreateMainBlock = function(){
   //main_block attribute setting
   xmlBlock.setAttribute('deletable', false);
   xmlBlock.setAttribute('movable', false);
-  xmlBlock.setAttribute('editable', false);
+  xmlBlock.setAttribute('editable', true);
 };
