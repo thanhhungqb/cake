@@ -181,8 +181,11 @@ Blockly.Blocks['library_math_logs'] = {
      * @this Blockly.Block
      */
     init: function() {
-        var OPERATORS =
-            [[Blockly.Msg.MATH_TRIG_LOG, 'LOG'],
+        var OPERATORS = [
+                [Blockly.Msg.MATH_ABS_TITLE, 'ABS'],
+                [Blockly.Msg.MATH_SQRT_TITLE, 'SQRT'],
+                [Blockly.Msg.MATH_EXP_TITLE, 'EXP'],
+                [Blockly.Msg.MATH_TRIG_LOG, 'LOG'],
                 [Blockly.Msg.MATH_TRIG_LOG10, 'LOG10'],
                 [Blockly.Msg.MATH_TRIG_LOG2, 'LOG2']];
         this.setColour(320);
@@ -195,6 +198,9 @@ Blockly.Blocks['library_math_logs'] = {
         this.setTooltip(function() {
             var mode = thisBlock.getFieldValue('OP');
             var TOOLTIPS = {
+                'ABS': Blockly.Msg.MATH_SINGLE_TOOLTIP_ABS,
+                'EXP': Blockly.Msg.MATH_SINGLE_TOOLTIP_EXP,
+                'SQRT': Blockly.Msg.MATH_SINGLE_TOOLTIP_ROOT,
                 'LOG': Blockly.Msg.MATH_SINGLE_TOOLTIP_LOG,
                 'LOG10': Blockly.Msg.MATH_SINGLE_TOOLTIP_LOG10,
                 'LOG2': Blockly.Msg.MATH_SINGLE_TOOLTIP_LOG2

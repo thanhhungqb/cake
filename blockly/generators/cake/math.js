@@ -113,6 +113,15 @@ Blockly.cake['library_math_logs'] = function(block) {
     // First, handle cases which generate values that don't need parentheses
     // wrapping the code.
     switch (operator) {
+        case 'ABS':
+            code = 'abs(' + arg + ')';
+            break;
+        case 'SQRT':
+            code = 'sqrt(' + arg + ')';
+            break;
+        case 'EXP':
+            code = 'exp(' + arg + ')';
+            break;            
         case 'LOG':
             code = 'log(' + arg + ')';
             break;
