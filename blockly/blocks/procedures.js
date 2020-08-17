@@ -160,7 +160,7 @@ Blockly.Blocks['procedures_defnoreturn'] = {
             .appendField('', 'PARAMS');
         this.appendStatementInput('STACK')
             .appendField(Blockly.Msg.PROCEDURES_DEFNORETURN_DO);
-        this.setMutator(new Blockly.Mutator(['procedures_mutatorarg', 'procedures_mutatorarg_pointer', 'procedures_mutatorarg_array']));
+        this.setMutator(new Blockly.Mutator(['procedures_mutatorarg']));
         this.setTooltip(Blockly.Msg.PROCEDURES_DEFNORETURN_TOOLTIP);
         this.arguments_ = [];
         this.types_ = [];
@@ -592,11 +592,12 @@ Blockly.Blocks['procedures_defreturn'] = {
         var TYPE =
             [
                 [Blockly.Msg.VARIABLES_SET_TYPE_INT, 'int'],
-                [Blockly.Msg.VARIABLES_SET_TYPE_UNSIGNED_INT, 'unsigned int'],
-                [Blockly.Msg.VARIABLES_SET_TYPE_FLOAT, 'float'],
+                //[Blockly.Msg.VARIABLES_SET_TYPE_UNSIGNED_INT, 'unsigned int'],
+                //[Blockly.Msg.VARIABLES_SET_TYPE_FLOAT, 'float'],
                 [Blockly.Msg.VARIABLES_SET_TYPE_DOUBLE, 'double'],
                 [Blockly.Msg.VARIABLES_SET_TYPE_CHAR, 'char'],
-                [Blockly.Msg.VARIABLES_SET_TYPE_STRING, 'std::string']];
+                //[Blockly.Msg.VARIABLES_SET_TYPE_STRING, 'std::string']
+            ];
         var DIST = [
             [Blockly.Msg.VARIABLES_SET_DIST_VARIABLE, 'variable'],
             [Blockly.Msg.VARIABLES_SET_DIST_POINTER, 'pointer'],
@@ -618,7 +619,7 @@ Blockly.Blocks['procedures_defreturn'] = {
             .appendField('variable', 'DISTS')
             .setAlign(Blockly.ALIGN_RIGHT);
         this.getField_('DISTS').setVisible(false);
-        this.setMutator(new Blockly.Mutator(['procedures_mutatorarg', 'procedures_mutatorarg_pointer', 'procedures_mutatorarg_array']));
+        this.setMutator(new Blockly.Mutator(['procedures_mutatorarg']));
         this.setTooltip(Blockly.Msg.PROCEDURES_DEFRETURN_TOOLTIP);
         this.arguments_ = [];
         this.types_ = [];
@@ -772,11 +773,9 @@ Blockly.Blocks['procedures_mutatorarg'] = {
         var TYPE =
             [
                 [Blockly.Msg.VARIABLES_SET_TYPE_INT, 'int'],
-                [Blockly.Msg.VARIABLES_SET_TYPE_UNSIGNED_INT, 'unsigned int'],
-                [Blockly.Msg.VARIABLES_SET_TYPE_FLOAT, 'float'],
                 [Blockly.Msg.VARIABLES_SET_TYPE_DOUBLE, 'double'],
-                [Blockly.Msg.VARIABLES_SET_TYPE_CHAR, 'char'],
-                [Blockly.Msg.VARIABLES_SET_TYPE_STRING, 'std::string']];
+                [Blockly.Msg.VARIABLES_SET_TYPE_CHAR, 'char']
+            ];
         this.setColour(300);
         this.appendDummyInput()
             .appendField('variable')

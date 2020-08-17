@@ -378,11 +378,12 @@ Blockly.Blocks['variables_declare'] = {
         var TYPE =
             [
                 [Blockly.Msg.VARIABLES_SET_TYPE_INT, 'int'],
-                [Blockly.Msg.VARIABLES_SET_TYPE_UNSIGNED_INT, 'unsigned int'],
-                [Blockly.Msg.VARIABLES_SET_TYPE_FLOAT, 'float'],
+                //[Blockly.Msg.VARIABLES_SET_TYPE_UNSIGNED_INT, 'unsigned int'],
+                //[Blockly.Msg.VARIABLES_SET_TYPE_FLOAT, 'float'],
                 [Blockly.Msg.VARIABLES_SET_TYPE_DOUBLE, 'double'],
                 [Blockly.Msg.VARIABLES_SET_TYPE_CHAR, 'char'],
-                [Blockly.Msg.VARIABLES_SET_TYPE_STRING, 'std::string']];
+                //[Blockly.Msg.VARIABLES_SET_TYPE_STRING, 'std::string']
+            ];
         this.setColour(350);
         var name = Blockly.Procedures.findLegalName(
             Blockly.Msg.VARIABLES_DECLARE_DEFAULT_NAME, this);
