@@ -59,8 +59,9 @@ Blockly.PythonTutor['procedures_defreturn'] = function(block) {
     argTypes[x] = block.types_[x];
     typePlusArgs[x] = [argTypes[x], args[x]];
   }
-  var code = 'function ' + funcName + '(' + args.join(', ') + ') {\n' +
+  var code = 'fn.' + funcName +' = function(' + args.join(', ') + ') {\n' +
              Blockly.PythonTutor.create_stack_frame(funcName, typePlusArgs) +
+             '  pyt.generate_trace('+block.id+');\n' +
              branch + returnValue + '}';
   code = Blockly.PythonTutor.scrub_(block, code);
   Blockly.PythonTutor.definitions_[funcName] = code;
@@ -119,8 +120,13 @@ Blockly.PythonTutor['procedures_ifreturn'] = function(block) {
 };
 
 
+// Running ID for generating stack frames
+Blockly.PythonTutor.frame_id = 0;
+
 Blockly.PythonTutor['create_stack_frame'] = function(name, args) {
-  return 'var locals = {' + args.map(arg => arg[1]+': {t:"'+arg[0] + '",'+
-  'v:'+arg[1]+'},') + '};\n' +
-  'env.push({func_name: "' + name + '", locals});\n';
+  var top = Blockly.PythonTutor.top_of_stack;
+  var frame_id = Blockly.PythonTutor.frame_id++;
+  return '  var locals = {' + args.map(arg => arg[1]+': pyt.allocate_stack("'+arg[0] + '", '+arg[1]+'),') + '};\n' +
+         '  var ols = '+JSON.stringify(args.map(a => a[1]))+';\n'+
+         '  env.push({frame_id:'+frame_id+', top:top, func_name: "' + name + '", locals, ordered_locals:ols});\n';
 }

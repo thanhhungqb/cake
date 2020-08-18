@@ -117,7 +117,20 @@ Blockly.PythonTutor.init = function() {
       Blockly.PythonTutor.variableDB_.reset();
     }
 
-    Blockly.PythonTutor.environment = [];
+    // Execution trace for PythonTutor.
+    Blockly.PythonTutor.trace_ = [];
+
+    Blockly.PythonTutor.top_of_stack = 0;
+
+    // Create execution environment for the code.
+    Blockly.PythonTutor.env = {
+      globals: {},
+      ordered_globals: {},
+      functions: {},
+      heap: {},
+      stdout: "",
+      stacks: []
+    };
     // var defvars = [];
     // var variables = Blockly.Variables.allVariables();
     // for (var x = 0; x < variables.length; x++) {
@@ -140,7 +153,65 @@ Blockly.PythonTutor.finish = function(code) {
   for (var name in Blockly.PythonTutor.definitions_) {
     definitions.push(Blockly.PythonTutor.definitions_[name]);
   }
-  return 'var env = [];\n\n' + definitions.join('\n\n') + '\n\n\n' + code;
+  return 'var pyt = Blockly.PythonTutor;\n'+
+         'var env = pyt.env.stacks;\n'+
+         'var heap = pyt.env.heap;\n'+
+         'var fn = pyt.env.functions;\n'+
+         'var stdout = pyt.env.stdout;\n'+
+         definitions.join('\n\n') +
+         code;
+};
+
+Blockly.PythonTutor.type_sizes = {
+  char: 1,
+  short: 2,
+  int: 4,
+  long: 8,
+  float: 4,
+  double: 8,
+  pointer: 4,
+};
+
+Blockly.PythonTutor.allocate_stack = function(type, expr) {
+  var a = Blockly.PythonTutor.top_of_stack;
+  Blockly.PythonTutor.top_of_stack += Blockly.PythonTutor.type_sizes[type];
+  return {a:a, t:type, v:expr};
+};
+
+// Takes a variable in our environment and return an encoded var for OPT
+// Blockly.PythonTutor.encode_vars = function(name, args) {
+//   return {name: }
+// }
+
+Blockly.PythonTutor.generate_trace = function(id, event="step_line") {
+  var env = Blockly.PythonTutor.env;
+  var frame = {
+    bid: id,
+    event: event,
+    func_name: env.stacks[env.stacks.length-1].func_name,
+    globals: env.globals,
+    ordered_globals: env.ordered_globals,
+    stack_to_render: []
+    };
+  env.stacks.forEach(function(stack) {
+    var locals = {}
+    stack.ordered_locals.forEach(function(v) {
+      var d = stack.locals[v];
+      locals[v] = ['C_DATA', d.a, d.t, d.v];
+    });
+    frame.stack_to_render.push({
+      frame_id: stack.frame_id,
+      func_name: stack.func_name,
+      is_highlighted: false,
+      is_parent: false,
+      is_zombie: false,
+      parent_framd_id_list: [],
+      unique_hash: stack.func_name+'_'+stack.frame_id,
+      ordered_varnames: stack.ordered_locals.map(x=>x),
+      encoded_locals: locals
+    })
+  });
+  Blockly.PythonTutor.trace_.push(frame);
 };
 
 /**

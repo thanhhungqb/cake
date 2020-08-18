@@ -1920,6 +1920,7 @@ Blockly.Blocks.CreateMainBlock = function(){
   block.editable_ = false;
 
   var xmlBlock = Blockly.Xml.blockToDom_(block);
+  return Blockly.Xml.domToText(xmlBlock);
   Blockly.Xml.domToBlock(Blockly.mainWorkspace, xmlBlock).moveBy(20, 100);
 
   //main_block attribute setting

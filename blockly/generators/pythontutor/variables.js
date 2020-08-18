@@ -42,7 +42,8 @@ Blockly.PythonTutor['variables_set'] = function(block) {
       Blockly.PythonTutor.ORDER_ASSIGNMENT) || '0';
   var varName = Blockly.PythonTutor.variableDB_.getName(
       block.getFieldValue('VAR'), Blockly.Variables.NAME_TYPE);
-  return 'locals.'+varName + '.v = ' + argument0 + ';\n';
+  return 'locals.'+varName + '.v = ' + argument0 + ';\n'+
+         'pyt.generate_trace('+block.id+')\n';
 };
 
 Blockly.PythonTutor['variables_declare'] = function(block) {
@@ -55,5 +56,7 @@ Blockly.PythonTutor['variables_declare'] = function(block) {
   if (Blockly.Blocks.checkLegalName(Blockly.Msg.VARIABLES_ILLEGALNAME, varName) == -1){
       this.initVar();
   }
-  return 'locals.' + varName + ' = {t:"'+varType+'",v:' + argument0 + '};\n';
+  return 'locals.' + varName + ' = pyt.allocate_stack("'+varType+'",'+argument0+');\n'+
+         'ols.push("'+varName+'")\n'+
+         'pyt.generate_trace('+block.id+')\n';
 };

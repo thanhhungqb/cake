@@ -163,6 +163,8 @@ Blockly.Blocks.addTemplate = function(details) {
             this.setInlineInputs(details.inline);
         }
         Blockly.Block.prototype.interpolateMsg.apply(this, interpArgs);
+
+        this.event = (details.event != 'undefined' ? details.event : 'step_line');
     };
 
     // Create mutationToDom if needed.
