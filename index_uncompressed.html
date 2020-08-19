@@ -196,13 +196,15 @@
         <div class="col-xs-4">
             <div id="tabs" class="row">
                 <ul>
-                    <li><a href="tabs-code">Code</a></li>
-                    <li><a href="tabs-trace">Trace</a></li>
+                    <li><a href="#tabs-code">Code</a></li>
+                    <li><a href="#tabs-trace">Trace</a></li>
                 </ul>
-            <div id="tabs-code" class="panel panel-default">                
+            <div id="tabs-code" class="panel panel-default">
                 <pre id="code" class="panel-body pre-scrollable"></pre>
             </div>
-            <div id="tabs-trace">                
+            <div id="tabs-trace">
+                <div id="exec_trace">
+                </div>
             </div>
             </div>
         </div>
@@ -264,6 +266,12 @@
                                                                                          DO NOT UPGRADE ABOVE 1.3.10 OR ELSE BREAKAGE WILL OCCUR -->
 <script type="text/javascript" src="js/jquery-ui-1.11.4.min.js"></script> <!-- for sliders and other UI elements -->
 <link type="text/css" href="js/jquery-ui.min.css" rel="stylesheet" />
+<!-- Python Tutor frontend code and styles -->
+<script type="text/javascript" src="js/pytutor.js"></script>
+<link rel="stylesheet" href="css/pytutor.css"/>
+
+<script type="text/javascript" src="online-python-tutor/test-trace.js"></script>
+
 <!-- export.html-->
 <!-- Modal -->
 <div class="modal fade" id="export" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
@@ -295,7 +303,7 @@
 		});
 		$('#export .modal-body .downXML').click(function() {
 			EasyJ.Xml.download($('#export .modal-body textarea').val(), "cake.xml");
-        });        
+        });
         $("#tabs").tabs();
 	})
 </script>

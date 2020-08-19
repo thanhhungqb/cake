@@ -206,7 +206,7 @@ Blockly.PythonTutor.generate_trace = function(id, event="step_line") {
       is_highlighted: false,
       is_parent: false,
       is_zombie: false,
-      parent_framd_id_list: [],
+      parent_frame_id_list: [],
       unique_hash: stack.func_name+'_'+stack.frame_id,
       ordered_varnames: stack.ordered_locals.map(x=>x),
       encoded_locals: locals
