@@ -100,9 +100,6 @@ Blockly.cake['procedures_return'] = function(block) {
     if(returnValue){
         return 'return ' + returnValue + ';\n\n';
     }
-    else {
-        return 'return 0;\n\n';
-    }
 };
 
 Blockly.cake['procedures_defreturn'] = function(block) {

@@ -58,28 +58,6 @@
         </div>
     </nav>
     <div id="main-wrapper" class="row">
-        <!--         <div class="col-xs-2">
-          <div class="panel panel-default">
-            <div class="panel-heading">
-              <h4 class="panel-title">Function Explorer</h4>
-            </div>
-            <div class="panel-body">
-              <ul class="list-group">
-                <li class="list-group-item"><code>void main( )</code></li>
-                <li class="list-group-item"><code>int func1( )</code></li>
-                <li class="list-group-item"><code>int func2( )</code></li>
-              </ul>
-              <div class="btn-group btn-group-sm ng-scope">
-                <button type="button" class="btn btn-default">
-                <span class="glyphicon glyphicon-plus"></span>
-                </button>
-                <button type="button" class="btn btn-default">
-                <span class="glyphicon glyphicon-minus"></span>
-                </button>
-              </div>
-            </div>
-          </div>
-        </div> -->
         <div class="col-xs-8">
             <div class="panel panel-default">
                 <div class="panel-heading">
@@ -216,11 +194,16 @@
             </category>
         </xml>
         <div class="col-xs-4">
-            <div id="code-wrapper" class="panel panel-default">
-                <div class="panel-heading">
-                    <h3 class="panel-title">Code</h3>
-                </div>
+            <div id="tabs" class="row">
+                <ul>
+                    <li><a href="tabs-code">Code</a></li>
+                    <li><a href="tabs-trace">Trace</a></li>
+                </ul>
+            <div id="tabs-code" class="panel panel-default">                
                 <pre id="code" class="panel-body pre-scrollable"></pre>
+            </div>
+            <div id="tabs-trace">                
+            </div>
             </div>
         </div>
     </div>
@@ -275,7 +258,12 @@
 <script type="text/javascript" src="js/jquery.terminal-0.8.8.min.js"></script>
 <!-- Load the Google Drive SDK Realtime libraries. -->
 <script type="text/javascript" src="https://apis.google.com/js/api.js"></script>
-
+<!-- dependencies for pytutor.js -->
+<script type="text/javascript" src="js/d3.v2.min.js"></script>
+<script type="text/javascript" src="js/jquery.jsPlumb-1.3.10-all-min.js "></script> <!-- for rendering SVG connectors
+                                                                                         DO NOT UPGRADE ABOVE 1.3.10 OR ELSE BREAKAGE WILL OCCUR -->
+<script type="text/javascript" src="js/jquery-ui-1.11.4.min.js"></script> <!-- for sliders and other UI elements -->
+<link type="text/css" href="js/jquery-ui.min.css" rel="stylesheet" />
 <!-- export.html-->
 <!-- Modal -->
 <div class="modal fade" id="export" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
@@ -307,7 +295,8 @@
 		});
 		$('#export .modal-body .downXML').click(function() {
 			EasyJ.Xml.download($('#export .modal-body textarea').val(), "cake.xml");
-		})
+        });        
+        $("#tabs").tabs();
 	})
 </script>
 

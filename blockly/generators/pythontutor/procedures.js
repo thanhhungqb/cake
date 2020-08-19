@@ -28,6 +28,21 @@ goog.provide('Blockly.PythonTutor.procedures');
 
 goog.require('Blockly.PythonTutor');
 
+Blockly.PythonTutor['procedures_return'] = function(block) {
+  var returnValue = Blockly.PythonTutor.valueToCode(block, 'VALUE',
+    Blockly.cake.ORDER_NONE) || '';
+  if (returnValue) {
+    returnValue = 'locals.__return__ = pyt.allocate_stack("'+varType+'",'+returnValue+');\n'+
+    'ols.push("__return__")\n'+
+    'pyt.generate_trace('+block.id+', "return")\n'+
+    '  return locals.__return__;\n';
+  } else {
+    'pyt.generate_trace('+block.id+', "uncaught_exception");\n'+
+    '  env.pop();\n'+
+    '  return;\n';
+  }
+};
+
 
 Blockly.PythonTutor['procedures_defreturn'] = function(block) {
   // Define a procedure with a return value.
@@ -43,12 +58,21 @@ Blockly.PythonTutor['procedures_defreturn'] = function(block) {
     branch = Blockly.PythonTutor.INFINITE_LOOP_TRAP.replace(/%1/g,
         '\'' + block.id + '\'') + branch;
   }
+
+  var returnType = block.getFieldValue('TYPES');
+  var returnDist = block.getFieldValue('DISTS');
+
   var returnValue = Blockly.PythonTutor.valueToCode(block, 'RETURN',
       Blockly.PythonTutor.ORDER_NONE) || '';
   if (returnValue) {
-    returnValue = '  return ' + returnValue + ';\n';
+    returnValue = 'locals.__return__ = pyt.allocate_stack("'+returnType+'",'+returnValue+');\n'+
+    '  ols.push("__return__")\n'+
+    '  pyt.generate_trace('+block.id+', "return")\n'+
+    '  env.pop();\n'+
+    '  return locals.__return__;\n';
   } else {
-    returnValue = '  return 0;\n';
+    'pyt.generate_trace('+block.id+', "uncaught_exception");\n'+
+    '  return;\n';
   }
   var args = [];
   var argTypes = [];
@@ -61,7 +85,7 @@ Blockly.PythonTutor['procedures_defreturn'] = function(block) {
   }
   var code = 'fn.' + funcName +' = function(' + args.join(', ') + ') {\n' +
              Blockly.PythonTutor.create_stack_frame(funcName, typePlusArgs) +
-             '  pyt.generate_trace('+block.id+');\n' +
+             '  pyt.generate_trace('+block.id+', "call");\n' +
              branch + returnValue + '}';
   code = Blockly.PythonTutor.scrub_(block, code);
   Blockly.PythonTutor.definitions_[funcName] = code;
