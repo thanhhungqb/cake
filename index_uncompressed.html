@@ -197,12 +197,14 @@
             <div id="tabs" class="row">
                 <ul>
                     <li><a href="#tabs-code">Code</a></li>
-                    <li><a href="#tabs-trace">Trace</a></li>
+                    <li><a href="#tabs-trace">Execution</a></li>
                 </ul>
             <div id="tabs-code" class="panel panel-default">
                 <pre id="code" class="panel-body pre-scrollable"></pre>
             </div>
             <div id="tabs-trace">
+                <input style="font-family: monospace;" type=text id="exec_function" /> <button class="btn btn-default navbar-btn" id="exec_run"><span class="glyphicon glyphicon-play"></span> Run</button>
+                <div id="exec_error" style="color:#e93f34;"><span></span></div>
                 <div id="exec_trace">
                 </div>
             </div>
@@ -234,6 +236,7 @@
 <script type="text/javascript" src="blockly/generators/pythontutor/procedures.js"></script>
 <script type="text/javascript" src="blockly/generators/pythontutor/math.js"></script>
 <script type="text/javascript" src="blockly/generators/pythontutor/variables.js"></script>
+<script type="text/javascript" src="blockly/generators/pythontutor/logic.js"></script>
 <script type="text/javascript" src="blockly/generators/pythontutor/loops.js"></script>
 <script type="text/javascript" src="blockly/blocks/colour.js"></script>
 <script type="text/javascript" src="blockly/blocks/stdio.js"></script>

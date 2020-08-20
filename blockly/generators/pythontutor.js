@@ -185,6 +185,10 @@ Blockly.PythonTutor.allocate_stack = function(type, expr) {
 // }
 
 Blockly.PythonTutor.generate_trace = function(id, event="step_line") {
+  // limit trace
+  if (Blockly.PythonTutor.trace_.length >= 1000) {
+    throw new Error('Execution has reached 1000 step limit. Check for infinite loops or reduce number of loops.');
+  }
   var env = Blockly.PythonTutor.env;
   var frame = {
     bid: id,

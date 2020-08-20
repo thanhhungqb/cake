@@ -35,7 +35,8 @@ Blockly.PythonTutor['controls_if'] = function(block) {
   var argument = Blockly.PythonTutor.valueToCode(block, 'IF' + n,
       Blockly.PythonTutor.ORDER_NONE) || 'false';
   var branch = Blockly.PythonTutor.statementToCode(block, 'DO' + n);
-  var code = 'if (' + argument + ') {\n' + branch + '}';
+  var code = 'pyt.generate_trace('+block.id+');\n' +
+             'if (' + argument + ') {\n' + branch + '}';
   for (n = 1; n <= block.elseifCount_; n++) {
     argument = Blockly.PythonTutor.valueToCode(block, 'IF' + n,
         Blockly.PythonTutor.ORDER_NONE) || 'false';

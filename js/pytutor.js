@@ -427,11 +427,11 @@ ExecutionVisualizer.prototype.render = function() {
      <div id="executionSlider"/>\
      <div id="executionSliderFooter"/>\
      <div id="vcrControls" class="btn-group">\
-       <button id="jmpFirstInstr", type="button">&lt;&lt; First</button>\
-       <button id="jmpStepBack", type="button">&lt; Back</button>\
+       <button id="jmpFirstInstr" class="btn-default navbar-btn" type="button"><span class="glyphicon glyphicon-backward"></span> </button>\
+       <button id="jmpStepBack" class="btn-default navbar-btn"  type="button"><span class="glyphicon glyphicon-step-backward"></span> </button>\
        <span id="curInstr">Step ? of ?</span>\
-       <button id="jmpStepFwd", type="button">Forward &gt;</button>\
-       <button id="jmpLastInstr", type="button">Last &gt;&gt;</button>\
+       <button id="jmpStepFwd" class="btn-default navbar-btn"  type="button"> <span class="glyphicon glyphicon-step-forward"></span></button>\
+       <button id="jmpLastInstr" class="btn-default navbar-btn"  type="button"> <span class="glyphicon glyphicon-forward"></span></button>\
      </div>\
      <div id="errorOutput"/>\
      <div id="stepAnnotationDiv">\
@@ -2023,6 +2023,7 @@ ExecutionVisualizer.prototype.updateOutputMini = function() {
   var curToplevelLayout = this.curTraceLayouts[this.curInstr];
   this.renderDataStructures(curEntry, curToplevelLayout);
 
+  Blockly.mainWorkspace.traceOn(true);
   Blockly.mainWorkspace.highlightBlock(curEntry.bid);
 
   this.enterViewAnnotationsMode(); // ... and render optional annotations (if any exist)

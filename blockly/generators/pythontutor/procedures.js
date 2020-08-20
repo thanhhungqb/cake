@@ -29,17 +29,21 @@ goog.provide('Blockly.PythonTutor.procedures');
 goog.require('Blockly.PythonTutor');
 
 Blockly.PythonTutor['procedures_return'] = function(block) {
+  var returnType = block.getFieldValue('TYPES');
+  var returnDist = block.getFieldValue('DISTS');
   var returnValue = Blockly.PythonTutor.valueToCode(block, 'VALUE',
     Blockly.cake.ORDER_NONE) || '';
+
   if (returnValue) {
-    returnValue = 'locals.__return__ = pyt.allocate_stack("'+varType+'",'+returnValue+');\n'+
-    'ols.push("__return__")\n'+
-    'pyt.generate_trace('+block.id+', "return")\n'+
-    '  return locals.__return__;\n';
+    return 'locals.__return__ = pyt.allocate_stack("'+returnType+'",'+returnValue+');\n'+
+           'ols.push("__return__")\n'+
+           'pyt.generate_trace('+block.id+', "return")\n'+
+           'env.pop()\n' +
+           '  return locals.__return__.v;\n';
   } else {
-    'pyt.generate_trace('+block.id+', "uncaught_exception");\n'+
-    '  env.pop();\n'+
-    '  return;\n';
+    return 'pyt.generate_trace('+block.id+', "uncaught_exception");\n'+
+           '  env.pop();\n'+
+           '  return;\n';
   }
 };
 
@@ -69,7 +73,7 @@ Blockly.PythonTutor['procedures_defreturn'] = function(block) {
     '  ols.push("__return__")\n'+
     '  pyt.generate_trace('+block.id+', "return")\n'+
     '  env.pop();\n'+
-    '  return locals.__return__;\n';
+    '  return locals.__return__.v;\n';
   } else {
     'pyt.generate_trace('+block.id+', "uncaught_exception");\n'+
     '  return;\n';
@@ -106,26 +110,13 @@ Blockly.PythonTutor['procedures_callreturn'] = function(block) {
     args[x] = Blockly.PythonTutor.valueToCode(block, 'ARG' + x,
         Blockly.PythonTutor.ORDER_COMMA) || 'null';
   }
-  var code = funcName + '(' + args.join(', ') + ')';
+  var code = '(function(){ pyt.generate_trace('+block.id+'); ' +
+             'return fn.'+funcName + '(' + args.join(', ') + ');})()';
   return [code, Blockly.PythonTutor.ORDER_FUNCTION_CALL];
 };
 
-Blockly.PythonTutor['procedures_callnoreturn'] = function(block) {
-  // Call a procedure with no return value.
-  var funcName = Blockly.PythonTutor.variableDB_.getName(
-      block.getFieldValue('NAME'), Blockly.Procedures.NAME_TYPE);
-  var args = [];
-  var argTypes = [];
-  var typePlusArgs = [];
-  for (var x = 0; x < block.arguments_.length; x++) {
-    args[x] = Blockly.cake.variableDB_.getName(block.arguments_[x],
-      Blockly.Variables.NAME_TYPE);
-    argTypes[x] = block.types_[x];
-    typePlusArgs.push([argTypes[x], args[x]]);
-  }
-  var code = funcName + '(' + args.join(', ') + ');\n';
-  return code;
-};
+// Call a procedure with no return value. 
+Blockly.PythonTutor['procedures_callnoreturn'] = Blockly.PythonTutor['procedures_callreturn'];
 
 Blockly.PythonTutor['procedures_ifreturn'] = function(block) {
   // Conditionally return value from a procedure.

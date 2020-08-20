@@ -98,7 +98,7 @@ Blockly.cake['procedures_return'] = function(block) {
     var returnValue = Blockly.cake.valueToCode(block, 'VALUE',
             Blockly.cake.ORDER_NONE) || '';
     if(returnValue){
-        return 'return ' + returnValue + ';\n\n';
+        return 'return ' + returnValue + ';\n';
     }
 };
 

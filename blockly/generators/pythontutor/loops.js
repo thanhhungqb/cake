@@ -39,6 +39,7 @@ Blockly.PythonTutor['controls_repeat'] = function(block) {
   var code = 'for (var ' + loopVar + ' = 0; ' +
       loopVar + ' < ' + repeats + '; ' +
       loopVar + '++) {\n' +
+      'pyt.generate_trace('+block.id+');\n' +
       branch + '}\n';
   return code;
 };
@@ -76,8 +77,23 @@ Blockly.PythonTutor['controls_whileUntil'] = function(block) {
   if (until) {
     argument0 = '!' + argument0;
   }
-  return 'while (' + argument0 + ') {\n' + branch + '}\n';
+  return 'while (' + argument0 + ') {\npyt.generate_trace('+block.id+');\n' + branch + '}\n';
 };
+
+Blockly.cake['controls_doWhile'] = function(block) {
+  // Do while/until loop.
+  var until = block.getFieldValue('MODE') == 'UNTIL';
+  var argument0 = Blockly.cake.valueToCode(block, 'BOOL',
+          until ? Blockly.cake.ORDER_LOGICAL_NOT :
+              Blockly.cake.ORDER_NONE) || 'false';
+  var branch = Blockly.cake.statementToCode(block, 'DO');
+  branch = Blockly.cake.addLoopTrap(branch, block.id);
+  if (until) {
+      argument0 = '!' + argument0;
+  }
+  return 'do {\npyt.generate_trace('+block.id+');\n' + branch + '} while (' + argument0 + ');\n';
+};
+
 
 Blockly.PythonTutor['controls_for'] = function(block) {
   // For loop.
