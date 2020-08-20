@@ -31,7 +31,7 @@ goog.require('Blockly.PythonTutor');
 
 Blockly.PythonTutor['controls_repeat'] = function(block) {
   // Repeat n times (internal number).
-  var repeats = Blockly.cake.valueToCode(block, 'TIMES', Blockly.cake.ORDER_ASSIGNMENT) || '0';
+  var repeats = Blockly.PythonTutor.valueToCode(block, 'TIMES', Blockly.PythonTutor.ORDER_ASSIGNMENT) || '0';
   var branch = Blockly.PythonTutor.statementToCode(block, 'DO');
   branch = Blockly.PythonTutor.addLoopTrap(branch, block.id);
   var loopVar = Blockly.PythonTutor.variableDB_.getDistinctName(
@@ -69,6 +69,7 @@ Blockly.PythonTutor['controls_repeat_ext'] = function(block) {
 Blockly.PythonTutor['controls_whileUntil'] = function(block) {
   // Do while/until loop.
   var until = block.getFieldValue('MODE') == 'UNTIL';
+  var cond = block.getInputTargetBlock('BOOL');
   var argument0 = Blockly.PythonTutor.valueToCode(block, 'BOOL',
       until ? Blockly.PythonTutor.ORDER_LOGICAL_NOT :
       Blockly.PythonTutor.ORDER_NONE) || 'false';
@@ -77,21 +78,24 @@ Blockly.PythonTutor['controls_whileUntil'] = function(block) {
   if (until) {
     argument0 = '!' + argument0;
   }
-  return 'while (' + argument0 + ') {\npyt.generate_trace('+block.id+');\n' + branch + '}\n';
+  return 'pyt.generate_trace('+block.id+');\n'+
+         'while ((function(){pyt.generate_trace('+cond.id+'); return ' + argument0 + ';})()) {\n' + branch + '}\n';
 };
 
-Blockly.cake['controls_doWhile'] = function(block) {
+Blockly.PythonTutor['controls_doWhile'] = function(block) {
   // Do while/until loop.
   var until = block.getFieldValue('MODE') == 'UNTIL';
-  var argument0 = Blockly.cake.valueToCode(block, 'BOOL',
-          until ? Blockly.cake.ORDER_LOGICAL_NOT :
-              Blockly.cake.ORDER_NONE) || 'false';
-  var branch = Blockly.cake.statementToCode(block, 'DO');
-  branch = Blockly.cake.addLoopTrap(branch, block.id);
+  var cond = block.getInputTargetBlock('BOOL');
+  var argument0 = Blockly.PythonTutor.valueToCode(block, 'BOOL',
+          until ? Blockly.PythonTutor.ORDER_LOGICAL_NOT :
+              Blockly.PythonTutor.ORDER_NONE) || 'false';
+  var branch = Blockly.PythonTutor.statementToCode(block, 'DO');
+  branch = Blockly.PythonTutor.addLoopTrap(branch, block.id);
   if (until) {
       argument0 = '!' + argument0;
   }
-  return 'do {\npyt.generate_trace('+block.id+');\n' + branch + '} while (' + argument0 + ');\n';
+  return 'do {\npyt.generate_trace('+block.id+');\n' +
+         branch + '} while ((function(){pyt.generate_trace('+cond.id+'); return ' + argument0 + ';})());\n';
 };
 
 
@@ -181,9 +185,9 @@ Blockly.PythonTutor['controls_flow_statements'] = function(block) {
   // Flow statements: continue, break.
   switch (block.getFieldValue('FLOW')) {
     case 'BREAK':
-      return 'break;\n';
+      return 'pyt.generate_trace('+block.id+');break;\n';
     case 'CONTINUE':
-      return 'continue;\n';
+      return 'pyt.generate_trace('+block.id+');continue;\n';
   }
   throw 'Unknown flow statement.';
 };

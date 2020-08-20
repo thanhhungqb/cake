@@ -305,7 +305,7 @@ Blockly.Block.terminateDrag_ = function() {
 /**
  * Select this block.  Highlight it visually.
  */
-Blockly.Block.prototype.select = function() {
+Blockly.Block.prototype.select = function(unselect = true) {
   goog.asserts.assertObject(this.svg_, 'Block is not rendered.');
   if (Blockly.selected) {
     // Unselect any previously selected block.
