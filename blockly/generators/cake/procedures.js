@@ -98,10 +98,7 @@ Blockly.cake['procedures_return'] = function(block) {
     var returnValue = Blockly.cake.valueToCode(block, 'VALUE',
             Blockly.cake.ORDER_NONE) || '';
     if(returnValue){
-        return 'return ' + returnValue + ';\n\n';
-    }
-    else {
-        return 'return 0;\n\n';
+        return 'return ' + returnValue + ';\n';
     }
 };
 
@@ -156,7 +153,7 @@ Blockly.cake['procedures_defreturn'] = function(block) {
         var allDefs = time.join('\n');
     }
 
-  var returnType = block.getFieldValue('TYPES');
+    var returnType = block.getFieldValue('TYPES');
     var returnDist = block.getFieldValue('DISTS');
     var returnSpec, code;
     if(returnDist == 'pointer'){
