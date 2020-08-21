@@ -169,6 +169,8 @@ class Gen_compressed(threading.Thread):
     self.gen_core()
     self.gen_blocks()
     self.gen_generator("cake")
+    self.gen_generator("pythontutor")
+    self.gen_pytutor()
 
   def gen_core(self):
     target_filename = "blockly_compressed.js"
@@ -200,6 +202,17 @@ class Gen_compressed(threading.Thread):
     # Remove Blockly.Blocks to be compatible with Blockly.
     remove = "var Blockly={Blocks:{}};"
     self.do_compile(params, target_filename, filenames, remove, extra_code)
+
+  def gen_pytutor(self):
+    target_filename = "pytutor_compressed.js"
+    params = [
+        ("--compilation_level", "SIMPLE"),
+    ]
+
+    # Read in all the source files.
+    filenames = [os.path.join("..", "js", "*pytutor.js")]
+
+    self.do_compile(params, target_filename, filenames)
 
   def gen_generator(self, language):
     target_filename = language + "_compressed.js"
