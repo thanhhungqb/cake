@@ -70,43 +70,19 @@ Blockly.cake['controls_repeat'] = function(block) {
 
 Blockly.cake['controls_for'] = function(block) {
   // For loop.
-  var variable0 = Blockly.cake.variableDB_.getName(
-    block.getFieldValue('VAR'), Blockly.Variables.NAME_TYPE);
-    if(variable0 == '___EC_84_A0_ED_83_9D__' || variable0 == '--Select--'){
-        variable0 = 'unselected';
-    }
-  var argument0 = Blockly.cake.valueToCode(block, 'FROM',
-    Blockly.cake.ORDER_ASSIGNMENT) || '0';
-  var argument1 = Blockly.cake.valueToCode(block, 'TO',
-    Blockly.cake.ORDER_ASSIGNMENT) || '0';
-  var increment = Blockly.cake.valueToCode(block, 'BY',
-    Blockly.cake.ORDER_ASSIGNMENT) || '1';
+  var initialiser = Blockly.cake.statementToCode(block, 'INIT',
+    Blockly.cake.ORDER_ASSIGNMENT) || ';';
+  var condition = Blockly.cake.valueToCode(block, 'COND',
+    Blockly.cake.ORDER_ASSIGNMENT) || ';';
+  var increment = Blockly.cake.statementToCode(block, 'INC',
+    Blockly.cake.ORDER_ASSIGNMENT) || '';
   var branch = Blockly.cake.statementToCode(block, 'DO');
   branch = Blockly.cake.addLoopTrap(branch, block.id);
-  var code;
-    // All arguments are simple numbers.
-    if(argument0 > argument1 && parseFloat(increment) < 0)
-    {
-        code = 'for (' + variable0 + ' = ' + argument0 + '; ' +
-            variable0 + '>' + argument1 + '; ' +
-            variable0;
-    }
-    else
-    {
-        code = 'for (' + variable0 + ' = ' + argument0 + '; ' +
-            variable0 + '<' + argument1 + '; ' +
-            variable0;
-    }
-    var up = increment >= 0;
-    var step = Math.abs(parseFloat(increment));
-    if (step == 1) {
-      code += up ? '++' : '--';
-    } else {
-      code += (up ? ' += ' : ' -= ') + step;
-    }
-    code += ') {\n' + branch + '}\n';
 
-  return code;
+  // remove newlines from statement blocks
+
+  return "for (" + initialiser.trim() + " " + condition + "; " + increment.trim().replace(/;\s*$/, "") + ") {\n" +
+         branch + "\n}\n";
 };
 
 Blockly.cake['controls_flow_statements'] = function(block) {

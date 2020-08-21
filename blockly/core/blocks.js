@@ -212,6 +212,30 @@ Blockly.Blocks.requireInFunction = function(block) {
     }
 };
 /*
+Check if the statement block is used in a for-loop initialization or increment.
+*/
+Blockly.Blocks.forPlacementCheck = function(block) {
+    if (!block) {
+        block = this;
+    }
+    if (!block.workspace) {
+        // Block has been deleted.
+        return;
+    }
+    if (block.getSurroundParent()
+          && block.getSurroundParent().type == "controls_for"
+          && [block.getSurroundParent().getInputTargetBlock("INIT"),
+              block.getSurroundParent().getInputTargetBlock("INC")].indexOf(block) >= 0) {
+
+        if (block.getNextBlock()) {
+            block.getNextBlock().unplug(false, true);
+        }
+        block.setNextStatement(false);
+    } else if (!block.nextConnection) {
+        block.setNextStatement(true, block.previousConnection.check_);
+    }
+};
+/*
  The Function to check if variable, array, #define, or pointer declare block's position is legal or illegal.
  */
 Blockly.Blocks.variablePlaceCheck = function(block) {

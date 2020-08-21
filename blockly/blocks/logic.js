@@ -41,8 +41,8 @@ Blockly.Blocks['controls_if'] = {
             .appendField(Blockly.Msg.CONTROLS_IF_MSG_IF);
         this.appendStatementInput('DO0')
             .appendField(Blockly.Msg.CONTROLS_IF_MSG_THEN);
-        this.setPreviousStatement(true);
-        this.setNextStatement(true);
+        this.setPreviousStatement(true, "STATEMENT");
+        this.setNextStatement(true, "STATEMENT");
         this.setMutator(new Blockly.Mutator(['controls_if_elseif',
             'controls_if_else'
         ]));
@@ -432,8 +432,8 @@ Blockly.Blocks['controls_switch'] = {
             .appendField(Blockly.Msg.CONTROLS_SWITCH_CASE);
         this.appendStatementInput('DO0')
             .appendField(Blockly.Msg.CONTROLS_SWITCH_DO);
-        this.setPreviousStatement(true);
-        this.setNextStatement(true);
+        this.setPreviousStatement(true, "STATEMENT");
+        this.setNextStatement(true, "STATEMENT");
         this.setMutator(new Blockly.Mutator(['controls_switch_case']));
         // Assign 'this' to a variable for use in the tooltip closure below.
         var thisBlock = this;
@@ -604,7 +604,7 @@ Blockly.Blocks['controls_switch_break'] = {
         this.setColour(200);
         this.appendDummyInput()
             .appendField(Blockly.Msg.CONTROLS_SWITCH_BREAK);
-        this.setPreviousStatement(true);
+        this.setPreviousStatement(true, "STATEMENT");
         // Assign 'this' to a variable for use in the tooltip closure below.
         this.tag = Blockly.Msg.TAG_LOOP_FLOW;
         this.setTooltip(Blockly.Msg.CONTROLS_SWITCH_BREAK_TOOLTIP);
