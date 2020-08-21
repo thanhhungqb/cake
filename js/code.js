@@ -30,11 +30,12 @@ function start() {
     eval(Blockly.PythonTutor.code);
     Blockly.PythonTutor.trace_ = [];
     Blockly.PythonTutor.top_of_stack = 0;
-    var f = 'Blockly.PythonTutor.env.functions.'+$("#exec_function").val();    
+    var f = 'Blockly.PythonTutor.env.functions.'+$("#exec_function").val();
     try {
-      if (eval(f) === undefined) throw new Error("Invalid function for execution.");
+      //if (eval(f) === undefined) throw new Error("Invalid function for execution.");
+      Function(f)();
     } catch(err) {
-      $('#exec_error span').text(err.message);
+      $('#exec_error span').text(err.message.replace('Blockly.PythonTutor.env.functions.', ''));
     }
     if (Blockly.PythonTutor.trace_.length > 0) {
       new ExecutionVisualizer('exec_trace', {code: '', trace: Blockly.PythonTutor.trace_},
@@ -43,7 +44,7 @@ function start() {
                               lang: 'cpp'});
     }
     dirty = false;
-  }); 
+  });
 
   if ('BlocklyStorage' in window) {
     // Hook a save function onto unload.

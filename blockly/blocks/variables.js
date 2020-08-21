@@ -325,8 +325,8 @@ Blockly.Blocks['variables_set'] = {
             ['VALUE', null, Blockly.ALIGN_RIGHT],
             Blockly.ALIGN_RIGHT);
 
-        this.setPreviousStatement(true);
-        this.setNextStatement(true);
+        this.setPreviousStatement(true, ["STATEMENT", "SET"]);
+        this.setNextStatement(true, ["STATEMENT", "SET"]);
         this.setTooltip(Blockly.Msg.VARIABLES_SET_TOOLTIP);
         this.contextMenuMsg_ = Blockly.Msg.VARIABLES_SET_CREATE_GET;
         this.contextMenuType_ = 'variables_set';
@@ -362,7 +362,8 @@ Blockly.Blocks['variables_set'] = {
 
     //when the block is changed,
     onchange: function() {
-        Blockly.Blocks.requireInFunction(this);
+        // check if block is within a for init or inc statement
+        Blockly.Blocks.forPlacementCheck(this);
         var varName = this.getFieldValue('VAR');
         var type = Blockly.FieldDropdown.prototype.getTypefromVars(varName, 0);
 
@@ -397,8 +398,8 @@ Blockly.Blocks['variables_declare'] = {
             ['VALUE', null, Blockly.ALIGN_RIGHT],
             Blockly.ALIGN_RIGHT);
 
-        this.setPreviousStatement(true);
-        this.setNextStatement(true);
+        this.setPreviousStatement(true, ["STATEMENT", "DEC"]);
+        this.setNextStatement(true, ["STATEMENT", "DEC"]);
         this.setTooltip(Blockly.Msg.VARIABLES_DECLARE_TOOLTIP);
         this.contextMenuMsg_ = Blockly.Msg.VARIABLES_SET_CREATE_GET;
         this.contextMenuType_ = 'variables_declare';
@@ -417,8 +418,12 @@ Blockly.Blocks['variables_declare'] = {
      * Return Variable's Scope
      */
     getScope: function() {
-        if (this.getSurroundParent()) {
-            return this.getSurroundParent().getName();
+        var block = this;
+        while (block.getSurroundParent()) {
+            if (block.getSurroundParent().getName) {
+                return block.getSurroundParent().getName();
+            }
+            block = block.getSurroundParent();
         }
     },
     /**
@@ -473,7 +478,8 @@ Blockly.Blocks['variables_declare'] = {
 
     //when the block is changed,
     onchange: function() {
-        Blockly.Blocks.variablePlaceCheck(this);
+        // check if block is within a for init or inc statement
+        Blockly.Blocks.forPlacementCheck(this);
         var type = this.getFieldValue('TYPES');
         if (type == false) {
             type = 'int';
