@@ -70,8 +70,8 @@ Blockly.cake['logic_compare'] = function(block) {
 
 Blockly.cake['logic_operation'] = function(block) {
   // Operations 'and', 'or'.
-  var operator = (block.getFieldValue('OP') == 'AND') ? '&&' : '||';
-  var order = (operator == '&&') ? Blockly.cake.ORDER_LOGICAL_AND :
+  var operator = (block.getFieldValue('OP') == 'AND') ? 'and' : 'or';
+  var order = (operator == 'and') ? Blockly.cake.ORDER_LOGICAL_AND :
     Blockly.cake.ORDER_LOGICAL_OR;
   var argument0 = Blockly.cake.valueToCode(block, 'A', order);
   var argument1 = Blockly.cake.valueToCode(block, 'B', order);
@@ -81,7 +81,7 @@ Blockly.cake['logic_operation'] = function(block) {
     argument1 = '0';
   } else {
     // Single missing arguments have no effect on the return value.
-    var defaultArgument = (operator == '&&') ? '1' : '0';
+    var defaultArgument = (operator == 'and') ? '1' : '0';
     if (!argument0) {
       argument0 = defaultArgument;
     }
@@ -98,13 +98,13 @@ Blockly.cake['logic_negate'] = function(block) {
   var order = Blockly.cake.ORDER_LOGICAL_NOT;
   var argument0 = Blockly.cake.valueToCode(block, 'BOOL', order) ||
     '1';
-  var code = '!' + argument0;
+  var code = 'not ' + argument0;
   return [code, order];
 };
 
 Blockly.cake['logic_boolean'] = function(block) {
   // Boolean values true and false.
-  var code = (block.getFieldValue('BOOL') == 'TRUE') ? '1' : '0';
+  var code = (block.getFieldValue('BOOL') == 'TRUE') ? 'true' : 'false';
   return [code, Blockly.cake.ORDER_ATOMIC];
 };
 

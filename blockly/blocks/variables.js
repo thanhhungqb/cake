@@ -219,8 +219,7 @@ Blockly.Blocks['variables_get'] = {
             .appendField(Blockly.Msg.VARIABLES_GET_TAIL);
         this.setOutput(true, 'Variable');
         this.setTooltip(Blockly.Msg.VARIABLES_GET_TOOLTIP);
-        this.contextMenuMsg_ = Blockly.Msg.VARIABLES_GET_CREATE_SET;
-        this.contextMenuType_ = 'variables_get';
+
         this.tag = Blockly.Msg.TAG_VARIABLE_GET;
     },
     /**
@@ -259,11 +258,10 @@ Blockly.Blocks['variables_get'] = {
             enabled: true
         };
         var name = this.getFieldValue('VAR');
-        option.text = this.contextMenuMsg_.replace('%1', name);
+        option.text = Blockly.Msg.VARIABLES_GET_CREATE_SET.replace('%1', name);
         var xmlField = goog.dom.createDom('field', null, name);
         xmlField.setAttribute('name', 'VAR');
-        var xmlBlock = goog.dom.createDom('block', null, xmlField);
-        xmlBlock.setAttribute('type', this.contextMenuType_);
+        var xmlBlock = goog.dom.createDom('block', {type: 'variables_set'}, xmlField);
         option.callback = Blockly.ContextMenu.callbackFactory(this, xmlBlock);
         options.push(option);
     },
@@ -328,8 +326,6 @@ Blockly.Blocks['variables_set'] = {
         this.setPreviousStatement(true, ["STATEMENT", "SET"]);
         this.setNextStatement(true, ["STATEMENT", "SET"]);
         this.setTooltip(Blockly.Msg.VARIABLES_SET_TOOLTIP);
-        this.contextMenuMsg_ = Blockly.Msg.VARIABLES_SET_CREATE_GET;
-        this.contextMenuType_ = 'variables_set';
         this.tag = Blockly.Msg.TAG_VARIABLE_SET;
     },
     /**
@@ -358,7 +354,18 @@ Blockly.Blocks['variables_set'] = {
             this.setFieldValue(newName, 'VAR');
         }
     },
-    customContextMenu: Blockly.Blocks['variables_get'].customContextMenu,
+    customContextMenu:  function(options) {
+        var option = {
+            enabled: true
+        };
+        var name = this.getFieldValue('VAR');
+        option.text = Blockly.Msg.VARIABLES_SET_CREATE_GET.replace('%1', name);
+        var xmlField = goog.dom.createDom('field', null, name);
+        xmlField.setAttribute('name', 'VAR');
+        var xmlBlock = goog.dom.createDom('block', {type: 'variables_get'}, xmlField);
+        option.callback = Blockly.ContextMenu.callbackFactory(this, xmlBlock);
+        options.push(option);
+    },
 
     //when the block is changed,
     onchange: function() {
@@ -475,8 +482,10 @@ Blockly.Blocks['variables_declare'] = {
             this.setFieldValue(newName, 'VAR');
         }
     },
-    customContextMenu: Blockly.Blocks['variables_get'].customContextMenu,
-
+    customContextMenu: function(options) {
+        Blockly.Blocks['variables_get'].customContextMenu.call(this, options);
+        Blockly.Blocks['variables_set'].customContextMenu.call(this, options);
+    },
     //when the block is changed,
     onchange: function() {
         // check if block is within a for init or inc statement
