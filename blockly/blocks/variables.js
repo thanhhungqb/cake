@@ -270,9 +270,8 @@ Blockly.Blocks['variables_get'] = {
 
     //when the block is changed,
     onchange: function() {
-        Blockly.Blocks.requireInFunction(this);
         var varName = this.getFieldValue('VAR');
-        var varType = Blockly.FieldDropdown.prototype.getTypefromVars(varName, 0);
+        var varType = Blockly.FieldDropdown.prototype.getTypefromVars(varName, 0, this);
         this.setOutputType('VAR', varType);
     },
 
@@ -325,6 +324,7 @@ Blockly.Blocks['variables_set'] = {
             ['VALUE', null, Blockly.ALIGN_RIGHT],
             Blockly.ALIGN_RIGHT);
 
+        this.setInputsInline(false);
         this.setPreviousStatement(true, ["STATEMENT", "SET"]);
         this.setNextStatement(true, ["STATEMENT", "SET"]);
         this.setTooltip(Blockly.Msg.VARIABLES_SET_TOOLTIP);
@@ -365,7 +365,7 @@ Blockly.Blocks['variables_set'] = {
         // check if block is within a for init or inc statement
         Blockly.Blocks.forPlacementCheck(this);
         var varName = this.getFieldValue('VAR');
-        var type = Blockly.FieldDropdown.prototype.getTypefromVars(varName, 0);
+        var type = Blockly.FieldDropdown.prototype.getTypefromVars(varName, 0, this);
 
         if (type == false) {
             type = 'int';
@@ -390,14 +390,15 @@ Blockly.Blocks['variables_declare'] = {
 
         this.interpolateMsg(
             // TODO: Combine these messages instead of using concatenation.
-            Blockly.Msg.VARIABLES_DECLARE_TITLE + '%1 ' +
-            Blockly.Msg.VARIABLES_DECLARE_NAME + ' %2 ' +
+            Blockly.Msg.VARIABLES_DECLARE + '%1 ' +
+            Blockly.Msg.VARIABLES_DECLARE_TITLE + ' %2 ' +
             Blockly.Msg.VARIABLES_DECLARE_INIT + ' %3 ',
             ['TYPES', new Blockly.FieldDropdown(TYPE, null, this)],
             ['VAR', new Blockly.FieldTextInput(name, Blockly.Procedures.rename)],
             ['VALUE', null, Blockly.ALIGN_RIGHT],
             Blockly.ALIGN_RIGHT);
 
+        this.setInputsInline(false);
         this.setPreviousStatement(true, ["STATEMENT", "DEC"]);
         this.setNextStatement(true, ["STATEMENT", "DEC"]);
         this.setTooltip(Blockly.Msg.VARIABLES_DECLARE_TOOLTIP);
@@ -559,8 +560,8 @@ Blockly.Blocks['variables_pointer_get'] = {
         Blockly.Blocks.requireInFunction(this);
 
         var varName = this.getFieldValue('VAR');
-        var varType = Blockly.FieldDropdown.prototype.getTypefromVars(varName, 0);
-        var dimension = Blockly.FieldDropdown.prototype.getTypefromVars(varName, 5);
+        var varType = Blockly.FieldDropdown.prototype.getTypefromVars(varName, 0, this);
+        var dimension = Blockly.FieldDropdown.prototype.getTypefromVars(varName, 5, this);
         if (dimension == '*') {
             this.setOutputType('PTR', varType);
         }
@@ -586,8 +587,8 @@ Blockly.Blocks['variables_pointer_set'] = {
             ['VALUE', null, Blockly.ALIGN_RIGHT],
             Blockly.ALIGN_RIGHT);
         this.setInputsInline(true);
-        this.setPreviousStatement(true);
-        this.setNextStatement(true);
+        this.setPreviousStatement(true, ["STATEMENT", "SET"]);
+        this.setNextStatement(true, ["STATEMENT", "SET"]);
         this.setTooltip(Blockly.Msg.VARIABLES_SET_TOOLTIP);
         this.contextMenuMsg_ = Blockly.Msg.VARIABLES_SET_CREATE_GET;
         this.contextMenuType_ = 'variables_pointer_set';
@@ -623,16 +624,16 @@ Blockly.Blocks['variables_pointer_set'] = {
     customContextMenu: Blockly.Blocks['variables_pointer_get'].customContextMenu,
 
     //when the block is changed,
-    onchange: //Blockly.Blocks.requireInFunction
-        function() {
-            Blockly.Blocks.requireInFunction(this);
+    onchange: function() {
+        // check if block is within a for init or inc statement
+        Blockly.Blocks.forPlacementCheck(this);
 
-            if(this.getInput('VAR')) {
-                var ptrName = this.getInputTargetBlock('VAR').getFieldValue('VAR');
-                var ptrType = Blockly.FieldDropdown.prototype.getTypefromVars(ptrName, 0);
-                Blockly.Blocks.setCheckPointer(this, ptrType, 'VALUE');
-            }
+        if(this.getInput('VAR')) {
+            var ptrName = this.getInputTargetBlock('VAR').getFieldValue('VAR');
+            var ptrType = Blockly.FieldDropdown.prototype.getTypefromVars(ptrName, 0, this);
+            Blockly.Blocks.setCheckPointer(this, ptrType, 'VALUE');
         }
+    }
 };
 
 Blockly.Blocks['variables_pointer_declare'] = {
@@ -651,18 +652,18 @@ Blockly.Blocks['variables_pointer_declare'] = {
 
         this.interpolateMsg(
             // TODO: Combine these messages instead of using concatenation.
-            Blockly.Msg.VARIABLES_POINTER_DECLARE_TITLE + '%1 ' +
-            Blockly.Msg.VARIABLES_POINTER_DECLARE_ITERATION + ' %2 ' +
-            Blockly.Msg.VARIABLES_DECLARE_NAME + ' %3 ' +
+            Blockly.Msg.VARIABLES_DECLARE + '%1 ' +
+            Blockly.Msg.VARIABLES_POINTER_DECLARE_TITLE + ' %2 %3' +
             Blockly.Msg.VARIABLES_DECLARE_INIT + ' %4 ',
             ['TYPES', new Blockly.FieldDropdown(TYPE, null, this)],
-            ['ITERATION', new Blockly.FieldTextInput('*')],
+            ['ITERATION', new Blockly.FieldDropdown([["*","*"], ["**","**"], ["***","***"]])],
             ['VAR', new Blockly.FieldTextInput(name, Blockly.Procedures.rename)],
             ['VALUE', null, Blockly.ALIGN_RIGHT],
             Blockly.ALIGN_RIGHT);
 
-        this.setPreviousStatement(true);
-        this.setNextStatement(true);
+        this.setInputsInline(false);
+        this.setPreviousStatement(true, ["STATEMENT", "DEC"]);
+        this.setNextStatement(true, ["STATEMENT", "DEC"]);
         this.setTooltip(Blockly.Msg.VARIABLES_DECLARE_TOOLTIP);
         this.contextMenuMsg_ = Blockly.Msg.VARIABLES_SET_CREATE_GET;
         this.contextMenuType_ = 'variables_pointer_declare';
@@ -745,7 +746,8 @@ Blockly.Blocks['variables_pointer_declare'] = {
 
     //when the block is changed,
     onchange: function() {
-        Blockly.Blocks.variablePlaceCheck(this);
+        // check if block is within a for init or inc statement
+        Blockly.Blocks.forPlacementCheck(this);
         var type = this.getFieldValue('TYPES');
 
         if (type == false) {
@@ -931,7 +933,7 @@ Blockly.Blocks['variables_array_get'] = {
 
         var arrName = this.getFieldValue('VAR');
         var arrIdxLength = Blockly.FieldVariableArray.getBlockIdxLength(arrName);
-        var arrType = Blockly.FieldDropdown.prototype.getTypefromVars(arrName, 0);
+        var arrType = Blockly.FieldDropdown.prototype.getTypefromVars(arrName, 0, this);
 
         var inputLength = this.getInputIdxLength();
 
@@ -971,8 +973,8 @@ Blockly.Blocks['variables_array_set'] = {
             .appendField(Blockly.Msg.VARIABLES_SET_TAIL);
 
         this.setInputsInline(true);
-        this.setPreviousStatement(true);
-        this.setNextStatement(true);
+        this.setPreviousStatement(true, ["STATEMENT", "SET"]);
+        this.setNextStatement(true, ["STATEMENT", "SET"]);
         this.setTooltip(Blockly.Msg.VARIABLES_SET_TOOLTIP);
         this.contextMenuMsg_ = Blockly.Msg.VARIABLES_SET_CREATE_GET;
         this.contextMenuType_ = 'variables_array_set';
@@ -1016,11 +1018,12 @@ Blockly.Blocks['variables_array_set'] = {
     getInputIdxLength: Blockly.Blocks['variables_array_get'].getInputIdxLength,
     //when the block is changed,
     onchange: function() {
-        Blockly.Blocks.requireInFunction(this);
+        // check if block is within a for init or inc statement
+        Blockly.Blocks.forPlacementCheck(this);
 
         if (this.getFieldValue('VAR')) {
             var option = this.getFieldValue('VAR');
-            var type = Blockly.FieldDropdown.prototype.getTypefromVars(option, 0);
+            var type = Blockly.FieldDropdown.prototype.getTypefromVars(option, 0, this);
             var arrIdxLength = Blockly.FieldVariableArray.getBlockIdxLength(option);
 
             var inputLength = this.getInputIdxLength();
@@ -1055,8 +1058,8 @@ Blockly.Blocks['variables_array_declare'] = {
 
         this.interpolateMsg(
             // TODO: Combine these messages instead of using concatenation.
-            Blockly.Msg.VARIABLES_ARRAY_DECLARE_TITLE + ' %1 ' + ' '+
-            Blockly.Msg.VARIABLES_DECLARE_NAME + ' %2 ' +
+            Blockly.Msg.VARIABLES_DECLARE + ' %1 ' + ' '+
+            Blockly.Msg.VARIABLES_ARRAY_DECLARE_TITLE + ' %2 ' +
             Blockly.Msg.VARIABLES_ARRAY_DECLARE_LENGTH + ' %3' + ' %4' + ' %5 ',
             ['TYPES', new Blockly.FieldDropdown(TYPE)],
             ['VAR', new Blockly.FieldTextInput(name, Blockly.Procedures.rename)],
@@ -1066,8 +1069,8 @@ Blockly.Blocks['variables_array_declare'] = {
             Blockly.ALIGN_RIGHT);
 
         this.setInputsInline(true);
-        this.setPreviousStatement(true);
-        this.setNextStatement(true);
+        this.setPreviousStatement(true, ["STATEMENT", "DEC"]);
+        this.setNextStatement(true, ["STATEMENT", "DEC"]);
         this.setTooltip(Blockly.Msg.VARIABLES_DECLARE_TOOLTIP);
         this.contextMenuMsg_ = Blockly.Msg.VARIABLES_SET_CREATE_GET;
         this.contextMenuType_ = 'variables_array_declare';
@@ -1115,8 +1118,10 @@ Blockly.Blocks['variables_array_declare'] = {
         else if (length_1 != 0 && length_2 != 0 && length_3 != 0)
             return [3, length_1, length_2, length_3];
     },
-    //when the block is changed,
-    onchange: Blockly.Blocks.variablePlaceCheck,
+    //when the block is changed, check if block is within a for init or inc statement
+    onchange: function () {
+        Blockly.Blocks.forPlacementCheck(this);
+    },
     /**
      * Return all variables's types referenced by this block.
      * @return {!Array.<string>} List of variable types.
@@ -1177,7 +1182,7 @@ Blockly.Blocks['variables_pointer_&'] = {
         {
             var nextblock = this.getInputTargetBlock('VALUE');
             var varName = nextblock.getVars();
-            var varType = Blockly.FieldDropdown.prototype.getTypefromVars(varName, 0);
+            var varType = Blockly.FieldDropdown.prototype.getTypefromVars(varName, 0, this);
 
             if(nextblock.type.search('variables') ==  0) {
                 // & POINTER -> Double Pointer
@@ -1233,8 +1238,8 @@ Blockly.Blocks['variables_pointer_*'] = {
                      if (nextblock.type.search('variables') == 0) {
                          if (nextblock.type.search('pointer') > 0) {
                              var varName = nextblock.getVars();
-                             var varType = Blockly.FieldDropdown.prototype.getTypefromVars(varName, 0);
-                             var dimension = Blockly.FieldDropdown.prototype.getTypefromVars(varName, 5);
+                             var varType = Blockly.FieldDropdown.prototype.getTypefromVars(varName, 0, this);
+                             var dimension = Blockly.FieldDropdown.prototype.getTypefromVars(varName, 5, this);
                              // **DOUBLE POINTER -> Variable
                              if (dimension == '**') {
                                  this.setOutputType('VAR', varType);
@@ -1247,11 +1252,11 @@ Blockly.Blocks['variables_pointer_*'] = {
             // * variables
             else if (nextblock.type.search('variables') == 0) {
                 var varName = nextblock.getVars();
-                var varType = Blockly.FieldDropdown.prototype.getTypefromVars(varName, 0);
+                var varType = Blockly.FieldDropdown.prototype.getTypefromVars(varName, 0, this);
 
                 // POINTER
                 if (nextblock.type.search('pointer') > 0) {
-                    var dimension = Blockly.FieldDropdown.prototype.getTypefromVars(varName, 5);
+                    var dimension = Blockly.FieldDropdown.prototype.getTypefromVars(varName, 5, this);
                     // *POINTER -> Variable
                     if (dimension == '*') {
                         this.setOutputType('VAR', varType);

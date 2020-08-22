@@ -41,18 +41,26 @@ Blockly.Variables.NAME_TYPE = 'VARIABLE';
 
 /**
  * Find all user-created variables.
- * @param {Blockly.Block=} opt_block Optional root block.
+ * @param {Blockly.Block=} block Optional source block.
  * @return {!Array.<string>} Array of variable names.
  */
-Blockly.Variables.allVariables = function(opt_block) {
-  var blocks;
-  if (opt_block) {
-    blocks = opt_block.getDescendants();
+Blockly.Variables.allVariables = function(block) {
+  var blocks = [];
+  if (block) {
+    var parent;
+    blocks.push(block);
+    while (parent = block.getParent()) {
+      if (parent.type == "controls_for" && parent.getNextBlock() != block) {
+        blocks.push(parent.getInputTargetBlock("INIT"));
+      }
+      block = parent;
+      blocks.push(block);
+    }
   } else {
     blocks = Blockly.mainWorkspace.getAllBlocks();
   }
-  var variableHash = Object.create(null);
-  // Iterate through every block and add each variable to the hash.
+  var variableList = [];
+  // Iterate through every block and add each variable to the list.
   for (var x = 0; x < blocks.length; x++) {
     var funcVar = blocks[x].getDeclare;
     var funcParamInfo = blocks[x].getParamInfo;
@@ -95,7 +103,7 @@ Blockly.Variables.allVariables = function(opt_block) {
         }
 
       if (varName && varScope) {
-        variableHash[varName.toLowerCase() + "." + varScope.toLowerCase()] = [varType, varDist, varName, varScope, varPos, varSpec];
+        variableList.push([varType, varDist, varName, varScope, varPos, varSpec]);
       }
     }
     /**
@@ -106,15 +114,10 @@ Blockly.Variables.allVariables = function(opt_block) {
         var tuple = funcParamInfo.call(blocks[x]);
         if(tuple){
             for(var i = 0; i<tuple.length; i++) {
-                variableHash[tuple[i][2].toLowerCase() + "." + tuple[i][3].toLowerCase()] = [tuple[i][0], tuple[i][1], tuple[i][2], tuple[i][3], tuple[i][4], tuple[i][5]];
+                variableList.push([tuple[i][0], tuple[i][1], tuple[i][2], tuple[i][3], tuple[i][4], tuple[i][5]]);
             }
         }
-    } 
-  }
-  // Flatten the hash into a list.
-  var variableList = [];
-  for (var name in variableHash) {
-    variableList.push([variableHash[name][0], variableHash[name][1], variableHash[name][2], variableHash[name][3], variableHash[name][4], variableHash[name][5]]);
+    }
   }
     return variableList;
 };

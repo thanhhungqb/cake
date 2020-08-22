@@ -288,10 +288,10 @@ Blockly.FieldDropdown.prototype.dispose = function() {
  * @param option: wanted value -> type = 0, dimension = 5
  * @returns {*}
  */
-Blockly.FieldDropdown.prototype.getTypefromVars = function(blockVars, option) {
+Blockly.FieldDropdown.prototype.getTypefromVars = function(blockVars, option, block) {
 
     var wantedValue;
-    var variableList = Blockly.Variables.allVariables();
+    var variableList = Blockly.Variables.allVariables(block);
 
     for (var temp = 0; temp < variableList.length; temp++) {
         if (variableList[temp][2] == blockVars) {
@@ -440,7 +440,7 @@ Blockly.FieldDropdown.prototype.getParentType = function(curBlock, strDist) {
  */
 
 Blockly.FieldDropdown.prototype.listCreate = function(block, varDist) {
-    var variableList = Blockly.Variables.allVariables();
+    var variableList = Blockly.Variables.allVariables(block);
     var variableListPop = []; // 보여줄 리스트 거를 것.
     var thisPosition = block.getRelativeToSurfaceXY().y;
 
