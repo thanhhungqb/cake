@@ -566,8 +566,23 @@ Blockly.preloadAudio_ = function() {
   for (var name in Blockly.SOUNDS_) {
     var sound = Blockly.SOUNDS_[name];
     sound.volume = .01;
-    sound.play();
-    sound.pause();
+    var playPromise = sound.play();
+    // Edge does not return a promise, so we need to check.
+    if (playPromise !== undefined) {
+      // If we don't wait for the play request to complete before calling pause()
+      // we will get an exception: (DOMException: The play() request was interrupted)
+      // See more: https://developers.google.com/web/updates/2017/06/play-request-was-interrupted
+      playPromise.then(sound.pause).catch(function() {
+        // Play without user interaction was prevented.
+      });
+    } else {
+      sound.pause();
+    }
+    // iOS can only process one sound at a time.  Trying to load more than one
+    // corrupts the earlier ones.  Just load one and leave the others uncached.
+    if (goog.userAgent.IPAD || goog.userAgent.IPHONE) {
+      break;
+    }
   }
 };
 
