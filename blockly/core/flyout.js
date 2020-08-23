@@ -552,7 +552,7 @@ Blockly.Flyout.prototype.createBlockFunc_ = function(originBlock) {
       // Right-click.  Don't create a block, let the context menu show.
       return;
     }
-    if (originBlock.disabled) {
+    if (originBlock.isDisabled()) {
       // Beyond capacity.
       return;
     }

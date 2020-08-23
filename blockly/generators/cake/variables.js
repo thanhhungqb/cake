@@ -167,7 +167,7 @@ Blockly.cake['variables_array_get'] = function(block) {
         length_3 = (length_3 == '' ? -1 : length_3 * 1);
     }
     // get array list
-    var arrList = Blockly.Blocks.getWantedBlockArray('a');
+    var arrList = Blockly.Variables.getVariableBlocks({dist: 'a'});
 
     // get index of array from array list
     var idxList = Blockly.Blocks.getIndexArray(arrList, varName);
@@ -229,7 +229,7 @@ Blockly.cake['variables_array_set'] = function(block) {
     length_3 = (length_3 == '' ? -1 :length_3);
 
     // get array list
-    var arrList = Blockly.Blocks.getWantedBlockArray('a');
+    var arrList = Blockly.Variables.getVariableBlocks({dist: 'a'});
 
     // get index of array from array list
     var idxList = Blockly.Blocks.getIndexArray(arrList, varName);

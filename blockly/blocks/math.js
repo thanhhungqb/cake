@@ -47,8 +47,6 @@ Blockly.Blocks['math_number'] = {
   // negative number (n<0) : NEGATIVE
   // positivie number
   onchange: function() {
-      Blockly.Blocks.requireInFunction();
-
       var num = this.getFieldValue('NUM');
       if (num == 0) {
           this.changeOutput('Number');
@@ -100,10 +98,6 @@ Blockly.Blocks['math_arithmetic'] = {
       return TOOLTIPS[mode];
     });
   },
-  //when the block is changed, 
-  onchange: function() {
-      Blockly.Blocks.requireInFunction(this);
-  }
 };
 
 Blockly.Blocks['math_modulo'] = {
@@ -122,8 +116,6 @@ Blockly.Blocks['math_modulo'] = {
     this.setTooltip(Blockly.Msg.MATH_MODULO_TOOLTIP);
       this.tag = Blockly.Msg.TAG_MATH_MODULO;
   },
-  //when the block is changed, 
-  onchange: Blockly.Blocks.requireInFunction
 };
 
 //Down from here, #include math.h 관련 block
@@ -139,8 +131,7 @@ Blockly.Blocks['library_math_abs'] = {
         this.setTooltip(Blockly.Msg.MATH_SINGLE_TOOLTIP_ABS);
         this.tag = Blockly.Msg.TAG_MATH_ABS;
     },
-    //when the block is changed,
-    onchange: Blockly.Blocks.requireInFunction
+
 };
 
 Blockly.Blocks['library_math_trig'] = {
@@ -171,8 +162,7 @@ Blockly.Blocks['library_math_trig'] = {
         });
         this.tag = Blockly.Msg.TAG_MATH_TRIG;
     },
-    //when the block is changed,
-    onchange: Blockly.Blocks.requireInFunction
+
 };
 
 Blockly.Blocks['library_math_logs'] = {
@@ -209,8 +199,7 @@ Blockly.Blocks['library_math_logs'] = {
         });
         this.tag = Blockly.Msg.TAG_MATH_LOGS;
     },
-    //when the block is changed,
-    onchange: Blockly.Blocks.requireInFunction
+
 };
 
 Blockly.Blocks['library_math_pow'] = {
@@ -225,8 +214,7 @@ Blockly.Blocks['library_math_pow'] = {
         this.setTooltip(Blockly.Msg.MATH_SINGLE_TOOLTIP_POW);
         this.tag = Blockly.Msg.TAG_MATH_POW;
     },
-    //when the block is changed,
-    onchange: Blockly.Blocks.requireInFunction
+
 };
 
 Blockly.Blocks['library_math_exp'] = {
@@ -240,8 +228,7 @@ Blockly.Blocks['library_math_exp'] = {
         this.setTooltip(Blockly.Msg.MATH_SINGLE_TOOLTIP_EXP);
         this.tag = Blockly.Msg.TAG_MATH_EXP;
     },
-    //when the block is changed,
-    onchange: Blockly.Blocks.requireInFunction
+
 };
 
 Blockly.Blocks['library_math_sqrt'] = {
@@ -255,8 +242,7 @@ Blockly.Blocks['library_math_sqrt'] = {
         this.setTooltip(Blockly.Msg.MATH_SINGLE_TOOLTIP_ROOT);
         this.tag = Blockly.Msg.TAG_MATH_SQRT;
     },
-    //when the block is changed,
-    onchange: Blockly.Blocks.requireInFunction
+
 };
 
 Blockly.Blocks['library_math_round'] = {
@@ -278,8 +264,7 @@ Blockly.Blocks['library_math_round'] = {
         this.setTooltip(Blockly.Msg.MATH_ROUND_TOOLTIP);
         this.tag = Blockly.Msg.TAG_MATH_ROUND;
     },
-    //when the block is changed,
-    onchange: Blockly.Blocks.requireInFunction
+
 };
 
 Blockly.Blocks['library_math_numcheck'] = {
@@ -301,8 +286,7 @@ Blockly.Blocks['library_math_numcheck'] = {
         this.setTooltip(Blockly.Msg.MATH_NUMCHECK_TOOLTIP);
         this.tag = Blockly.Msg.TAG_MATH_NUMCHECK;
     },
-    //when the block is changed,
-    onchange: Blockly.Blocks.requireInFunction
+
 };
 
 Blockly.Blocks['library_math_numcompare'] = {
@@ -327,6 +311,5 @@ Blockly.Blocks['library_math_numcompare'] = {
         this.setTooltip(Blockly.Msg.MATH_NUMCOMPARE_TOOLTIP);
         this.tag = Blockly.Msg.TAG_MATH_NUMCOMPARE;
     },
-    //when the block is changed,
-    onchange: Blockly.Blocks.requireInFunction
+
 };

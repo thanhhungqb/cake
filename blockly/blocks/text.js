@@ -240,7 +240,7 @@ Blockly.Blocks['text_append'] = {
    * @this Blockly.Block
    */
   getVars: function() {
-    return [this.getFieldValue('VAR')];
+    return this.getFieldValue('VAR');
   },
   /**
    * Notification that a variable is renaming.

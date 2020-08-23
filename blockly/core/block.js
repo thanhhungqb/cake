@@ -107,6 +107,17 @@ Blockly.Block.obtain = function(workspace, prototypeName) {
   }
 };
 
+Blockly.Block.prototype.onChange_ = function (e) {
+  // set orphan status
+  if (this.workspace && !this.isInFlyout) {
+    this.orphaned = !(['procedures_defnoreturn', 'procedures_defreturn'].includes(this.getRootBlock().type));
+    this.svg_.updateDisabled();
+  }
+  if (goog.isFunction(this.onchange)) {
+    this.onchange.apply(this, arguments);
+  }
+}
+
 /**
  * Initialization for one block.
  * @param {!Blockly.Workspace} workspace The new block's workspace.
@@ -117,11 +128,8 @@ Blockly.Block.prototype.initialize = function(workspace, prototypeName) {
   this.id = Blockly.genUid();
   workspace.addTopBlock(this);
   this.fill(workspace, prototypeName);
-  // Bind an onchange function, if it exists.
-  if (goog.isFunction(this.onchange)) {
-    Blockly.bindEvent_(workspace.getCanvas(), 'blocklyWorkspaceChange', this,
-      this.onchange);
-  }
+  // bind internal onChange handler to all blocks
+  Blockly.bindEvent_(workspace.getCanvas(), 'blocklyWorkspaceChange', this, this.onChange_);
 };
 
 /**
@@ -137,6 +145,7 @@ Blockly.Block.prototype.fill = function(workspace, prototypeName) {
   this.inputsInline = false;
   this.rendered = false;
   this.disabled = false;
+  this.orphaned = false;
   this.tooltip = '';
   this.contextMenu = true;
 
@@ -731,7 +740,7 @@ Blockly.Block.prototype.showContextMenu_ = function(e) {
         block.setDisabled(!block.disabled);
       }
     };
-    options.push(disableOption);
+    if (!this.orphaned) options.push(disableOption);
 
     // Option to delete this block.
     // Count the number of blocks that are nested in this block.
@@ -1409,6 +1418,13 @@ Blockly.Block.prototype.setDisabled = function(disabled) {
 };
 
 /**
+ * Get whether ths block is disabled
+ */
+Blockly.Block.prototype.isDisabled = function() {
+  return this.orphaned || this.disabled;
+}
+
+/**
  * Get whether the block is disabled or not due to parents.
  * The block's own disabled property is not considered.
  * @return {boolean} True if disabled.
@@ -1420,7 +1436,7 @@ Blockly.Block.prototype.getInheritedDisabled = function() {
     if (!block) {
       // Ran off the top.
       return false;
-    } else if (block.disabled) {
+    } else if (block.isDisabled()) {
       return true;
     }
   }
@@ -1907,12 +1923,7 @@ Blockly.Blocks.CNameValidator = function(newVar) {
  */
 
 Blockly.Blocks.CreateMainBlock = function(){
-  var flyout = this;
-  this.workspace_ = new Blockly.Workspace(
-      function() {return flyout.getMetrics_();},
-      function(ratio) {return flyout.setMetrics_(ratio);});
-
-  var block = Blockly.Block.obtain(this.workspace_, 'main_block');
+  var block = Blockly.Block.obtain(Blockly.mainWorkspace, 'main_block');
 
   //main_block attribute setting
   block.deletable_ = false;

@@ -90,7 +90,8 @@ Blockly.FieldVariable.prototype.setValue = function(text) {
  */
 Blockly.FieldVariable.dropdownCreate = function(block) {
 
-    var variableListPop = Blockly.FieldDropdown.prototype.listCreate(block, 1);
+  var variableListPop = Blockly.Variables.getVariableBlocks({dist: 'v'}, block)
+                        .map(function(ele) { return ele.name; });
 
   // Ensure that the currently selected variable is an option.
   var name = this.getText();

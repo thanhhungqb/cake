@@ -289,8 +289,8 @@ Blockly.cake.varTypeCheckInPrintScan = function(varName) { // variable type chec
     var varList = Blockly.Variables.allVariables();
 
     for(var temp = 0 ; temp < varList.length ; temp++) {
-        if (varName == varList[temp][2]) {
-            var type = varList[temp][0];
+        if (varName == varList[temp].name) {
+            var type = varList[temp].type;
             if (type == 'int') {
                 typeCode = '%d';
             } else if (type == 'unsigned int') {
@@ -316,8 +316,8 @@ Blockly.cake.pointerTypeCheckInPrint = function(varName, checkDoubleAst) { // po
 
     if (checkDoubleAst == true){ // double pointer
         for(var temp = 0 ; temp < varList.length ; temp++) {
-            if (varName == varList[temp][2]) {
-                var type = varList[temp][0];
+            if (varName == varList[temp].name) {
+                var type = varList[temp].type;
                 if (type == 'dbint') {
                     typeCode = '%d';
                 } else if (type == 'dbunsigned int') {
@@ -366,13 +366,13 @@ Blockly.cake.pointerTypeCheckInPrint = function(varName, checkDoubleAst) { // po
 Blockly.cake.arrTypeCheckInScan = function(varName, childConnection) {
     var typeCode = '';
     var childBlock = childConnection.targetBlock();
-    var arrList = Blockly.Blocks.getWantedBlockArray('a');
+    var arrList = Blockly.Variables.getVariableBlocks({dist: 'a'});
 
     for(var temp = 0 ; temp < arrList.length ; temp++) {
-        var option = arrList[temp][2];
-        var type = Blockly.FieldDropdown.prototype.getTypefromVars(option, 0);
+        var option = arrList[temp].name;
+        var type = Blockly.FieldDropdown.prototype.getTypefromVars(option , "type");
 
-        var arrIdxLength = arrList[temp][5][0];
+        var arrIdxLength = arrList[temp].spec[0];
         var inputLength = childBlock.getInputIdxLength();
 
         // type: variable
@@ -393,7 +393,7 @@ Blockly.cake.arrTypeCheckInScan = function(varName, childConnection) {
             return typeCode;
         }
         // type: pointer
-        else if ((arrIdxLength > inputLength) && (arrList[temp][0] == 'char')) {
+        else if ((arrIdxLength > inputLength) && (arrList[temp].type == 'char')) {
             typeCode = '%s';
             return typeCode;
         }

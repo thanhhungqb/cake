@@ -208,9 +208,6 @@ Blockly.Blocks['controls_if'] = {
                 clauseBlock.nextConnection.targetBlock();
         }
     },
-
-    //when the block is changed,
-    onchange: Blockly.Blocks.requireInFunction
 };
 
 Blockly.Blocks['controls_if_if'] = {
@@ -302,8 +299,6 @@ Blockly.Blocks['logic_compare'] = {
         });
         this.tag = Blockly.Msg.TAG_LOGIC_COMPARE;
     },
-    //when the block is changed,
-    onchange: Blockly.Blocks.requireInFunction
 };
 
 Blockly.Blocks['logic_operation'] = {
@@ -337,8 +332,6 @@ Blockly.Blocks['logic_operation'] = {
         });
         this.tag = Blockly.Msg.TAG_LOGIC_OPERATION;
     },
-    //when the block is changed,
-    onchange: Blockly.Blocks.requireInFunction
 };
 
 Blockly.Blocks['logic_negate'] = {
@@ -354,8 +347,6 @@ Blockly.Blocks['logic_negate'] = {
         this.setTooltip(Blockly.Msg.LOGIC_NEGATE_TOOLTIP);
         this.tag = Blockly.Msg.TAG_LOGIC_NEGATE;
     },
-    //when the block is changed,
-    onchange: Blockly.Blocks.requireInFunction
 };
 
 Blockly.Blocks['logic_boolean'] = {
@@ -376,8 +367,6 @@ Blockly.Blocks['logic_boolean'] = {
         this.setTooltip(Blockly.Msg.LOGIC_BOOLEAN_TOOLTIP);
         this.tag = Blockly.Msg.TAG_LOGIC_BOOLEAN;
     },
-    //when the block is changed,
-    onchange: Blockly.Blocks.requireInFunction
 };
 
 Blockly.Blocks['logic_null'] = {
@@ -393,8 +382,6 @@ Blockly.Blocks['logic_null'] = {
         this.setTooltip(Blockly.Msg.LOGIC_NULL_TOOLTIP);
         this.tag = Blockly.Msg.TAG_LOGIC_NULL;
     },
-    //when the block is changed,
-    onchange: Blockly.Blocks.requireInFunction
 };
 
 Blockly.Blocks['logic_ternary'] = {
@@ -414,8 +401,7 @@ Blockly.Blocks['logic_ternary'] = {
         this.setTooltip(Blockly.Msg.LOGIC_TERNARY_TOOLTIP);
         this.tag = Blockly.Msg.TAG_LOGIC_TERNARY;
     },
-    //when the block is changed,
-    onchange: Blockly.Blocks.requireInFunction
+
 };
 
 Blockly.Blocks['controls_switch'] = {
@@ -566,8 +552,7 @@ Blockly.Blocks['controls_switch'] = {
         }
     },
 
-    //when the block is changed,
-    onchange: Blockly.Blocks.requireInFunction
+
 };
 
 Blockly.Blocks['controls_switch_switch'] = {

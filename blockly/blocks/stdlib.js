@@ -24,8 +24,6 @@ Blockly.Blocks['library_stdlib_convert'] = {
         this.setTooltip(Blockly.Msg.STDLIB_CONVERT_HELPURL);
         this.tag = Blockly.Msg.TAG_STDLIB_CONVERT;
     },
-    //when the block is changed,
-    onchange: Blockly.Blocks.requireInFunction
 };
 
 Blockly.Blocks['library_stdlib_rand'] = {
@@ -62,8 +60,7 @@ Blockly.Blocks['library_stdlib_rand'] = {
             }
         }
     },
-  //when the block is changed, 
-  onchange: Blockly.Blocks.requireInFunction
+
 };
 
 Blockly.Blocks['library_stdlib_rand_scope'] = {
@@ -80,8 +77,7 @@ Blockly.Blocks['library_stdlib_rand_scope'] = {
             Blockly.ALIGN_RIGHT);
         this.setTooltip(Blockly.Msg.STDLIB_RAND_TOOLTIP);
     },
-    //when the block is changed,
-    onchange: Blockly.Blocks.requireInFunction
+
 };
 
 Blockly.Blocks['library_stdlib_number_forRandScope1'] = {
@@ -97,8 +93,7 @@ Blockly.Blocks['library_stdlib_number_forRandScope1'] = {
         this.setOutput(true, 'Number');
         this.setTooltip(Blockly.Msg.MATH_NUMBER_TOOLTIP);
     },
-    //when the block is changed,
-    onchange: Blockly.Blocks.requireInFunction
+
 };
 
 Blockly.Blocks['library_stdlib_number_forRandScope100'] = {
@@ -114,8 +109,7 @@ Blockly.Blocks['library_stdlib_number_forRandScope100'] = {
         this.setOutput(true, 'Number');
         this.setTooltip(Blockly.Msg.MATH_NUMBER_TOOLTIP);
     },
-    //when the block is changed,
-    onchange: Blockly.Blocks.requireInFunction
+
 };
 
 Blockly.Blocks['library_stdlib_malloc'] = {
@@ -133,8 +127,7 @@ Blockly.Blocks['library_stdlib_malloc'] = {
       this.setTooltip(Blockly.Msg.STDLIB_MALLOC_TOOLTIP);
       this.tag = Blockly.Msg.TAG_STDLIB_MALLOC;
   },
-  //when the block is changed, 
-  onchange: Blockly.Blocks.requireInFunction
+
 };
 
 Blockly.Blocks['library_stdlib_sizeof_forMalloc'] = {
@@ -151,8 +144,7 @@ Blockly.Blocks['library_stdlib_sizeof_forMalloc'] = {
         this.setInputsInline(true);
         this.setTooltip(Blockly.Msg.STDLIB_SIZEOFFORMALLOC_TOOLTIP);
     },
-    //when the block is changed,
-    onchange: Blockly.Blocks.requireInFunction
+
 };
 
 Blockly.Blocks['library_stdlib_arithmetic_forMalloc'] = {
@@ -171,8 +163,7 @@ Blockly.Blocks['library_stdlib_arithmetic_forMalloc'] = {
         this.setTooltip(Blockly.Msg.MATH_ARITHMETIC_TOOLTIP_MULTIPLY);
         this.tag = Blockly.Msg.TAG_STDLIB_SIZEOF;
     },
-    //when the block is changed,
-    onchange: Blockly.Blocks.requireInFunction
+
 };
 
 Blockly.Blocks['library_stdlib_number_forMalloc'] = {
@@ -188,8 +179,7 @@ Blockly.Blocks['library_stdlib_number_forMalloc'] = {
         this.setOutput(true, 'Number');
         this.setTooltip(Blockly.Msg.MATH_NUMBER_TOOLTIP);
     },
-    //when the block is changed,
-    onchange: Blockly.Blocks.requireInFunction
+
 };
 
 Blockly.Blocks['library_stdlib_free'] = {
@@ -209,8 +199,7 @@ Blockly.Blocks['library_stdlib_free'] = {
       this.setTooltip(Blockly.Msg.STDLIB_FREE_TOOLTIP);
       this.tag = Blockly.Msg.TAG_STDLIB_FREE;
   },
-  //when the block is changed,
-  onchange: Blockly.Blocks.requireInFunction
+
 };
 
 Blockly.Blocks['library_stdlib_exit'] = {
@@ -232,6 +221,5 @@ Blockly.Blocks['library_stdlib_exit'] = {
       this.setTooltip(Blockly.Msg.STDLIB_EXIT_HELPURL);
       this.tag = Blockly.Msg.TAG_STDLIB_EXIT;
   },
-  //when the block is changed, 
-  onchange: Blockly.Blocks.requireInFunction
+
 };

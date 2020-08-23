@@ -123,8 +123,6 @@ Blockly.Blocks['library_stdio_printf'] = {
             clauseBlock.nextConnection.targetBlock();
         }
     },
-    //when the block is changed,
-    onchange: Blockly.Blocks.requireInFunction
 };
 
 Blockly.Blocks['library_stdio_printf_printf'] = {
@@ -188,11 +186,6 @@ Blockly.Blocks['library_stdio_text'] = {
         return new Blockly.FieldImage(Blockly.pathToBlockly + 'media/' + file,
             12, 12, '\"');
     },
-
-    onchange: function()  {
-        Blockly.Blocks.requireInFunction();
-    }
-    //when the block is changed,
 };
 
 Blockly.Blocks['library_stdio_char'] = {
@@ -227,8 +220,6 @@ Blockly.Blocks['library_stdio_char'] = {
     },
 
     onchange: function()  {
-        Blockly.Blocks.requireInFunction();
-
         if (this.getFieldValue('TEXT')) {
             var txtlength = this.getFieldValue('TEXT').length;
             if (txtlength == 1) {
@@ -256,8 +247,6 @@ Blockly.Blocks['library_stdio_newLine'] = {
         this.setTooltip(Blockly.Msg.STDIO_NEWLINE_TOOLTIP);
         this.tag = Blockly.Msg.TAG_STDIO_NEWLINE;
     },
-    onchange: Blockly.Blocks.requireInFunction
-    //when the block is changed,
 };
 
 Blockly.Blocks['library_stdio_scanf'] = {
@@ -383,8 +372,7 @@ Blockly.Blocks['library_stdio_scanf'] = {
             clauseBlock.nextConnection.targetBlock();
         }
     },
-    //when the block is changed,
-    onchange: Blockly.Blocks.requireInFunction
+
 };
 
 Blockly.Blocks['library_stdio_scanf_scanf'] = {

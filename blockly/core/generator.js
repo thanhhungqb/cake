@@ -184,7 +184,7 @@ Blockly.Generator.prototype.blockToCode = function(block) {
   if (!block) {
     return '';
   }
-  if (block.disabled) {
+  if (block.isDisabled()) {
     // Skip past this block if it is disabled.
     return this.blockToCode(block.getNextBlock());
   }

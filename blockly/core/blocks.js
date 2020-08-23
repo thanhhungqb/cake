@@ -304,28 +304,16 @@ Blockly.Blocks.checkArrayIndex = function(inputNum, arrayIdx) {
         return true;
 };
 
-Blockly.Blocks.getWantedBlockArray = function(wantedType) {
-    var varList = Blockly.Variables.allVariables();
-    var wantedList = [];
-    for (var temp = 0 ; temp < varList.length ; temp++ ){
-        if (varList[temp][1] == wantedType) {
-            wantedList.push([varList[temp][0], varList[temp][1], varList[temp][2], varList[temp][3], varList[temp][4], varList[temp][5]]);
-        }
-    }
-
-    return wantedList;
-};
-
 Blockly.Blocks.getIndexArray = function(arrList, arrName) {
     var idxList = [];
     var fixedIdx1, fixedIdx2, fixedIdx3;
     for (var temp = 0 ; temp < arrList.length ; temp++) {
-        if (arrList[temp][2] == arrName) {
-            fixedIdx1 = arrList[temp][5][1];
-            fixedIdx2 = arrList[temp][5][2];
-            fixedIdx3 = arrList[temp][5][3];
+        if (arrList[temp].name == arrName) {
+            fixedIdx1 = arrList[temp].spec[1];
+            fixedIdx2 = arrList[temp].spec[2];
+            fixedIdx3 = arrList[temp].spec[3];
 
-            switch(arrList[temp][5][0]) {
+            switch(arrList[temp].spec[0]) {
 
                 case 1:
                     fixedIdx2 = -1;

@@ -41,8 +41,6 @@ Blockly.Blocks['library_time_current'] = {
             }
         }
     },
-    //when the block is changed,
-    onchange: Blockly.Blocks.requireInFunction
 };
 
 Blockly.Blocks['library_time_requiredTime'] = {
@@ -84,6 +82,4 @@ Blockly.Blocks['library_time_requiredTime'] = {
             }
         }
     },
-    //when the block is changed,
-    onchange: Blockly.Blocks.requireInFunction
 };

@@ -81,7 +81,7 @@ Blockly.cake['controls_for'] = function(block) {
 
   // remove newlines from statement blocks
 
-  return "for (" + initialiser.trim() + " " + condition + "; " + increment.trim().replace(/;\s*$/, "") + ") {\n" +
+  return "for (" + initialiser.trim() + " " + condition + " " + increment.trim().replace(/;\s*$/, "") + ") {\n" +
          branch + "\n}\n";
 };
 

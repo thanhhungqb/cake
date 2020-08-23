@@ -90,7 +90,8 @@ Blockly.FieldVariableArray.prototype.setValue = function(text) {
  */
 Blockly.FieldVariableArray.dropdownCreate = function(block) {
 
-    var variableListPop = Blockly.FieldDropdown.prototype.listCreate(block, 3);
+    var variableListPop = Blockly.Variables.getVariableBlocks({dist: 'a'}, block)
+                          .map(function(ele) { return ele.name; });
 
   // Ensure that the currently selected variable is an option.
   var name = this.getText();
@@ -151,8 +152,8 @@ Blockly.FieldVariableArray.getBlockIdxLength = function(option) {
     var variableListPop = []; // 보여줄 리스트 거를 것.
 
     for(var temp = 0 ; temp < variableList.length ; temp++) {
-        if (variableList[temp][2] == option) {
-            var idxLength = variableList[temp][5][0];
+        if (variableList[temp].name == option) {
+            var idxLength = variableList[temp].spec[0];
             return idxLength;
         }
     }

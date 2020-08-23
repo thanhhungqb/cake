@@ -136,7 +136,7 @@ Blockly.Procedures.isLegalName = function(name, workspace, opt_exclude) {
           func = blocks[x].getName;
       }
       else {
-          func = blocks[x].getDeclare;
+          func = false;
       }
 
       if (func) {

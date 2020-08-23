@@ -409,7 +409,7 @@ Blockly.BlockSvg.connectionUiStep_ = function(ripple) {
  * Change the colour of a block.
  */
 Blockly.BlockSvg.prototype.updateColour = function() {
-  if (this.block_.disabled) {
+  if (this.block_.isDisabled()) {
     // Disabled blocks don't have colour.
     return;
   }
@@ -426,7 +426,7 @@ Blockly.BlockSvg.prototype.updateColour = function() {
  * Enable or disable a block.
  */
 Blockly.BlockSvg.prototype.updateDisabled = function() {
-  if (this.block_.disabled || this.block_.getInheritedDisabled()) {
+  if (this.block_.isDisabled() || this.block_.getInheritedDisabled()) {
     Blockly.addClass_(/** @type {!Element} */ (this.svgGroup_),
                       'blocklyDisabled');
     this.svgPath_.setAttribute('fill', 'url(#blocklyDisabledPattern)');
@@ -559,7 +559,7 @@ Blockly.BlockSvg.prototype.renderCompute_ = function(iconWidth) {
         Blockly.BlockSvg.NOTCH_WIDTH + Blockly.BlockSvg.SEP_SPACE_X);
   }
   var fieldValueWidth = 0;  // Width of longest external value field.
-  
+
   var fieldStatementWidth = 0;  // Width of longest statement field.
   var hasValue = false;
   var hasStatement = false;

@@ -312,7 +312,7 @@ Blockly.Blocks['structure_define'] = {
         }
     },
     getDist: function() {
-        return ['sd'];
+        return 'sd';
     },
     getStructDefine: function() {
         return ['sd', this.getFieldValue('NAME'), this.types_, this.members_, this.dist_, this.spec_];
@@ -353,7 +353,7 @@ Blockly.Blocks['structure_declare'] = {
      * @this Blockly.Block
      */
     getTypes: function() {
-        return [this.getFieldValue('TYPES')];
+        return this.getFieldValue('TYPES');
     },
     /**
      * Notification that a variable is renaming.
@@ -368,7 +368,7 @@ Blockly.Blocks['structure_declare'] = {
         }
     },
     getDist: function() {
-        return ['sn'];
+        return 'sn';
     },
     getStructDeclare: function() {
         return [this.getFieldValue('NAME')];
@@ -434,8 +434,6 @@ Blockly.Blocks['structure_get'] = {
             (this.outputConnection ? Blockly.Msg.PROCEDURES_CALLRETURN_TOOLTIP : Blockly.Msg.PROCEDURES_CALLNORETURN_TOOLTIP).replace('%1', name));
 
     },
-    //when the block is changed,
-    onchange: Blockly.Blocks.requireInFunction
 };
 
 Blockly.Blocks['structure_set'] = {
@@ -498,8 +496,6 @@ Blockly.Blocks['structure_set'] = {
             (this.outputConnection ? Blockly.Msg.PROCEDURES_CALLRETURN_TOOLTIP : Blockly.Msg.PROCEDURES_CALLNORETURN_TOOLTIP).replace('%1', name));
 
     },
-    //when the block is changed,
-    onchange: Blockly.Blocks.requireInFunction
 };
 
 Blockly.Blocks['structure_mutatorcontainer'] = {
@@ -555,7 +551,7 @@ Blockly.Blocks['structure_mutatormem'] = {
         return newVar || null;
     },
     getTypes: function() {
-        return [this.getFieldValue('TYPES')];
+        return this.getFieldValue('TYPES');
     },
     getDist: function() {
         return 'v';
@@ -603,7 +599,7 @@ Blockly.Blocks['structure_mutatormem_array'] = {
         return newVar || null;
     },
     getTypes: function() {
-        return [this.getFieldValue('TYPES')];
+        return this.getFieldValue('TYPES');
     },
     getDist: function() {
         return 'a';
@@ -657,7 +653,7 @@ Blockly.Blocks['structure_mutatormem_pointer'] = {
         return newVar || null;
     },
     getTypes: function() {
-        return [this.getFieldValue('TYPES')];
+        return this.getFieldValue('TYPES');
     },
     getDist: function() {
         return 'p';

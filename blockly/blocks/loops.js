@@ -58,8 +58,6 @@ Blockly.Blocks['controls_whileUntil'] = {
       return TOOLTIPS[op];
     });
   },
-  //when the block is changed,
-  onchange: Blockly.Blocks.requireInFunction
 };
 
 Blockly.Blocks['controls_doWhile'] = {
@@ -91,8 +89,7 @@ Blockly.Blocks['controls_doWhile'] = {
             return TOOLTIPS[op];
         });
     },
-    //when the block is changed,
-    onchange: Blockly.Blocks.requireInFunction
+
 };
 
 Blockly.Blocks['controls_repeat'] = {
@@ -118,8 +115,6 @@ Blockly.Blocks['controls_repeat'] = {
       return Blockly.Msg.CONTROLS_REPEAT_TOOLTIP;
     });
   },
-  //when the block is changed,
-  onchange: Blockly.Blocks.requireInFunction
 };
 
 Blockly.Blocks['controls_for'] = {
@@ -145,56 +140,11 @@ Blockly.Blocks['controls_for'] = {
         .appendField("next");
     this.setPreviousStatement(true, "STATEMENT");
     this.setNextStatement(true, "STATEMENT");
-    this.setInputsInline(true);
+    this.setInputsInline(false);
     // Assign 'this' to a variable for use in the tooltip closure below.
     var thisBlock = this;
       this.tag = Blockly.Msg.TAG_LOOP_FOR;
-    this.setTooltip(function() {
-      return Blockly.Msg.CONTROLS_FOR_TOOLTIP.replace('%1',
-          thisBlock.getFieldValue('VAR'));
-    });
   },
-  /**
-   * Return all variables referenced by this block.
-   * @return {!Array.<string>} List of variable names.
-   * @this Blockly.Block
-   */
-  getVars: function() {
-    return [this.getFieldValue('VAR')];
-  },
-  /**
-   * Notification that a variable is renaming.
-   * If the name matches one of this block's variables, rename it.
-   * @param {string} oldName Previous name of variable.
-   * @param {string} newName Renamed variable.
-   * @this Blockly.Block
-   */
-  renameVar: function(oldName, newName) {
-    if (Blockly.Names.equals(oldName, this.getFieldValue('VAR'))) {
-      this.setFieldValue(newName, 'VAR');
-    }
-  },
-  /**
-   * Add menu option to create getter block for loop variable.
-   * @param {!Array} options List of menu options to add to.
-   * @this Blockly.Block
-   */
-  customContextMenu: function(options) {
-    if (!this.isCollapsed()) {
-      var option = {enabled: true};
-      var name = this.getFieldValue('VAR');
-      option.text = Blockly.Msg.VARIABLES_SET_CREATE_GET.replace('%1', name);
-      var xmlField = goog.dom.createDom('field', null, name);
-      xmlField.setAttribute('name', 'VAR');
-      var xmlBlock = goog.dom.createDom('block', null, xmlField);
-      xmlBlock.setAttribute('type', 'variables_get');
-      option.callback = Blockly.ContextMenu.callbackFactory(this, xmlBlock);
-      options.push(option);
-    }
-  },
-
-  //when the block is changed,
-  onchange: Blockly.Blocks.requireInFunction
 };
 
 Blockly.Blocks['controls_flow_statements'] = {
@@ -236,8 +186,7 @@ Blockly.Blocks['controls_flow_statements'] = {
     // Is the block nested in a control statement?
     var block = this;
     do {
-      if (block.type == 'controls_for' ||
-          block.type == 'controls_whileUntil') {
+      if (['controls_for', 'controls_whileUntil','controls_doWhile'].includes(block.type)) {
         legal = true;
         break;
       }

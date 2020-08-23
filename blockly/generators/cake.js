@@ -20,7 +20,7 @@
  */
 
 /**
- * @fileoverview Helper functions for generating C++ for blocks. Modified from the standard Blockly cake generator. 
+ * @fileoverview Helper functions for generating C++ for blocks. Modified from the standard Blockly cake generator.
  * @author fraser@google.com (Neil Fraser), dininno@mit.edu (Ethan DiNinno)
  */
 'use strict';
@@ -40,7 +40,7 @@ Blockly.cake.C_VARIABLE_TYPES =
    ['short', 'short'],
    ['unsigned short', 'unsigned short'],
    ['bool', 'bool']];
-   
+
 Blockly.cake.C_GLOBAL_VARS = [];
 
 /**
@@ -76,7 +76,7 @@ Blockly.cake.ORDER_ADDITION = 6;       // +
 Blockly.cake.ORDER_SUBTRACTION = 6;    // -
 Blockly.cake.ORDER_BITWISE_SHIFT = 7;  // << >>
 Blockly.cake.ORDER_RELATIONAL = 8;     // < <= > >=
-Blockly.cake.ORDER_EQUALITY = 9;       // == != 
+Blockly.cake.ORDER_EQUALITY = 9;       // == !=
 Blockly.cake.ORDER_BITWISE_AND = 10;   // &
 Blockly.cake.ORDER_BITWISE_XOR = 11;   // ^
 Blockly.cake.ORDER_BITWISE_OR = 12;    // |
@@ -119,9 +119,9 @@ Blockly.cake.init = function() {
     var variables = Blockly.Variables.allVariables();
     var structures = Blockly.Structure.allStructure();
     for (var x = 0; x < variables.length; x++) {
-      if(variables[x][3] == 'global')
-      defvars[x] = variables[x][0] + variables[x][1] + ' ' +
-          Blockly.cake.variableDB_.getName(variables[x][2],
+      if(variables[x].scope == 'global')
+      defvars[x] = variables[x].type + variables[x].dist + ' ' +
+          Blockly.cake.variableDB_.getName(variables[x].name,
           Blockly.Variables.NAME_TYPE) + ';';
     }
     Blockly.cake.definitions_['variables'] = defvars.join('\n');
@@ -177,7 +177,7 @@ Blockly.cake.finishFull = function(code) {
   for (var name in Blockly.cake.definitions_) {
     definitions.push(Blockly.cake.definitions_[name]);
   }
-  code = definitions.join('\n\n') + '\n\n' + 
+  code = definitions.join('\n\n') + '\n\n' +
   'void setPos(float x, float y, float z) {\n\tfloat pos[3];\n\tpos[0] = x; pos[1] = y; pos[2] = z;\n\tapi.setPositionTarget(pos);\n}'
   + '\n\n' + code;
   //HACK: Make sure the code contains an init function in case the init page has not been properly initialized

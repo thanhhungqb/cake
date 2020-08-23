@@ -289,16 +289,8 @@ Blockly.FieldDropdown.prototype.dispose = function() {
  * @returns {*}
  */
 Blockly.FieldDropdown.prototype.getTypefromVars = function(blockVars, option, block) {
-
-    var wantedValue;
-    var variableList = Blockly.Variables.allVariables(block);
-
-    for (var temp = 0; temp < variableList.length; temp++) {
-        if (variableList[temp][2] == blockVars) {
-            wantedValue = variableList[temp][option];
-        }
-    }
-    return wantedValue;
+  var wantedValue = Blockly.Variables.getVariableBlocks({name: blockVars}, block);
+  return wantedValue ? wantedValue[option] : null;
 };
 
 
@@ -334,7 +326,7 @@ Blockly.FieldDropdown.prototype.getParentType = function(curBlock, strDist) {
         if (((parent.type == (strDist + '_*' )) && (parent.getParent().type == 'variables_set') )||
             ((parent.type == (strDist + '_pointer_&')) && parent.getParent().type == (strDist + '_pointer_set'))) {
             var parentVars = parent.getParent().getVars();
-            parentType = this.getTypefromVars(parentVars, 0);
+            parentType = this.getTypefromVars(parentVars , "type");
 
         }
 
@@ -377,8 +369,8 @@ Blockly.FieldDropdown.prototype.getParentType = function(curBlock, strDist) {
             (parent.getParent().type ==  (strDist + '_set'))){
 
             var parentVars = parent.getParent().getVars();
-            var dimension = this.getTypefromVars(parentVars, 5);
-            parentType = this.getTypefromVars(parentVars, 0);
+            var dimension = this.getTypefromVars(parentVars , "spec");
+            parentType = this.getTypefromVars(parentVars , "type");
 
             // DOUBLE POINTER setter + (& Pointer getter)
             if(dimension == '**' && (parent.type == (strDist + '_&')) ){
@@ -402,7 +394,7 @@ Blockly.FieldDropdown.prototype.getParentType = function(curBlock, strDist) {
             if (strDist == 'variables_pointer'){
                 ParentVars = ParentVars.toString().replace("* ", "");
             }
-            parentType = this.getTypefromVars(ParentVars, 0);
+            parentType = this.getTypefromVars(ParentVars , "type");
         }
 
 
@@ -466,33 +458,4 @@ Blockly.FieldDropdown.prototype.listCreate = function(block, varDist) {
             break;
     }
 
-    var parentType = Blockly.FieldDropdown.prototype.getParentType(block, strDist);
-
-    while((block.getSurroundParent()) && (block.getSurroundParent().type != 'main_block') &&
-    (block.getSurroundParent().type != 'procedures_defnoreturn') && (block.getSurroundParent().type != 'procedures_defreturn')){
-        block = block.getSurroundParent();
-    }
-    var scope;
-    if(block.getSurroundParent()) {
-        scope = block.getSurroundParent().getName();
-    }
-
-    for (var temp = 0; temp < variableList.length; temp++){
-        if(variableList[temp][1] == charDist){
-            if(variableList[temp][3] == scope || variableList[temp][3] == "Global"){
-                if(variableList[temp][4] < (thisPosition - 10)) {
-                    if (parentType != null) {
-                        if (variableList[temp][0] == parentType) {
-                            variableListPop.push(variableList[temp][2]);
-                        }
-                    }
-                    else {
-                        variableListPop.push(variableList[temp][2]);
-                    }
-                }
-            }
-        }
-    }
-
-    return variableListPop;
 };

@@ -122,7 +122,7 @@ Blockly.Xml.blockToDom_ = function(block) {
   if (block.isCollapsed()) {
     element.setAttribute('collapsed', true);
   }
-  if (block.disabled) {
+  if (block.isDisabled()) {
     element.setAttribute('disabled', true);
   }
   if (!block.isDeletable()) {
@@ -260,7 +260,7 @@ Blockly.Xml.domToBlock = function(workspace, xmlBlock, opt_reuseBlock) {
     block.fill(workspace, prototypeName);
     block.parent_ = parentBlock;
   } else {
-    block = Blockly.Block.obtain(workspace, prototypeName);    
+    block = Blockly.Block.obtain(workspace, prototypeName);
 //    if (id) {
 //      block.id = parseInt(id, 10);
 //    }

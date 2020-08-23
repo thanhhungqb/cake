@@ -19,7 +19,12 @@ function start() {
     dirty = true;
   });
 
-  var xml = Blockly.Blocks.CreateMainBlock();
+  var xml = '<xml xmlns="http://www.w3.org/1999/xhtml">' +
+  '<block type="procedures_defreturn" deletable="false" movable="false">' +
+  '<field name="NAME">do_something</field>' +
+  '<field name="TYPES">int</field>' +
+  '<field name="DISTS">variable</field>' +
+  '</block></xml>';
   BlocklyApps.loadBlocks(xml);
 
   $('#exec_run').click(function () {

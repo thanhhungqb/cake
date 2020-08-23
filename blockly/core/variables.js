@@ -50,7 +50,9 @@ Blockly.Variables.allVariables = function(block) {
     var parent;
     blocks.push(block);
     while (parent = block.getParent()) {
-      if (parent.type == "controls_for" && parent.getNextBlock() != block) {
+      if (parent.type == "controls_for"
+          && parent.getNextBlock() != block
+          && parent.getInputTargetBlock("INIT") != block) {
         blocks.push(parent.getInputTargetBlock("INIT"));
       }
       block = parent;
@@ -66,44 +68,34 @@ Blockly.Variables.allVariables = function(block) {
     var funcParamInfo = blocks[x].getParamInfo;
 
     if (funcVar) {
-        var blockVariablesName = funcVar.call(blocks[x]);
+        var varName = funcVar.call(blocks[x]);
 
         var funcVarType = blocks[x].getTypes;
-        var blockVariablesType = funcVarType.call(blocks[x]);
+        var varType = funcVarType.call(blocks[x]);
 
         var funcVarDist = blocks[x].getDist;
-        var blockDistribute = funcVarDist.call(blocks[x]);
+        var varDist = funcVarDist.call(blocks[x]);
 
         var funcVarScope = blocks[x].getScope;
-        var blockScope = funcVarScope.call(blocks[x]);
+        var varScope = funcVarScope.call(blocks[x]);
 
         var funcVarPos = blocks[x].getPos;
-        var blockPosition = funcVarPos.call(blocks[x]);
+        var varPos = funcVarPos.call(blocks[x]);
 
         var funcVarSpec = blocks[x].getSpec;
         var blockSpecifics = funcVarSpec.call(blocks[x]);
 
-        for (var w = 0; w < blockDistribute.length; w++) {
-            var varDist = blockDistribute[w];
-        }
-        for (var z = 0; z < blockVariablesType.length; z++) {
-            var varType = blockVariablesType[z];
-        }
-        for (var y = 0; y < blockVariablesName.length; y++) {
-            var varName = blockVariablesName[y];
-        }
-        if (blockScope) {
-            for (var y = 0; y < blockScope.length; y++) {
-                var varScope = blockScope[y];
-            }
-        }
-        var varPos = blockPosition;
         if(varDist !='v' && varDist !='d') {
             var varSpec = blockSpecifics;
         }
 
       if (varName && varScope) {
-        variableList.push([varType, varDist, varName, varScope, varPos, varSpec]);
+        variableList.push({type: varType,
+                          dist: varDist,
+                          name: varName,
+                          scope: varScope,
+                          pos: varPos,
+                          spec: varSpec});
       }
     }
     /**
@@ -114,7 +106,12 @@ Blockly.Variables.allVariables = function(block) {
         var tuple = funcParamInfo.call(blocks[x]);
         if(tuple){
             for(var i = 0; i<tuple.length; i++) {
-                variableList.push([tuple[i][0], tuple[i][1], tuple[i][2], tuple[i][3], tuple[i][4], tuple[i][5]]);
+                variableList.push({type: tuple[i][0],
+                                  dist: tuple[i][1],
+                                  name: tuple[i][2],
+                                  scope: tuple[i][3],
+                                  pos: tuple[i][4],
+                                  spec: tuple[i][5]});
             }
         }
     }
@@ -155,7 +152,7 @@ Blockly.Variables.flyoutCategory = function(blocks, gaps, margin, workspace) {
   variableList.unshift(null);
   var defaultVariable = undefined;
   for (var i = 0; i < variableList.length; i++) {
-    if (variableList[i][1] === defaultVariable) {
+    if (variableList[i].dist === defaultVariable) {
       continue;
     }
     var getBlock = Blockly.Blocks['variables_get'] ?
@@ -164,11 +161,11 @@ Blockly.Variables.flyoutCategory = function(blocks, gaps, margin, workspace) {
     var setBlock = Blockly.Blocks['variables_set'] ?
       Blockly.Block.obtain(workspace, 'variables_set') : null;
     setBlock && setBlock.initSvg();
-    if (variableList[i][1] === null) {
+    if (variableList[i].dist === null) {
       defaultVariable = (getBlock || setBlock).getVars()[0];
     } else {
-      getBlock && getBlock.setFieldValue(variableList[i][1], 'VAR');
-      setBlock && setBlock.setFieldValue(variableList[i][1], 'VAR');
+      getBlock && getBlock.setFieldValue(variableList[i].dist, 'VAR');
+      setBlock && setBlock.setFieldValue(variableList[i].dist, 'VAR');
     }
     setBlock && blocks.push(setBlock);
     getBlock && blocks.push(getBlock);
@@ -199,7 +196,7 @@ Blockly.Variables.generateUniqueName = function() {
       i = 0;
       inUse = false;
       while (i < variableList.length && !inUse) {
-        if (variableList[i][1].toLowerCase() == potName) {
+        if (variableList[i].dist.toLowerCase() == potName) {
           // This potential name is already used.
           inUse = true;
         }
@@ -231,4 +228,39 @@ Blockly.Variables.generateUniqueName = function() {
     newName = 'i';
   }
   return newName;
+};
+
+/**
+ * Get a list of variables matching options
+ * @param {mapping of parameters to match} options
+ * @param {Optional to retrieve from current scope of block} block
+ */
+Blockly.Variables.getVariableBlocks = function(options, block) {
+  var varList = Blockly.Variables.allVariables(block);
+  var wantedList = [];
+  for (var temp = 0 ; temp < varList.length ; temp++ ){
+      for (const key in options) {
+          if (varList[temp][key] != options[key]) {
+              continue;
+          }
+      }
+      wantedList.push(varList[temp]);
+  }
+
+  return wantedList;
+};
+
+/**
+ * Ensure two identically-named procedures don't exist..
+ * @param {Blockly.Block} block Declaration block
+ * @return {boolean} true if there is a colliding name
+ */
+Blockly.Variables.findDuplicateName = function(block) {
+  if (block.isInFlyout) {
+    // Flyouts can have multiple procedures called 'procedure'.
+    return false;
+  }
+  var name = block.getVars();
+  var blocks = Blockly.Variables.getVariableBlocks({name: name}, block);
+  return blocks.length > 1;
 };

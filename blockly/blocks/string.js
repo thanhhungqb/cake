@@ -19,8 +19,7 @@ Blockly.Blocks['library_string_strlen'] = {
         this.setTooltip(Blockly.Msg.STRING_STRLEN_TOOLTIP);
         this.tag = Blockly.Msg.TAG_STRING_STRLEN;
     },
-    //when the block is changed,
-    onchange: Blockly.Blocks.requireInFunction
+
 };
 
 Blockly.Blocks['library_string_strcat'] = {
@@ -39,8 +38,7 @@ Blockly.Blocks['library_string_strcat'] = {
         this.setTooltip(Blockly.Msg.STRING_STRCAT_TOOLTIP);
         this.tag = Blockly.Msg.TAG_STRING_STRCAT;
     },
-    //when the block is changed,
-    onchange: Blockly.Blocks.requireInFunction
+
 };
 
 Blockly.Blocks['library_string_strcpy'] = {
@@ -59,8 +57,7 @@ Blockly.Blocks['library_string_strcpy'] = {
         this.setTooltip(Blockly.Msg.STRING_STRCPY_TOOLTIP);
         this.tag = Blockly.Msg.TAG_STRING_STRCPY;
     },
-    //when the block is changed,
-    onchange: Blockly.Blocks.requireInFunction
+
 };
 
 Blockly.Blocks['library_string_strcmp'] = {
@@ -79,6 +76,5 @@ Blockly.Blocks['library_string_strcmp'] = {
         this.setTooltip(Blockly.Msg.STRING_STRCMP_TOOLTIP);
         this.tag = Blockly.Msg.TAG_STRING_STRCMP;
     },
-    //when the block is changed,
-    onchange: Blockly.Blocks.requireInFunction
+
 };

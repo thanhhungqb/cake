@@ -102,7 +102,6 @@ Blockly.Blocks['procedures_return'] = {
     },
 
     onchange: function() {
-        Blockly.Blocks.requireInFunction();
 
         if (!this.workspace) {
             // Block has been deleted.
@@ -177,7 +176,6 @@ Blockly.Blocks['procedures_defnoreturn'] = {
     getName: function(){
         return [this.getFieldValue('NAME')];
     },
-    onchange: Blockly.Blocks.requireOutFunction,
     /**
      * Update the display of parameters for this procedure definition block.
      * Display a warning if there are duplicately named parameters.
@@ -490,9 +488,9 @@ Blockly.Blocks['procedures_defnoreturn'] = {
      * @return {!Array.<string>} List of variable names.
      * @this Blockly.Block
      */
-    getVars: function() {
-        return this.arguments_;
-    },
+    // getVars: function() {
+    //     return this.arguments_;
+    // },
     /**
      * Notification that a variable is renaming.
      * If the name matches one of this block's variables, rename it.
@@ -700,7 +698,6 @@ Blockly.Blocks['procedures_defreturn'] = {
     customContextMenu: Blockly.Blocks['procedures_defnoreturn'].customContextMenu,
     callType_: 'procedures_callreturn',
     onchange: function(){
-        Blockly.Blocks.requireOutFunction();
         this.updateShape();
 
         var dist = this.getFieldValue('DISTS');
@@ -800,7 +797,7 @@ Blockly.Blocks['procedures_mutatorarg'] = {
         return newVar || null;
     },
     getTypes: function() {
-        return [this.getFieldValue('TYPES')];
+        return this.getFieldValue('TYPES');
     },
     getDist: function() {
         return 'v';
@@ -849,7 +846,7 @@ Blockly.Blocks['procedures_mutatorarg_array'] = {
         return newVar || null;
     },
     getTypes: function() {
-        return [this.getFieldValue('TYPES')];
+        return this.getFieldValue('TYPES');
     },
     getDist: function() {
         return 'a';
@@ -920,7 +917,7 @@ Blockly.Blocks['procedures_mutatorarg_pointer'] = {
         return newVar || null;
     },
     getTypes: function() {
-        return [this.getFieldValue('TYPES')];
+        return this.getFieldValue('TYPES');
     },
     getDist: function() {
         return 'p';
