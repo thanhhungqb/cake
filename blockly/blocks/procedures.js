@@ -62,10 +62,7 @@ Blockly.Blocks['main_block'] = {
      * return type = [type, dist, name, scope, position, specific]
      * */
     getParamInfo: function() {
-        var paramList = [
-            ['int', 'v', 'argc', 'Main', this.getRelativeToSurfaceXY().y, null],
-            ['dbchar', 'p', 'argv', 'Main', this.getRelativeToSurfaceXY().y, '***']
-        ];
+        var paramList = [];
         return paramList;
     }
 };
@@ -575,7 +572,12 @@ Blockly.Blocks['procedures_defnoreturn'] = {
     getParamInfo: function(){
         var paramList = [];
         for(var i = 0; i<this.arguments_.length; i++){
-            paramList.push([this.types_[i], this.dist_[i], this.arguments_[i], this.getFieldValue('NAME'), this.getRelativeToSurfaceXY().y, this.spec_[i]]);
+            paramList.push({type: this.types_[i],
+                            dist: this.dist_[i],
+                            name: this.arguments_[i],
+                            scope: this.getFieldValue('NAME'),
+                            pos: this.getRelativeToSurfaceXY().y,
+                            spec: this.spec_[i]});
         }
         return paramList;
     }
@@ -729,15 +731,7 @@ Blockly.Blocks['procedures_defreturn'] = {
      * return function's parameter information
      * return type = [type, dist, name, scope, position, specific]
      * */
-    getParamInfo: function(){
-        var paramList = [];
-        if(this.arguments_.length) {
-            for (var i = 0; i < this.arguments_.length; i++) {
-                paramList.push([this.types_[i], this.dist_[i], this.arguments_[i], this.getFieldValue('NAME'), this.getRelativeToSurfaceXY().y, this.spec_[i]]);
-            }
-        }
-        return paramList;
-    }
+    getParamInfo: Blockly.Blocks['procedures_defnoreturn'].getParamInfo,
 };
 
 Blockly.Blocks['procedures_mutatorcontainer'] = {

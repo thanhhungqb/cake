@@ -103,17 +103,8 @@ Blockly.Variables.allVariables = function(block) {
     * using getParamInfo function in all function blocks.
     */
     else if (funcParamInfo) {
-        var tuple = funcParamInfo.call(blocks[x]);
-        if(tuple){
-            for(var i = 0; i<tuple.length; i++) {
-                variableList.push({type: tuple[i][0],
-                                  dist: tuple[i][1],
-                                  name: tuple[i][2],
-                                  scope: tuple[i][3],
-                                  pos: tuple[i][4],
-                                  spec: tuple[i][5]});
-            }
-        }
+      var params = funcParamInfo.call(blocks[x]);
+      variableList.push(params);
     }
   }
     return variableList;
