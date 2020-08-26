@@ -109,7 +109,7 @@ Blockly.Block.obtain = function(workspace, prototypeName) {
 
 Blockly.Block.prototype.onChange_ = function (e) {
   // set orphan status
-  if (this.workspace && !this.isInFlyout) {
+  if (this.workspace == Blockly.mainWorkspace && !this.isInFlyout) {
     this.orphaned = !(['procedures_defnoreturn', 'procedures_defreturn'].includes(this.getRootBlock().type));
     this.svg_.updateDisabled();
   }

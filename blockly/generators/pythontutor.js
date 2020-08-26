@@ -129,7 +129,6 @@ Blockly.PythonTutor.init = function() {
       ordered_globals: {},
       functions: {},
       heap: {},
-      stdout: "",
       stacks: []
     };
     // var defvars = [];
@@ -158,7 +157,6 @@ Blockly.PythonTutor.finish = function(code) {
          'var env = pyt.env.stacks;\n'+
          'var heap = pyt.env.heap;\n'+
          'var fn = pyt.env.functions;\n'+
-         'var stdout = pyt.env.stdout;\n'+
          definitions.join('\n\n') +
          code;
 };
@@ -173,11 +171,60 @@ Blockly.PythonTutor.type_sizes = {
   pointer: 4,
 };
 
-Blockly.PythonTutor.allocate_stack = function(type, expr) {
+Blockly.PythonTutor.allocate_stack = function(frame, name, arg) {
   var a = Blockly.PythonTutor.top_of_stack;
-  Blockly.PythonTutor.top_of_stack += Blockly.PythonTutor.type_sizes[type];
-  return {a:a, t:type, v:expr};
+  Blockly.PythonTutor.top_of_stack += Blockly.PythonTutor.type_sizes[arg.type];
+  var variable = {a:a,
+                  t:arg.type,
+                  d:arg.dist,
+                  n:arg.name,
+                  s:arg.scope,
+                  c:arg.spec,
+                  v:undefined};
+  frame.locals[name] = variable;
+  frame.ordered_locals[frame.ordered_locals.length-1].push(variable);
 };
+
+// Running ID for generating stack frames
+Blockly.PythonTutor.frame_id = 0;
+/**
+ * Generate code for creating a new stack frame during evaluation
+ * @param {} name Name of function creating stack
+ * @param {*} args Arguments to create in the stack frame.
+ *           An array of {dist, type, name, scope, pos, spec}
+ */
+Blockly.PythonTutor.create_stack_frame = function(name, args) {
+  var top = Blockly.PythonTutor.top_of_stack;
+  var frame_id = Blockly.PythonTutor.frame_id++;
+  return '  var locals = {}; var frame = {frame_id:'+frame_id+', top:top, func_name: "' + name + '", locals, ordered_locals:[[]]}\n' +
+         args.map(function(arg) {
+           var varName = Blockly.PythonTutor.variableDB_.getName(arg.name, Blockly.Variables.NAME_TYPE);
+            return 'pyt.allocate_stack(frame, "'+varName+'", '+JSON.stringify(arg)+');' +
+                   'locals.'+varName+'.v = '+varName;
+          }).join('\n') +
+         '\n  env.push(frame);\n';
+}
+
+Blockly.PythonTutor.pop_stack_frame = function(env) {
+  var frame = env[env.length-1];
+  var locals = frame.ordered_locals.flat();
+  if (locals) {
+    Blockly.PythonTutor.top_of_stack = locals[0].a;
+    locals.map(function (arg) { arg.v = undefined;} );
+  }
+  env.pop();
+}
+
+Blockly.PythonTutor.create_scope = function(frame) {
+  frame.ordered_locals.push([]);
+}
+
+Blockly.PythonTutor.pop_scope = function(frame) {
+  var locals = frame.ordered_globals.pop();
+  locals.forEach(function (arg) {
+    arg.v = undefined;
+  });
+}
 
 // Takes a variable in our environment and return an encoded var for OPT
 // Blockly.PythonTutor.encode_vars = function(name, args) {
@@ -200,9 +247,8 @@ Blockly.PythonTutor.generate_trace = function(id, event="step_line") {
     };
   env.stacks.forEach(function(stack) {
     var locals = {}
-    stack.ordered_locals.forEach(function(v) {
-      var d = stack.locals[v];
-      locals[v] = ['C_DATA', d.a, d.t, d.v];
+    stack.ordered_locals.flat().forEach(function(arg) {
+      locals[arg.n] = ['C_DATA', "0x"+("0000"+arg.a.toString(16)).substr(-4), arg.t, arg.v];
     });
     frame.stack_to_render.push({
       frame_id: stack.frame_id,
@@ -212,8 +258,9 @@ Blockly.PythonTutor.generate_trace = function(id, event="step_line") {
       is_zombie: false,
       parent_frame_id_list: [],
       unique_hash: stack.func_name+'_'+stack.frame_id,
-      ordered_varnames: stack.ordered_locals.map(x=>x),
-      encoded_locals: locals
+      ordered_varnames: stack.ordered_locals.flat().map(function(arg){ return arg.n;}),
+      encoded_locals: locals,
+      stdout: stack.stdout,
     })
   });
   Blockly.PythonTutor.trace_.push(frame);

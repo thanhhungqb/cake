@@ -36,16 +36,16 @@ Blockly.PythonTutor['controls_if'] = function(block) {
       Blockly.PythonTutor.ORDER_NONE) || 'false';
   var branch = Blockly.PythonTutor.statementToCode(block, 'DO' + n);
   var code = 'pyt.generate_trace('+block.id+');\n' +
-             'if (' + argument + ') {\n' + branch + '}';
+             'if (' + argument + ') { pyt.create_scope(frame);\n' + branch + 'pyt.pop_scope(frame);\n }';
   for (n = 1; n <= block.elseifCount_; n++) {
     argument = Blockly.PythonTutor.valueToCode(block, 'IF' + n,
         Blockly.PythonTutor.ORDER_NONE) || 'false';
     branch = Blockly.PythonTutor.statementToCode(block, 'DO' + n);
-    code += ' else if (' + argument + ') {\n' + branch + '}';
+    code += ' else if (' + argument + ') { pyt.create_scope(frame);\n' + branch + 'pyt.pop_scope(frame);\n }';
   }
   if (block.elseCount_) {
     branch = Blockly.PythonTutor.statementToCode(block, 'ELSE');
-    code += ' else {\n' + branch + '}';
+    code += ' else { pyt.create_scope(frame);\n' + branch + 'pyt.pop_scope(frame);\n }';
   }
   return code + '\n';
 };

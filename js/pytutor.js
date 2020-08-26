@@ -2021,6 +2021,8 @@ ExecutionVisualizer.prototype.updateOutputMini = function() {
   assert(this.params.hideCode);
   var curEntry = this.curTrace[this.curInstr];
   var curToplevelLayout = this.curTraceLayouts[this.curInstr];
+  this.debugMode = this.params.debugMode;
+
   this.renderDataStructures(curEntry, curToplevelLayout);
 
   Blockly.mainWorkspace.traceOn(true);

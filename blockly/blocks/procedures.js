@@ -74,28 +74,21 @@ Blockly.Blocks['procedures_return'] = {
      */
     init: function() {
         this.setColour(300);
-        this.appendValueInput('VALUE')
+        this.appendValueInput('RETURN')
             .appendField(Blockly.Msg.PROCEDURES_RETURN_TITLE);
         this.setTooltip(Blockly.Msg.PROCEDURES_RETURN_TOOLTIP);
         this.setPreviousStatement(true);
-        this.setNextStatement(true);
+        this.setNextStatement(false);
     },
-    getType : function() {
-        var block = this;
-        var typeConfig = false;
-        while(block.getSurroundParent()){
-            block = this.getSurroundParent();
-            if(block.type == 'main_block' || block.type == 'procedures_defreturn'){
-                typeConfig = true;
-                break;
+    getReturnInfo : function() {
+        var block = this.getSurroundParent();
+        while (block){
+            if (block.type == 'main_block' || block.type == 'procedures_defreturn') {
+                return {type: block.getType(), dist: block.getDist() };
             }
+            block = block.getSurroundParent();
         }
-        if(typeConfig && block.type =='main_block'){
-            return 'int';
-        }
-        else if(typeConfig && block.type == 'procedures_defreturn') {
-            return block.getType();
-        }
+        return {type: undefined, dist: undefined};
     },
 
     onchange: function() {
@@ -693,7 +686,13 @@ Blockly.Blocks['procedures_defreturn'] = {
         }
     },
     getType: function() {
-        return [this.getFieldValue('TYPES')];
+        return this.getFieldValue('TYPES');
+    },
+    getDist: function() {
+        return this.getFieldValue('DISTS');
+    },
+    getReturnInfo: function() {
+        return {type: this.getType(), dist: this.getDist()};
     },
     getVars: Blockly.Blocks['procedures_defnoreturn'].getVars,
     renameVar: Blockly.Blocks['procedures_defnoreturn'].renameVar,

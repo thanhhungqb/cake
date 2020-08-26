@@ -52,11 +52,18 @@ Blockly.PythonTutor['variables_declare'] = function(block) {
           Blockly.PythonTutor.ORDER_ASSIGNMENT) || '0';
   var varName = Blockly.PythonTutor.variableDB_.getName(
       block.getFieldValue('VAR'), Blockly.Variables.NAME_TYPE);
-  var varType = block.getFieldValue('TYPES');
+  var varInfo = {type: block.getTypes(),
+                 dist: block.getDist(),
+                 name: block.getVars(),
+                 scope: block.getScope(),
+                 pos: block.getPos(),
+                 spec: block.getSpec(),
+                }
+
   if (Blockly.Blocks.checkLegalName(Blockly.Msg.VARIABLES_ILLEGALNAME, varName) == -1){
       this.initVar();
   }
-  return 'locals.' + varName + ' = pyt.allocate_stack("'+varType+'",'+argument0+');\n'+
-         'ols.push("'+varName+'")\n'+
+  return 'pyt.allocate_stack(frame, "'+varName+'",'+JSON.stringify(varInfo)+');\n'+
+         'locals.'+varName+'.v = '+argument0+';)\n'+
          'pyt.generate_trace('+block.id+')\n';
 };

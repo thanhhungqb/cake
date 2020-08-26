@@ -29,20 +29,21 @@ goog.provide('Blockly.PythonTutor.procedures');
 goog.require('Blockly.PythonTutor');
 
 Blockly.PythonTutor['procedures_return'] = function(block) {
-  var returnType = block.getFieldValue('TYPES');
-  var returnDist = block.getFieldValue('DISTS');
-  var returnValue = Blockly.PythonTutor.valueToCode(block, 'VALUE',
+  var returnInfo = block.getReturnInfo();
+  returnInfo.name = '__return__';
+  var returnValue = Blockly.PythonTutor.valueToCode(block, 'RETURN',
     Blockly.cake.ORDER_NONE) || '';
 
   if (returnValue) {
-    return 'locals.__return__ = pyt.allocate_stack("'+returnType+'",'+returnValue+');\n'+
-           'ols.push("__return__")\n'+
-           'pyt.generate_trace('+block.id+', "return")\n'+
-           'env.pop()\n' +
-           '  return locals.__return__.v;\n';
+    return 'var r = '+returnValue+';\n' +
+           'pyt.allocate_stack(frame, "__return__", '+JSON.stringify(returnInfo)+');\n'+
+           'locals.__return__.v = r;\n'+
+           'pyt.generate_trace('+block.id+', "return");\n'+
+           'pyt.pop_stack_frame(env);\n' +
+           'return r;\n';
   } else {
     return 'pyt.generate_trace('+block.id+', "uncaught_exception");\n'+
-           '  env.pop();\n'+
+           '  pyt.pop_stack_frame(env);\n'+
            '  return;\n';
   }
 };
@@ -63,32 +64,12 @@ Blockly.PythonTutor['procedures_defreturn'] = function(block) {
         '\'' + block.id + '\'') + branch;
   }
 
-  var returnType = block.getFieldValue('TYPES');
-  var returnDist = block.getFieldValue('DISTS');
-
-  var returnValue = Blockly.PythonTutor.valueToCode(block, 'RETURN',
-      Blockly.PythonTutor.ORDER_NONE) || '';
-  if (returnValue) {
-    returnValue = 'locals.__return__ = pyt.allocate_stack("'+returnType+'",'+returnValue+');\n'+
-    '  ols.push("__return__")\n'+
-    '  pyt.generate_trace('+block.id+', "return")\n'+
-    '  env.pop();\n'+
-    '  return locals.__return__.v;\n';
-  } else {
-    'pyt.generate_trace('+block.id+', "uncaught_exception");\n'+
-    '  return;\n';
-  }
-  var args = [];
-  var argTypes = [];
-  var typePlusArgs = [];
-  for (var x = 0; x < block.arguments_.length; x++) {
-    args[x] = Blockly.cake.variableDB_.getName(block.arguments_[x],
-      Blockly.Variables.NAME_TYPE);
-    argTypes[x] = block.types_[x];
-    typePlusArgs[x] = [argTypes[x], args[x]];
-  }
+  var returnValue = Blockly.PythonTutor.procedures_return(block);
+  var params = block.getParamInfo();
+  var args = params.map(function(arg) {
+    return Blockly.PythonTutor.variableDB_.getName(arg.name, Blockly.Variables.NAME_TYPE);});
   var code = 'fn.' + funcName +' = function(' + args.join(', ') + ') {\n' +
-             Blockly.PythonTutor.create_stack_frame(funcName, typePlusArgs) +
+             Blockly.PythonTutor.create_stack_frame(funcName, params) +
              '  pyt.generate_trace('+block.id+', "call");\n' +
              branch + returnValue + '}';
   code = Blockly.PythonTutor.scrub_(block, code);
@@ -115,7 +96,7 @@ Blockly.PythonTutor['procedures_callreturn'] = function(block) {
   return [code, Blockly.PythonTutor.ORDER_FUNCTION_CALL];
 };
 
-// Call a procedure with no return value. 
+// Call a procedure with no return value.
 Blockly.PythonTutor['procedures_callnoreturn'] = Blockly.PythonTutor['procedures_callreturn'];
 
 Blockly.PythonTutor['procedures_ifreturn'] = function(block) {
@@ -133,15 +114,3 @@ Blockly.PythonTutor['procedures_ifreturn'] = function(block) {
   code += '}\n';
   return code;
 };
-
-
-// Running ID for generating stack frames
-Blockly.PythonTutor.frame_id = 0;
-
-Blockly.PythonTutor['create_stack_frame'] = function(name, args) {
-  var top = Blockly.PythonTutor.top_of_stack;
-  var frame_id = Blockly.PythonTutor.frame_id++;
-  return '  var locals = {' + args.map(arg => arg[1]+': pyt.allocate_stack("'+arg[0] + '", '+arg[1]+'),') + '};\n' +
-         '  var ols = '+JSON.stringify(args.map(a => a[1]))+';\n'+
-         '  env.push({frame_id:'+frame_id+', top:top, func_name: "' + name + '", locals, ordered_locals:ols});\n';
-}

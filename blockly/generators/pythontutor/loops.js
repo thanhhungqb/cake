@@ -36,11 +36,12 @@ Blockly.PythonTutor['controls_repeat'] = function(block) {
   branch = Blockly.PythonTutor.addLoopTrap(branch, block.id);
   var loopVar = Blockly.PythonTutor.variableDB_.getDistinctName(
       'count', Blockly.Variables.NAME_TYPE);
-  var code = 'for (var ' + loopVar + ' = 0; ' +
-      loopVar + ' < ' + repeats + '; ' +
-      loopVar + '++) {\n' +
-      'pyt.generate_trace('+block.id+');\n' +
-      branch + '}\n';
+  var code = 'pyt.create_scope(frame)\n;' +
+              'for (var ' + loopVar + ' = 0; ' +
+              loopVar + ' < ' + repeats + '; ' +
+              loopVar + '++) {\n' +
+              'pyt.generate_trace('+block.id+');\n' +
+              branch + 'pyt.pop_scope(frame)}\n';
   return code;
 };
 
@@ -78,8 +79,9 @@ Blockly.PythonTutor['controls_whileUntil'] = function(block) {
   if (until) {
     argument0 = '!' + argument0;
   }
-  return 'pyt.generate_trace('+block.id+');\n'+
-         'while ((function(){pyt.generate_trace('+cond.id+'); return ' + argument0 + ';})()) {\n' + branch + '}\n';
+  return 'pyt.generate_trace('+block.id+');\npyt.create_scope(frame)\n'+
+         'while ((function(){pyt.generate_trace('+cond.id+'); return ' + argument0 + ';})()) {\n' +
+         branch + '}\npyt.pop_scope(frame);\n';
 };
 
 Blockly.PythonTutor['controls_doWhile'] = function(block) {
@@ -94,8 +96,9 @@ Blockly.PythonTutor['controls_doWhile'] = function(block) {
   if (until) {
       argument0 = '!' + argument0;
   }
-  return 'do {\npyt.generate_trace('+block.id+');\n' +
-         branch + '} while ((function(){pyt.generate_trace('+cond.id+'); return ' + argument0 + ';})());\n';
+  return 'pyt.create_scope(frame)\n;do {\npyt.generate_trace('+block.id+');\n' +
+         branch + '} while ((function(){pyt.generate_trace('+cond.id+'); return ' + argument0 + ';})());\n' +
+         'pyt.pop_scope(frame);\n';
 };
 
 
@@ -109,9 +112,10 @@ Blockly.PythonTutor['controls_for'] = function(block) {
   branch = Blockly.PythonTutor.addLoopTrap(branch, block.id);
   var condBlock = block.getInputTargetBlock('COND');
 
-  return 'for ((function(){'+initialiser+'})() ; '+
+  return 'pyt.create_scope(frame)\n;for ((function(){'+initialiser+'})() ; '+
           '(function(){pyt.generate_trace('+condBlock.id+'); return ' + condition + ';})(); ' +
-          '(function(){'+increment+'})()) {\n' + branch + '\n}\n';
+          '(function(){'+increment+'})()) {\n' + branch + '\n}\n' +
+          'pyt.pop_scope(frame);\n';
 };
 
 Blockly.PythonTutor['controls_forEach'] = function(block) {
@@ -135,7 +139,7 @@ Blockly.PythonTutor['controls_flow_statements'] = function(block) {
   // Flow statements: continue, break.
   switch (block.getFieldValue('FLOW')) {
     case 'BREAK':
-      return 'pyt.generate_trace('+block.id+');break;\n';
+      return 'pyt.generate_trace('+block.id+');pyt.pop_scope(frame);\nbreak;\n';
     case 'CONTINUE':
       return 'pyt.generate_trace('+block.id+');continue;\n';
   }

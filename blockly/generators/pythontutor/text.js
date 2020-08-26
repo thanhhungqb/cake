@@ -31,7 +31,7 @@ goog.require('Blockly.PythonTutor');
 
 Blockly.PythonTutor['text'] = function(block) {
   // Text value.
-  var code = Blockly.PythonTutor.quote_(block.getFieldValue('TEXT'));
+  var code = goog.string.quote(block.getFieldValue('TEXT'));
   return [code, Blockly.PythonTutor.ORDER_ATOMIC];
 };
 
@@ -234,7 +234,7 @@ Blockly.PythonTutor['text_print'] = function(block) {
 
 Blockly.PythonTutor['text_prompt'] = function(block) {
   // Prompt function (internal message).
-  var msg = Blockly.PythonTutor.quote_(block.getFieldValue('TEXT'));
+  var msg = goog.string.quote(block.getFieldValue('TEXT'));
   var code = 'window.prompt(' + msg + ')';
   var toNumber = block.getFieldValue('TYPE') == 'NUMBER';
   if (toNumber) {

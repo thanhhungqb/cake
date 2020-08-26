@@ -53,7 +53,11 @@ Blockly.Variables.allVariables = function(block) {
       if (parent.type == "controls_for"
           && parent.getNextBlock() != block
           && parent.getInputTargetBlock("INIT") != block) {
+        // add the init in a forloop if block not the INIT block or the next statement block.
         blocks.push(parent.getInputTargetBlock("INIT"));
+      } else if (parent.type == "procedures_defreturn"
+                 && parent.getInputTargetBlock("RETURN") == block) {
+        for (parent = parent.getInputTargetBlock("STACK"); parent.getNextBlock(); parent = parent.getNextBlock());
       }
       block = parent;
       blocks.push(block);
@@ -104,7 +108,7 @@ Blockly.Variables.allVariables = function(block) {
     */
     else if (funcParamInfo) {
       var params = funcParamInfo.call(blocks[x]);
-      variableList.push(params);
+      params.forEach(function(p) { variableList.push(p); });
     }
   }
     return variableList;

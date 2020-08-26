@@ -419,3 +419,9 @@ Blockly.commonWordSuffix = function(array, opt_shortest) {
 Blockly.isNumber = function(str) {
   return !!str.match(/^\s*-?\d+(\.\d+)?\s*$/);
 };
+
+if (!Array.prototype.last){
+  Array.prototype.last = function() {
+    return this[this.length-1];
+  }
+}
