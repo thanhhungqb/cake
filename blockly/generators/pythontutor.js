@@ -208,7 +208,7 @@ Blockly.PythonTutor.create_stack_frame = function(name, args) {
 Blockly.PythonTutor.pop_stack_frame = function(env) {
   var frame = env[env.length-1];
   var locals = frame.ordered_locals.flat();
-  if (locals) {
+  if (locals.length) {
     Blockly.PythonTutor.top_of_stack = locals[0].a;
     locals.map(function (arg) { arg.v = undefined;} );
   }
@@ -217,13 +217,22 @@ Blockly.PythonTutor.pop_stack_frame = function(env) {
 
 Blockly.PythonTutor.create_scope = function(frame) {
   frame.ordered_locals.push([]);
+  //console.log("Push: " + JSON.stringify(frame.ordered_locals));
 }
 
 Blockly.PythonTutor.pop_scope = function(frame) {
-  var locals = frame.ordered_globals.pop();
-  locals.forEach(function (arg) {
-    arg.v = undefined;
-  });
+  //console.log("Popping: " + JSON.stringify(frame.ordered_locals));
+  var locals = frame.ordered_locals.pop();
+  if (locals.length) {
+    locals.forEach(function (arg) {
+      arg.v = undefined;
+    });
+    Blockly.PythonTutor.top_of_stack = locals[0].a;
+  }
+  // remap existing variables in scope to frame.locals
+  frame.ordered_locals.flat().forEach(function (arg) {
+    frame.locals[arg.n] = arg;
+  });  
 }
 
 // Takes a variable in our environment and return an encoded var for OPT
@@ -246,9 +255,11 @@ Blockly.PythonTutor.generate_trace = function(id, event="step_line") {
     stack_to_render: []
     };
   env.stacks.forEach(function(stack) {
-    var locals = {}
+    var locals = []
     stack.ordered_locals.flat().forEach(function(arg) {
-      locals[arg.n] = ['C_DATA', "0x"+("0000"+arg.a.toString(16)).substr(-4), arg.t, arg.v];
+      var a = ['C_DATA', "0x"+("0000"+arg.a.toString(16)).substr(-4), arg.t, arg.v];
+      a['n'] = arg.n;
+      locals.push(a);      
     });
     frame.stack_to_render.push({
       frame_id: stack.frame_id,
@@ -258,7 +269,7 @@ Blockly.PythonTutor.generate_trace = function(id, event="step_line") {
       is_zombie: false,
       parent_frame_id_list: [],
       unique_hash: stack.func_name+'_'+stack.frame_id,
-      ordered_varnames: stack.ordered_locals.flat().map(function(arg){ return arg.n;}),
+      ordered_varnames: locals,
       encoded_locals: locals,
       stdout: stack.stdout,
     })

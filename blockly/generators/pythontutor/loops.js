@@ -36,12 +36,11 @@ Blockly.PythonTutor['controls_repeat'] = function(block) {
   branch = Blockly.PythonTutor.addLoopTrap(branch, block.id);
   var loopVar = Blockly.PythonTutor.variableDB_.getDistinctName(
       'count', Blockly.Variables.NAME_TYPE);
-  var code = 'pyt.create_scope(frame)\n;' +
-              'for (var ' + loopVar + ' = 0; ' +
+  var code = 'for (var ' + loopVar + ' = 0; ' +
               loopVar + ' < ' + repeats + '; ' +
               loopVar + '++) {\n' +
-              'pyt.generate_trace('+block.id+');\n' +
-              branch + 'pyt.pop_scope(frame)}\n';
+              'pyt.generate_trace('+block.id+');\npyt.create_scope(frame);\n' +
+              branch + 'pyt.pop_scope(frame); }\n';
   return code;
 };
 
@@ -79,9 +78,9 @@ Blockly.PythonTutor['controls_whileUntil'] = function(block) {
   if (until) {
     argument0 = '!' + argument0;
   }
-  return 'pyt.generate_trace('+block.id+');\npyt.create_scope(frame)\n'+
-         'while ((function(){pyt.generate_trace('+cond.id+'); return ' + argument0 + ';})()) {\n' +
-         branch + '}\npyt.pop_scope(frame);\n';
+  return 'for(pyt.generate_trace('+block.id+'); '+
+         '(function(){pyt.generate_trace('+cond.id+'); return ' + argument0 + ';})(); pyt.pop_scope(frame)) {\n' +
+         'pyt.create_scope(frame)\n' + branch + '}\n';
 };
 
 Blockly.PythonTutor['controls_doWhile'] = function(block) {
@@ -96,9 +95,10 @@ Blockly.PythonTutor['controls_doWhile'] = function(block) {
   if (until) {
       argument0 = '!' + argument0;
   }
-  return 'pyt.create_scope(frame)\n;do {\npyt.generate_trace('+block.id+');\n' +
-         branch + '} while ((function(){pyt.generate_trace('+cond.id+'); return ' + argument0 + ';})());\n' +
-         'pyt.pop_scope(frame);\n';
+  return 'for (var __t__ = true; __t__ || (function(){pyt.generate_trace('+cond.id+'); return ' + argument0 + ';})();'+
+              '(function(){__t__ = false; pyt.pop_scope(frame)})()) {'+
+         'pyt.create_scope(frame)\npyt.generate_trace('+block.id+');\n' +
+         branch + '};\n';
 };
 
 
@@ -114,7 +114,8 @@ Blockly.PythonTutor['controls_for'] = function(block) {
 
   return 'pyt.create_scope(frame)\n;for ((function(){'+initialiser+'})() ; '+
           '(function(){pyt.generate_trace('+condBlock.id+'); return ' + condition + ';})(); ' +
-          '(function(){'+increment+'})()) {\n' + branch + '\n}\n' +
+          '(function(){pyt.pop_scope(frame);'+increment+'})()) {\n'
+          + 'pyt.create_scope(frame);\n' + branch + '\n}\n' +
           'pyt.pop_scope(frame);\n';
 };
 

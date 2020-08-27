@@ -2411,8 +2411,7 @@ ExecutionVisualizer.prototype.precomputeCurTraceLayouts = function() {
     });
 
     $.each(curEntry.stack_to_render, function(i, frame) {
-      $.each(frame.ordered_varnames, function(xxx, varname) {
-        var val = frame.encoded_locals[varname];
+      $.each(frame.ordered_varnames, function(xxx, val) {        
         // TODO: try to unify this behavior between C/C++ and other languages:
         if (myViz.isCppMode()) {
           updateCurLayoutAndRecurse(val);
@@ -2892,15 +2891,15 @@ ExecutionVisualizer.prototype.renderDataStructures = function(curEntry, curTople
     .select('table').selectAll('tr')
     .data(function(frame) {
         // each list element contains a reference to the entire frame
-        // object as well as the variable name
+        // object as well as the variable
         // TODO: look into whether we can use d3 parent nodes to avoid
         // this hack ... http://bost.ocks.org/mike/nest/
-        return frame.ordered_varnames.map(function(varname) {return {varname:varname, frame:frame};});
+        return frame.ordered_varnames.map(function(variable) {return {variable:variable, frame:frame};});
       },
       function(d) {
         // TODO: why would d ever be null?!? weird
         if (d) {
-          return d.varname; // use variable name as key
+          return d.variable; // use variable name as key
         }
       }
     );
@@ -2910,7 +2909,7 @@ ExecutionVisualizer.prototype.renderDataStructures = function(curEntry, curTople
     .append('tr')
     .attr('class', 'variableTr')
     .attr('id', function(d, i) {
-        return myViz.generateID(varnameToCssID(d.frame.unique_hash + '__' + d.varname + '_tr')); // make globally unique (within the page)
+        return myViz.generateID(varnameToCssID(d.frame.unique_hash + '__' + d.variable.n + '_tr')); // make globally unique (within the page)
     });
 
 
@@ -2925,7 +2924,8 @@ ExecutionVisualizer.prototype.renderDataStructures = function(curEntry, curTople
   stackVarTableCells
     .order() // VERY IMPORTANT to put in the order corresponding to data elements
     .each(function(d, i) {
-      var varname = d.varname;
+      val = d.variable;
+      var varname = val.n;
       var frame = d.frame;
 
       if (i == 0) {
@@ -2948,7 +2948,6 @@ ExecutionVisualizer.prototype.renderDataStructures = function(curEntry, curTople
         // need to get rid of the old connector in preparation for rendering a new one:
         existingConnectionEndpointIDs.remove(varDivID);
 
-        var val = frame.encoded_locals[varname];
         if (myViz.isPrimitiveType(val)) {
           myViz.renderPrimitiveObject(val, $(this));
         }
@@ -3299,8 +3298,8 @@ ExecutionVisualizer.prototype.renderTabularView = function() {
         // don't add duplicates into this list,
         // but need to use a list to maintain ORDERING
         // (ignore the special __return__ value)
-        if ($.inArray(v, funcVarsList) === -1 && v !== '__return__') {
-          funcVarsList.push(v);
+        if ($.inArray(v.n, funcVarsList) === -1 && v.n !== '__return__') {
+          funcVarsList.push(v.n);
         }
       });
     });

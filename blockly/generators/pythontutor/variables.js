@@ -64,6 +64,6 @@ Blockly.PythonTutor['variables_declare'] = function(block) {
       this.initVar();
   }
   return 'pyt.allocate_stack(frame, "'+varName+'",'+JSON.stringify(varInfo)+');\n'+
-         'locals.'+varName+'.v = '+argument0+';)\n'+
+         'locals.'+varName+'.v = '+argument0+';\n'+
          'pyt.generate_trace('+block.id+')\n';
 };
