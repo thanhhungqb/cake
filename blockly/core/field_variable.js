@@ -98,7 +98,7 @@ Blockly.FieldVariable.dropdownCreate = function(block) {
   if (name && variableListPop.indexOf(name) == -1) {
     variableListPop.push(name);
   }
-  else variableListPop.push(Blockly.Msg.SELECT_MENU);
+  else variableListPop.push("");
   variableListPop.sort(goog.string.caseInsensitiveCompare);
   // variableList.push(Blockly.Msg.RENAME_VARIABLE);
   // variableList.push(Blockly.Msg.NEW_VARIABLE);
@@ -109,23 +109,6 @@ Blockly.FieldVariable.dropdownCreate = function(block) {
       options[x] = [variableListPop[x], variableListPop[x]];
    }
   return options;
-
-  // // Ensure that the currently selected variable is an option.
-  // var name = this.getText();
-  // if (name && variableList.indexOf(name) == -1) {
-  //   variableList.push(['',name]);
-  // }
-  // else variableList.push(['','--Select--']);
-  // variableList.sort(goog.string.caseInsensitiveCompare);
-  // // variableList.push(Blockly.Msg.RENAME_VARIABLE);
-  // // variableList.push(Blockly.Msg.NEW_VARIABLE);
-  // // Variables are not language-specific, use the name as both the user-facing
-  // // text and the internal representation.
-  // var options = [];
-  // for (var x = 0; x < variableList.length; x++) {
-  //     options[x] = [variableList[x][1], variableList[x][1]];
-  //  }
-  // return options;
 };
 
 /**

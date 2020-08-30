@@ -232,7 +232,7 @@ Blockly.PythonTutor.pop_scope = function(frame) {
   // remap existing variables in scope to frame.locals
   frame.ordered_locals.flat().forEach(function (arg) {
     frame.locals[arg.n] = arg;
-  });  
+  });
 }
 
 // Takes a variable in our environment and return an encoded var for OPT
@@ -252,14 +252,19 @@ Blockly.PythonTutor.generate_trace = function(id, event="step_line") {
     func_name: env.stacks[env.stacks.length-1].func_name,
     globals: env.globals,
     ordered_globals: env.ordered_globals,
+    heap: env.heap,
     stack_to_render: []
     };
   env.stacks.forEach(function(stack) {
     var locals = []
     stack.ordered_locals.flat().forEach(function(arg) {
       var a = ['C_DATA', "0x"+("0000"+arg.a.toString(16)).substr(-4), arg.t, arg.v];
+      if (arg.d == 'p') {
+        a[2] = 'pointer';
+        a[3] = "0x"+("0000"+arg.v.a.toString(16)).substr(-4)
+      }
       a['n'] = arg.n;
-      locals.push(a);      
+      locals.push(a);
     });
     frame.stack_to_render.push({
       frame_id: stack.frame_id,

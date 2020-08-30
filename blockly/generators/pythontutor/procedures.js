@@ -29,6 +29,10 @@ goog.provide('Blockly.PythonTutor.procedures');
 goog.require('Blockly.PythonTutor');
 
 Blockly.PythonTutor['procedures_return'] = function(block) {
+  var code = '  pyt.pop_stack_frame(env);\n  return;\n';
+  if (!block.getReturnInfo)
+    return 'pyt.generate_trace('+block.id+', "return");\n'+code;
+
   var returnInfo = block.getReturnInfo();
   returnInfo.name = '__return__';
   var returnValue = Blockly.PythonTutor.valueToCode(block, 'RETURN',
@@ -38,13 +42,9 @@ Blockly.PythonTutor['procedures_return'] = function(block) {
     return 'var r = '+returnValue+';\n' +
            'pyt.allocate_stack(frame, "__return__", '+JSON.stringify(returnInfo)+');\n'+
            'locals.__return__.v = r;\n'+
-           'pyt.generate_trace('+block.id+', "return");\n'+
-           'pyt.pop_stack_frame(env);\n' +
-           'return r;\n';
+           'pyt.generate_trace('+block.id+', "return");\n'+ code;
   } else {
-    return 'pyt.generate_trace('+block.id+', "uncaught_exception");\n'+
-           '  pyt.pop_stack_frame(env);\n'+
-           '  return;\n';
+    return 'pyt.generate_trace('+block.id+', "uncaught_exception");\n'+ code;
   }
 };
 
@@ -97,7 +97,9 @@ Blockly.PythonTutor['procedures_callreturn'] = function(block) {
 };
 
 // Call a procedure with no return value.
-Blockly.PythonTutor['procedures_callnoreturn'] = Blockly.PythonTutor['procedures_callreturn'];
+Blockly.PythonTutor['procedures_callnoreturn'] = function(block) {
+  return Blockly.PythonTutor['procedures_callreturn'].call(this, block)[0]+';\n';
+}
 
 Blockly.PythonTutor['procedures_ifreturn'] = function(block) {
   // Conditionally return value from a procedure.

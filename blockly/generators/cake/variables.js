@@ -73,20 +73,18 @@ Blockly.cake['variables_set'] = function(block) {
 Blockly.cake['variables_declare'] = function(block) {
     // Variable declare.
     var argument0 = Blockly.cake.valueToCode(block, 'VALUE',
-            Blockly.cake.ORDER_ASSIGNMENT) || '0';
+            Blockly.cake.ORDER_ASSIGNMENT);
     var varName = Blockly.cake.variableDB_.getName(
         block.getFieldValue('VAR'), Blockly.Variables.NAME_TYPE);
     var varType = block.getFieldValue('TYPES');
     if(varType == 'std::string'){
         Blockly.cake.definitions_['include_cake_string'] =
             '#include <string>';
-        argument0 = Blockly.cake.valueToCode(block, 'VALUE',
-                Blockly.cake.ORDER_ASSIGNMENT) || '\"\"';
     }
     if (Blockly.Blocks.checkLegalName(Blockly.Msg.VARIABLES_ILLEGALNAME, varName) == -1){
         this.initVar();
     }
-    return varType + ' ' + varName + ' = ' + argument0 + ';\n';
+    return varType + ' ' + varName + (argument0 ? ' = ' + argument0 : '') + ';\n';
 };
 
 Blockly.cake['variables_pointer_get'] = function(block) {
@@ -101,10 +99,14 @@ Blockly.cake['variables_pointer_set'] = function(block) {
     // Variable setter.
     var argument0 = Blockly.cake.valueToCode(block, 'VALUE',
             Blockly.cake.ORDER_ASSIGNMENT) || '0';
-    var argument1 = Blockly.cake.valueToCode(block, 'VAR',
-        Blockly.cake.ORDER_ASSIGNMENT);
+    var argument1 = Blockly.cake.variableDB_.getName(block.getFieldValue('VAR'),
+    Blockly.Variables.NAME_TYPE);
     argument1 = Blockly.Blocks.checkUnselect(argument1);
     return argument1 + ' = ' + argument0 + ';\n';
+};
+
+Blockly.cake['variables_pointer_star_set'] = function(block) {
+    return '*' + Blockly.cake['variables_pointer_set'].call(this, block);
 };
 
 Blockly.cake['variables_pointer_declare'] = function(block) {
@@ -124,13 +126,7 @@ Blockly.cake['variables_pointer_declare'] = function(block) {
         Blockly.cake.definitions_['include_cake_string'] =
             '#include <string>';
     }
-    var varIteration;
-    if (block.getFieldValue('ITERATION') == '*' || block.getFieldValue('ITERATION') == '**' || block.getFieldValue('ITERATION') == '***')
-        varIteration = block.getFieldValue('ITERATION');
-    else {
-        window.alert('please confirm asterisk. that must be among *, **, and  ***.');
-        return 0;
-    }
+    var varIteration = '*'
     if (Blockly.Blocks.checkLegalName(Blockly.Msg.VARIABLES_ILLEGALNAME, varName) == -1){
         this.initVar();
     }

@@ -44,7 +44,7 @@ function start() {
     }
     if (Blockly.PythonTutor.trace_.length > 0) {
       new ExecutionVisualizer('exec_trace', {code: '', trace: Blockly.PythonTutor.trace_},
-                              {debugMode: true,
+                              {showAddr: true,
                               hideCode: true,
                               lang: 'cpp'});
     }

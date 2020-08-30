@@ -2022,6 +2022,7 @@ ExecutionVisualizer.prototype.updateOutputMini = function() {
   var curEntry = this.curTrace[this.curInstr];
   var curToplevelLayout = this.curTraceLayouts[this.curInstr];
   this.debugMode = this.params.debugMode;
+  this.showAddr = this.params.showAddr;
 
   this.renderDataStructures(curEntry, curToplevelLayout);
 
@@ -2411,7 +2412,7 @@ ExecutionVisualizer.prototype.precomputeCurTraceLayouts = function() {
     });
 
     $.each(curEntry.stack_to_render, function(i, frame) {
-      $.each(frame.ordered_varnames, function(xxx, val) {        
+      $.each(frame.ordered_varnames, function(xxx, val) {
         // TODO: try to unify this behavior between C/C++ and other languages:
         if (myViz.isCppMode()) {
           updateCurLayoutAndRecurse(val);
@@ -3495,7 +3496,7 @@ ExecutionVisualizer.prototype.renderPrimitiveObject = function(obj, d3DomElement
 
       var addr = obj[1];
       var leader = '';
-      if (myViz.debugMode) {
+      if (myViz.debugMode || myViz.showAddr) {
         leader = addr + '<br/>'; // prepend address
       }
 
@@ -3925,7 +3926,7 @@ ExecutionVisualizer.prototype.renderCStructArray = function(obj, stepNum, d3DomE
     var typename = obj[2];
 
     var leader = '';
-    if (myViz.debugMode) {
+    if (myViz.debugMode || myViz.showAddr) {
       leader = addr + '<br/>';
     }
     if (myViz.params.lang === 'cpp') {
@@ -3966,7 +3967,7 @@ ExecutionVisualizer.prototype.renderCStructArray = function(obj, stepNum, d3DomE
     var addr = obj[1];
 
     var leader = '';
-    if (myViz.debugMode) {
+    if (myViz.debugMode || myViz.showAddr) {
       leader = addr + '<br/>';
     }
     d3DomElement.append('<div class="typeLabel">' + leader + 'array</div>');

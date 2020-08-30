@@ -234,12 +234,11 @@ Blockly.Variables.getVariableBlocks = function(options, block) {
   var varList = Blockly.Variables.allVariables(block);
   var wantedList = [];
   for (var temp = 0 ; temp < varList.length ; temp++ ){
-      for (const key in options) {
-          if (varList[temp][key] != options[key]) {
-              continue;
-          }
-      }
-      wantedList.push(varList[temp]);
+    if (Object.keys(options).reduce(function (acc, key) {
+            return acc && varList[temp][key] == options[key];
+          }, true)) {
+        wantedList.push(varList[temp]);
+    }
   }
 
   return wantedList;

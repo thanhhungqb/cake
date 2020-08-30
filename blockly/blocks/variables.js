@@ -159,6 +159,14 @@ Blockly.Blocks['define_declare'] = {
     getDeclare: function() {
         return this.getFieldValue('VAR');
     },
+    getInfo: function() {
+        return {type: this.getTypes(),
+                dist: this.getDist(),
+                name: this.getVars(),
+                scope: this.getScope(),
+                pos: this.getPos(),
+                spec: this.getSpec()}
+    },
     /**
      * Return all variables referenced by this block.
      * @return {!Array.<string>} List of variable names.
@@ -469,6 +477,7 @@ Blockly.Blocks['variables_declare'] = {
     getDeclare: function() {
         return this.getFieldValue('VAR');
     },
+    getInfo: Blockly.Blocks['define_declare'].getInfo,
     /**
      * Notification that a variable is renaming.
      * If the name matches one of this block's variables, rename it.
@@ -589,7 +598,7 @@ Blockly.Blocks['variables_pointer_set'] = {
             // TODO: Combine these messages instead of using concatenation.
             Blockly.Msg.VARIABLES_SET_TITLE + ' %1 ' +
             Blockly.Msg.VARIABLES_SET_TAIL + ' %2',
-            ['VAR', null, Blockly.ALIGN_RIGHT],
+            ['VAR',  new Blockly.FieldVariablePointer(Blockly.Msg.SELECT_MENU, null, this)],
             ['VALUE', null, Blockly.ALIGN_RIGHT],
             Blockly.ALIGN_RIGHT);
         this.setInputsInline(true);
@@ -634,7 +643,71 @@ Blockly.Blocks['variables_pointer_set'] = {
         // check if block is within a for init or inc statement
         Blockly.Blocks.forPlacementCheck(this);
 
-        if(this.getInput('VAR')) {
+        if(this.getInputTargetBlock('VAR')) {
+            var ptrName = this.getInputTargetBlock('VAR').getFieldValue('VAR');
+            var ptrType = Blockly.FieldDropdown.prototype.getTypefromVars(ptrName , "type", this);
+            Blockly.Blocks.setCheckPointer(this, ptrType, 'VALUE');
+        }
+    }
+};
+
+Blockly.Blocks['variables_pointer_star_set'] = {
+    /**
+     * Block for pointer setter.
+     * @this Blockly.Block
+     */
+    init: function() {
+        this.setColour(25);
+        this.interpolateMsg(
+            // TODO: Combine these messages instead of using concatenation.
+            Blockly.Msg.VARIABLES_SET_TITLE + ' value pointed to by %1 ' +
+            Blockly.Msg.VARIABLES_SET_TAIL + ' %2',
+            ['VAR',  new Blockly.FieldVariablePointer(Blockly.Msg.SELECT_MENU, null, this)],
+            ['VALUE', null, Blockly.ALIGN_RIGHT],
+            Blockly.ALIGN_RIGHT);
+        this.setInputsInline(true);
+        this.setPreviousStatement(true, ["STATEMENT", "SET"]);
+        this.setNextStatement(true, ["STATEMENT", "SET"]);
+        this.setTooltip(Blockly.Msg.VARIABLES_SET_TOOLTIP);
+        this.contextMenuMsg_ = Blockly.Msg.VARIABLES_SET_CREATE_GET;
+        this.contextMenuType_ = 'variables_pointer_set';
+        this.tag = Blockly.Msg.TAG_VARIABLE_POINTER_SET;
+    },
+
+    /**
+     * Return all variables referenced by this block.
+     * @return {!Array.<string>} List of variable names.
+     * @this Blockly.Block
+     */
+    getVars: function() {
+        return [this.getInputTargetBlock('VAR')];
+    },
+    /**
+     * Return this block's position
+     */
+    getPos: function(){
+        return this.getRelativeToSurfaceXY().y;
+    },
+    /**
+     * Notification that a variable is renaming.
+     * If the name matches one of this block's variables, rename it.
+     * @param {string} oldName Previous name of variable.
+     * @param {string} newName Renamed variable.
+     * @this Blockly.Block
+     */
+    renameVar: function(oldName, newName) {
+        if (Blockly.Names.equals(oldName, this.getFieldValue('VAR'))) {
+            this.setFieldValue(newName, 'VAR');
+        }
+    },
+    customContextMenu: Blockly.Blocks['variables_pointer_get'].customContextMenu,
+
+    //when the block is changed,
+    onchange: function() {
+        // check if block is within a for init or inc statement
+        Blockly.Blocks.forPlacementCheck(this);
+
+        if(this.getInputTargetBlock('VAR')) {
             var ptrName = this.getInputTargetBlock('VAR').getFieldValue('VAR');
             var ptrType = Blockly.FieldDropdown.prototype.getTypefromVars(ptrName , "type", this);
             Blockly.Blocks.setCheckPointer(this, ptrType, 'VALUE');
@@ -662,7 +735,6 @@ Blockly.Blocks['variables_pointer_declare'] = {
             Blockly.Msg.VARIABLES_POINTER_DECLARE_TITLE + ' %2 %3' +
             Blockly.Msg.VARIABLES_DECLARE_INIT + ' %4 ',
             ['TYPES', new Blockly.FieldDropdown(TYPE, null, this)],
-            ['ITERATION', new Blockly.FieldDropdown([["*","*"], ["**","**"], ["***","***"]])],
             ['VAR', new Blockly.FieldTextInput(name, Blockly.Procedures.rename)],
             ['VALUE', null, Blockly.ALIGN_RIGHT],
             Blockly.ALIGN_RIGHT);
@@ -689,7 +761,7 @@ Blockly.Blocks['variables_pointer_declare'] = {
      * specific means their iteration(*, **, or ***)
      */
     getSpec: function() {
-        return this.getFieldValue('ITERATION');
+        return '*';
     },
     getType: function() {
         return this.getFieldValue('TYPES');
@@ -736,6 +808,7 @@ Blockly.Blocks['variables_pointer_declare'] = {
     getDeclare: function() {
         return this.getFieldValue('VAR');
     },
+    getInfo: Blockly.Blocks['define_declare'].getInfo,
     /**
      * Notification that a variable is renaming.
      * If the name matches one of this block's variables, rename it.
@@ -1153,6 +1226,7 @@ Blockly.Blocks['variables_array_declare'] = {
     getDeclare: function() {
         return this.getFieldValue('VAR');
     },
+    getInfo: Blockly.Blocks['define_declare'].getInfo,
     /**
      * Notification that a variable is renaming.
      * If the name matches one of this block's variables, rename it.
@@ -1173,7 +1247,7 @@ Blockly.Blocks['variables_pointer_&'] = {
     init: function() {
         this.setColour(25);
         this.interpolateMsg(
-            '&' + ' %1 ', ['VALUE',
+            'address of %1 ', ['VALUE',
                 ['Variable', 'VAR_INT', 'VAR_UNINT', 'VAR_FLOAT', 'VAR_DOUBLE', 'VAR_CHAR', 'VAR_STR', 'Array',
                     'Pointer', 'PTR_INT', 'PTR_UNINT', 'PTR_FLOAT', 'PTR_DOUBLE', 'PTR_CHAR', 'PTR_STR'], Blockly.ALIGN_RIGHT],
             Blockly.ALIGN_RIGHT);
@@ -1221,7 +1295,7 @@ Blockly.Blocks['variables_pointer_*'] = {
     init: function() {
         this.setColour(25);
         this.interpolateMsg(
-            '*' + ' %1 ', ['VALUE', ['Pointer', 'PTR_INT', 'PTR_UNINT', 'PTR_FLOAT', 'PTR_DOUBLE', 'PTR_CHAR', 'PTR_STR',
+            'value pointed to by %1 ', ['VALUE', ['Pointer', 'PTR_INT', 'PTR_UNINT', 'PTR_FLOAT', 'PTR_DOUBLE', 'PTR_CHAR', 'PTR_STR',
                 'DBPTR_INT', 'DBPTR_UNINT', 'DBPTR_FLOAT', 'DBPTR_DOUBLE', 'DBPTR_CHAR', 'DBPTR_STR', 'Array', 'Aster'], Blockly.ALIGN_RIGHT],
             Blockly.ALIGN_RIGHT);
         this.setOutput(true, 'Aster');

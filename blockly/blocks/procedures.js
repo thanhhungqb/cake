@@ -28,6 +28,17 @@ goog.provide('Blockly.Blocks.procedures');
 
 goog.require('Blockly.Blocks');
 
+Blockly.Blocks.Types = [[Blockly.Msg.VARIABLES_SET_TYPE_INT, 'int'],
+                        [Blockly.Msg.VARIABLES_SET_TYPE_UNSIGNED_INT, 'unsigned int'],
+                        [Blockly.Msg.VARIABLES_SET_TYPE_FLOAT, 'float'],
+                        [Blockly.Msg.VARIABLES_SET_TYPE_DOUBLE, 'double'],
+                        [Blockly.Msg.VARIABLES_SET_TYPE_CHAR, 'char'],
+                        [Blockly.Msg.VARIABLES_SET_TYPE_STRING, 'std::string']];
+
+Blockly.Blocks.Dists = [[Blockly.Msg.VARIABLES_SET_DIST_VARIABLE, 'variable'],
+                        [Blockly.Msg.VARIABLES_SET_DIST_POINTER, 'pointer'],
+                        [Blockly.Msg.VARIABLES_SET_DIST_ARRAY, 'array']];
+
 
 Blockly.Blocks['main_block'] = {
     init: function() {
@@ -149,7 +160,7 @@ Blockly.Blocks['procedures_defnoreturn'] = {
             .appendField('', 'PARAMS');
         this.appendStatementInput('STACK')
             .appendField(Blockly.Msg.PROCEDURES_DEFNORETURN_DO);
-        this.setMutator(new Blockly.Mutator(['procedures_mutatorarg', 'procedures_mutatorarg_pointer', 'procedures_mutatorarg_array']));
+        this.setMutator(new Blockly.Mutator(['procedures_mutatorarg', 'procedures_mutatorarg_reference', 'procedures_mutatorarg_pointer', 'procedures_mutatorarg_array']));
         this.setTooltip(Blockly.Msg.PROCEDURES_DEFNORETURN_TOOLTIP);
         this.arguments_ = [];
         this.types_ = [];
@@ -360,7 +371,6 @@ Blockly.Blocks['procedures_defnoreturn'] = {
                 paramBlock.initSvg();
                 paramBlock.setFieldValue(this.arguments_[x], 'NAME');
                 paramBlock.setFieldValue(this.types_[x], 'TYPES');
-                paramBlock.setFieldValue(this.spec_[x], 'ITERATION');
             }
             // Store the old location.
             paramBlock.oldLocation = x;
@@ -409,7 +419,7 @@ Blockly.Blocks['procedures_defnoreturn'] = {
 
             }
             else if(paramBlock.getDist()=='p'){
-                this.spec_.push(paramBlock.getFieldValue('ITERATION'));
+                this.spec_.push('*');
             }
             this.paramIds_.push(paramBlock.id);
             paramBlock = paramBlock.nextConnection &&
@@ -551,7 +561,15 @@ Blockly.Blocks['procedures_defnoreturn'] = {
                 var xmlField = goog.dom.createDom('field', null, name);
                 xmlField.setAttribute('name', 'VAR');
                 var xmlBlock = goog.dom.createDom('block', null, xmlField);
-                xmlBlock.setAttribute('type', 'variables_declare');
+                switch (this.dist_[x]) {
+                    case 'v':
+                    case 'r':
+                        xmlBlock.setAttribute('type', 'variables_get'); break;
+                    case 'p':
+                        xmlBlock.setAttribute('type', 'variables_pointer_get'); break;
+                    case 'a':
+                        xmlBlock.setAttribute('type', 'variables_array_get'); break;
+                }
                 option.callback = Blockly.ContextMenu.callbackFactory(this, xmlBlock);
                 options.push(option);
             }
@@ -609,7 +627,7 @@ Blockly.Blocks['procedures_defreturn'] = {
             .appendField(new Blockly.FieldDropdown(TYPE), 'TYPES')
             .appendField(new Blockly.FieldDropdown(DIST), 'DISTS')
             .setAlign(Blockly.ALIGN_RIGHT);
-        this.setMutator(new Blockly.Mutator(['procedures_mutatorarg', 'procedures_mutatorarg_pointer', 'procedures_mutatorarg_array']));
+        this.setMutator(new Blockly.Mutator(['procedures_mutatorarg', 'procedures_mutatorarg_reference', 'procedures_mutatorarg_pointer', 'procedures_mutatorarg_array']));
         this.setTooltip(Blockly.Msg.PROCEDURES_DEFRETURN_TOOLTIP);
         this.arguments_ = [];
         this.types_ = [];
@@ -765,7 +783,7 @@ Blockly.Blocks['procedures_mutatorarg'] = {
                 [Blockly.Msg.VARIABLES_SET_TYPE_DOUBLE, 'double'],
                 [Blockly.Msg.VARIABLES_SET_TYPE_CHAR, 'char'],
                 [Blockly.Msg.VARIABLES_SET_TYPE_STRING, 'std::string']];
-        this.setColour(300);
+        this.setColour(350);
         this.appendDummyInput()
             .appendField('variable')
             .appendField(new Blockly.FieldDropdown(TYPE), 'TYPES')
@@ -814,7 +832,7 @@ Blockly.Blocks['procedures_mutatorarg_array'] = {
                 [Blockly.Msg.VARIABLES_SET_TYPE_DOUBLE, 'double'],
                 [Blockly.Msg.VARIABLES_SET_TYPE_CHAR, 'char'],
                 [Blockly.Msg.VARIABLES_SET_TYPE_STRING, 'std::string']];
-        this.setColour(300);
+        this.setColour(48);
         this.interpolateMsg(
             // TODO: Combine these messages instead of using concatenation.
             'array %1 ' + Blockly.Msg.VARIABLES_ARRAY_DECLARE_LENGTH + ' %2 ' +' %3 ' +' %4 ' +
@@ -885,11 +903,13 @@ Blockly.Blocks['procedures_mutatorarg_pointer'] = {
                 [Blockly.Msg.VARIABLES_SET_ITERATION_DOUBLE, '**'],
                 [Blockly.Msg.VARIABLES_SET_ITERATION_TRIPLE, '***']
             ];
-        this.setColour(300);
+        this.setColour(25);
         this.interpolateMsg(
             // TODO: Combine these messages instead of using concatenation.
-            'pointer %1 ' + Blockly.Msg.VARIABLES_POINTER_DECLARE_ITERATION + ' %2 ' +
-            Blockly.Msg.VARIABLES_DECLARE_NAME + ' %3 ', ['TYPES', new Blockly.FieldDropdown(TYPE)], ['ITERATION', new Blockly.FieldDropdown(ITERATION)], ['NAME', new Blockly.FieldTextInput('y', Blockly.Blocks.CNameValidator)],
+            'pointer to %1 ' +
+            Blockly.Msg.VARIABLES_DECLARE_NAME + ' %2 ',
+            ['TYPES', new Blockly.FieldDropdown(TYPE)],
+            ['NAME', new Blockly.FieldTextInput('y', Blockly.Blocks.CNameValidator)],
             Blockly.ALIGN_RIGHT);
         this.setPreviousStatement(true);
         this.setNextStatement(true);
@@ -916,7 +936,58 @@ Blockly.Blocks['procedures_mutatorarg_pointer'] = {
         return 'p';
     },
     getSpec: function(){
-        return [this.getFieldValue('ITERATION')];
+        return '*';
+    }
+};
+
+Blockly.Blocks['procedures_mutatorarg_reference'] = {
+    /**
+     * Mutator block for procedure argument.
+     * @this Blockly.Block
+     */
+    init: function() {
+        var TYPE =
+            [
+                [Blockly.Msg.VARIABLES_SET_TYPE_INT, 'int'],
+                [Blockly.Msg.VARIABLES_SET_TYPE_UNSIGNED_INT, 'unsigned int'],
+                [Blockly.Msg.VARIABLES_SET_TYPE_FLOAT, 'float'],
+                [Blockly.Msg.VARIABLES_SET_TYPE_DOUBLE, 'double'],
+                [Blockly.Msg.VARIABLES_SET_TYPE_CHAR, 'char'],
+                [Blockly.Msg.VARIABLES_SET_TYPE_STRING, 'std::string']];
+        this.setColour(365);
+        this.interpolateMsg(
+            // TODO: Combine these messages instead of using concatenation.
+            'reference to %1 ' +
+            Blockly.Msg.PROCEDURES_MUTATORARG_TITLE + ' %2 ',
+            ['TYPES', new Blockly.FieldDropdown(TYPE)],
+            ['NAME', new Blockly.FieldTextInput('r', Blockly.Blocks.CNameValidator)],
+            Blockly.ALIGN_RIGHT);
+        this.setPreviousStatement(true);
+        this.setNextStatement(true);
+        this.setTooltip(Blockly.Msg.PROCEDURES_MUTATORARG_TOOLTIP);
+        this.contextMenu = false;
+    },
+    /**
+     * Obtain a valid name for the procedure.
+     * Merge runs of whitespace.  Strip leading and trailing whitespace.
+     * Beyond this, all names are legal.
+     * @param {string} newVar User-supplied name.
+     * @return {?string} Valid name, or null if a name was not specified.
+     * @private
+     * @this Blockly.Block
+     */
+    validator_: function(newVar) {
+        newVar = newVar.replace(/[\s\xa0]+/g, ' ').replace(/^ | $/g, '');
+        return newVar || null;
+    },
+    getTypes: function() {
+        return this.getFieldValue('TYPES');
+    },
+    getDist: function() {
+        return 'r';
+    },
+    getSpec: function(){
+        return null;
     }
 };
 
