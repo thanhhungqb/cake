@@ -216,8 +216,8 @@ Blockly.Blocks['procedures_defnoreturn'] = {
                         else if(this.spec_[x][0]==3)
                             paramString = paramString + ' ' + this.types_[x] + ' '+ this.arguments_[x] + '[' + this.spec_[x][1] + ']' + '[' + this.spec_[x][2] + ']' + '[' + this.spec_[x][3] + ']';
                     }
-                    else if(this.dist_[x]=='p'){
-                        paramString = paramString + ' ' + this.types_[x] + this.spec_[x] + ' ' + this.arguments_[x];
+                    else if(this.dist_[x]=='p' || this.dist_[x]=='r' ){
+                        paramString = paramString + ' ' + this.types_[x] + ' &' + this.arguments_[x];
                     }
                 }
                 else {
@@ -232,8 +232,8 @@ Blockly.Blocks['procedures_defnoreturn'] = {
                         else if(this.spec_[x][0]==3)
                             paramString = paramString + ' ' + this.types_[x] + ' '+ this.arguments_[x] + '[' + this.spec_[x][1] + ']' + '[' + this.spec_[x][2] + ']' + '[' + this.spec_[x][3] + ']';
                     }
-                    else if(this.dist_[x]=='p'){
-                        paramString = paramString + ', ' + this.types_[x] + this.spec_[x] + ' ' + this.arguments_[x];
+                    else if(this.dist_[x]=='p' || this.dist_[x]=='r'){
+                        paramString = paramString + ', ' + this.types_[x] + ' &' + this.arguments_[x];
                     }
                 }
             }
@@ -372,6 +372,12 @@ Blockly.Blocks['procedures_defnoreturn'] = {
                 paramBlock.setFieldValue(this.arguments_[x], 'NAME');
                 paramBlock.setFieldValue(this.types_[x], 'TYPES');
             }
+            else if(this.dist_[x]=='r'){
+                paramBlock = Blockly.Block.obtain(workspace, 'procedures_mutatorarg_reference');
+                paramBlock.initSvg();
+                paramBlock.setFieldValue(this.arguments_[x], 'NAME');
+                paramBlock.setFieldValue(this.types_[x], 'TYPES');
+            }
             // Store the old location.
             paramBlock.oldLocation = x;
             connection.connect(paramBlock.previousConnection);
@@ -420,6 +426,9 @@ Blockly.Blocks['procedures_defnoreturn'] = {
             }
             else if(paramBlock.getDist()=='p'){
                 this.spec_.push('*');
+            }
+            else if(paramBlock.getDist()=='r'){
+                this.spec_.push(null);
             }
             this.paramIds_.push(paramBlock.id);
             paramBlock = paramBlock.nextConnection &&

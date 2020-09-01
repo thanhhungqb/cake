@@ -2900,7 +2900,7 @@ ExecutionVisualizer.prototype.renderDataStructures = function(curEntry, curTople
       function(d) {
         // TODO: why would d ever be null?!? weird
         if (d) {
-          return d.variable; // use variable name as key
+          return d.variable.n; // use variable name as key
         }
       }
     );
@@ -3144,7 +3144,7 @@ ExecutionVisualizer.prototype.renderDataStructures = function(curEntry, curTople
     // the boat on my existing (battle-tested) code
     if (myViz.isCppMode()) {
       if (myViz.domRoot.find('#' + valueID).length) {
-        myViz.jsPlumbInstance.connect({source: varID, target: valueID, scope: 'varValuePointer'});
+        myViz.jsPlumbInstance.connect({source: varID, target: valueID, curviness:300, anchors:["RightMiddle", "RightMiddle"], scope: 'varValuePointer'});
       } else {
         // pointer isn't pointing to anything valid; put a poo emoji here
         myViz.domRoot.find('#' + varID).html('\uD83D\uDCA9' /* pile of poo emoji */);
@@ -3516,13 +3516,15 @@ ExecutionVisualizer.prototype.renderPrimitiveObject = function(obj, d3DomElement
         var ptrSrcId = myViz.generateHeapObjID('ptrSrc_' + addr, myViz.curInstr);
         var ptrTargetId = myViz.generateHeapObjID('cdata_' + ptrVal, myViz.curInstr); // don't forget cdata_ prefix!
 
-        var debugInfo = '';
+        var rep = '';
         if (myViz.debugMode) {
-          debugInfo = ptrTargetId;
+          rep = ptrTargetId;
+        } else if (myViz.showAddr) {
+          rep = ptrVal;
         }
 
         // make it really narrow so that the div doesn't STRETCH too wide
-        d3DomElement.append('<div style="width: 10px;" id="' + ptrSrcId + '" class="cdataElt">&nbsp;' + debugInfo + '</div>');
+        d3DomElement.append('<div id="' + ptrSrcId + '" class="cdataElt">' + rep + '</div>');
 
         assert(!myViz.jsPlumbManager.connectionEndpointIDs.has(ptrSrcId));
         myViz.jsPlumbManager.connectionEndpointIDs.set(ptrSrcId, ptrTargetId);
