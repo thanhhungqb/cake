@@ -173,7 +173,8 @@ Blockly.PythonTutor.type_sizes = {
 
 Blockly.PythonTutor.allocate_stack = function(frame, name, arg) {
   var a = Blockly.PythonTutor.top_of_stack;
-  Blockly.PythonTutor.top_of_stack += Blockly.PythonTutor.type_sizes[arg.type];
+  if (arg.dist != 'r')
+    Blockly.PythonTutor.top_of_stack += Blockly.PythonTutor.type_sizes[arg.type];
   var variable = {a:a,
                   t:arg.type,
                   d:arg.dist,
@@ -260,9 +261,14 @@ Blockly.PythonTutor.generate_trace = function(id, event="step_line") {
     stack.ordered_locals.flat().forEach(function(arg) {
       var a = ['C_DATA', "0x"+("0000"+arg.a.toString(16)).substr(-4), arg.t, arg.v];
       if (arg.d == 'p') {
-        a[2] = 'pointer';
-        a[3] = "0x"+("0000"+arg.v.a.toString(16)).substr(-4)
+        a[2] += ' pointer';
+        a[3] = "0x"+("0000"+arg.v.a.toString(16)).substr(-4);
+      } else if (arg.d == 'r') {
+        a[0] = 'C++_REF';
+        a[1] = "0x"+("0000"+arg.v.a.toString(16)).substr(-4);
+        a[3] = arg.v.v;
       }
+
       a['n'] = arg.n;
       locals.push(a);
     });

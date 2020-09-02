@@ -3473,7 +3473,7 @@ ExecutionVisualizer.prototype.renderPrimitiveObject = function(obj, d3DomElement
     d3DomElement.append('<span class="stringObj">' + literalStr + '</span>');
   }
   else if (typ == "object") {
-    if (obj[0] == 'C_DATA') {
+    if (obj[0] == 'C_DATA' || obj[0] == 'C++_REF') {
       var typeName = obj[2];
       // special cases for brevity:
       if (typeName === 'short int') {
@@ -3490,7 +3490,7 @@ ExecutionVisualizer.prototype.renderPrimitiveObject = function(obj, d3DomElement
         typeName = 'unsigned long long int';
       }
 
-      var isValidPtr = ((typeName === 'pointer') &&
+      var isValidPtr = ((obj[0] == 'C++_REF' || typeName === 'pointer') &&
                         (obj[3] !== '<UNINITIALIZED>') &&
                         (obj[3] !== '<UNALLOCATED>'));
 
@@ -3508,7 +3508,7 @@ ExecutionVisualizer.prototype.renderPrimitiveObject = function(obj, d3DomElement
         // for pointers, put cdataId in the header
         d3DomElement.append('<div id="' + cdataId + '" class="cdataHeader">' + leader + typeName + '</div>');
 
-        var ptrVal = obj[3];
+        var ptrVal = (obj[0] == 'C++_REF' ? obj[1] : obj[3]);
 
         // add a stub so that we can connect it with a connector later.
         // IE needs this div to be NON-EMPTY in order to properly
@@ -3519,6 +3519,8 @@ ExecutionVisualizer.prototype.renderPrimitiveObject = function(obj, d3DomElement
         var rep = '';
         if (myViz.debugMode) {
           rep = ptrTargetId;
+        } else if (obj[0] == 'C++_REF') {
+          rep = obj[3];
         } else if (myViz.showAddr) {
           rep = ptrVal;
         }
@@ -4207,7 +4209,7 @@ ExecutionVisualizer.prototype.isPrimitiveType = function(obj) {
   if (typeof obj == "object") {
     // kludge: only 'SPECIAL_FLOAT' objects count as primitives
     return (obj[0] == 'SPECIAL_FLOAT' || obj[0] == 'JS_SPECIAL_VAL' ||
-            obj[0] == 'C_DATA' /* TODO: is this right?!? */);
+            obj[0] == 'C_DATA' || obj[0] == 'C++_REF' /* TODO: is this right?!? */);
   }
   else {
     // non-objects are primitives
@@ -4233,7 +4235,7 @@ function getRefID(obj) {
   if (obj[0] == 'REF') {
     return obj[1];
   } else {
-    assert (obj[0] === 'C_DATA' && obj[2] === 'pointer');
+    assert (obj[0] === 'C++_REF' || (obj[0] === 'C_DATA' && obj[2] === 'pointer'));
     assert (obj[3] != '<UNINITIALIZED>' && obj[3] != '<UNALLOCATED>');
     return obj[3]; // pointed-to address
   }

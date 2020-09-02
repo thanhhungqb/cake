@@ -228,6 +228,7 @@ Blockly.Blocks['variables_get'] = {
         this.setTooltip(Blockly.Msg.VARIABLES_GET_TOOLTIP);
 
         this.tag = Blockly.Msg.TAG_VARIABLE_GET;
+        this._dist = 'v';
     },
     /**
      * Return all variables referenced by this block.
@@ -276,8 +277,11 @@ Blockly.Blocks['variables_get'] = {
     //when the block is changed,
     onchange: function() {
         var varName = this.getFieldValue('VAR');
-        var varType = Blockly.FieldDropdown.prototype.getTypefromVars(varName, "type", this);
+        var info = Blockly.FieldDropdown.prototype.getTypefromVars(varName, ["type", "dist"], this);
+        var varType = info[0];
+        var varDist = info[1];
         this.setOutputType('VAR', varType);
+        this._dist = varDist;
     },
 
     setOutputType: function(dist, varType) {
@@ -334,6 +338,8 @@ Blockly.Blocks['variables_set'] = {
         this.setNextStatement(true, ["STATEMENT", "SET"]);
         this.setTooltip(Blockly.Msg.VARIABLES_SET_TOOLTIP);
         this.tag = Blockly.Msg.TAG_VARIABLE_SET;
+
+        this._dist = 'v';
     },
     /**
      * Return all variables referenced by this block.
@@ -379,12 +385,14 @@ Blockly.Blocks['variables_set'] = {
         // check if block is within a for init or inc statement
         Blockly.Blocks.forPlacementCheck(this);
         var varName = this.getFieldValue('VAR');
-        var type = Blockly.FieldDropdown.prototype.getTypefromVars(varName , "type", this);
+        var info = Blockly.FieldDropdown.prototype.getTypefromVars(varName , ["type", "dist"], this)
+        var varType = info[0];
+        this._dist = info[1];
 
-        if (type == false) {
-            type = 'int';
+        if (varType == false) {
+            varType = 'int';
         }
-        Blockly.Blocks.setCheckVariable(this, type, 'VALUE');
+        Blockly.Blocks.setCheckVariable(this, varType, 'VALUE');
     }
 };
 
@@ -575,8 +583,9 @@ Blockly.Blocks['variables_pointer_get'] = {
     //when the block is changed,
     onchange: function() {
         var varName = this.getFieldValue('VAR');
-        var varType = Blockly.FieldDropdown.prototype.getTypefromVars(varName , "type", this);
-        var dimension = Blockly.FieldDropdown.prototype.getTypefromVars(varName , "spec", this);
+        var info = Blockly.FieldDropdown.prototype.getTypefromVars(varName , ["type", "spec"], this)
+        var varType = info[0];
+        var dimension = info[1];
         if (dimension == '*') {
             this.setOutputType('PTR', varType);
         }
@@ -1316,8 +1325,9 @@ Blockly.Blocks['variables_pointer_*'] = {
                      if (nextblock.type.search('variables') == 0) {
                          if (nextblock.type.search('pointer') > 0) {
                              var varName = nextblock.getVars();
-                             var varType = Blockly.FieldDropdown.prototype.getTypefromVars(varName , "type", this);
-                             var dimension = Blockly.FieldDropdown.prototype.getTypefromVars(varName , "spec", this);
+                             var info = Blockly.FieldDropdown.prototype.getTypefromVars(varName , ["type", "spec"], this)
+                             var varType = info[0];
+                             var dimension = info[1];
                              // **DOUBLE POINTER -> Variable
                              if (dimension == '**') {
                                  this.setOutputType('VAR', varType);
@@ -1330,11 +1340,12 @@ Blockly.Blocks['variables_pointer_*'] = {
             // * variables
             else if (nextblock.type.search('variables') == 0) {
                 var varName = nextblock.getVars();
-                var varType = Blockly.FieldDropdown.prototype.getTypefromVars(varName , "type", this);
+                var info = Blockly.FieldDropdown.prototype.getTypefromVars(varName , ["type", "spec"], this)
+                var varType = info[0];
+                var dimension = info[1];
 
                 // POINTER
                 if (nextblock.type.search('pointer') > 0) {
-                    var dimension = Blockly.FieldDropdown.prototype.getTypefromVars(varName , "spec", this);
                     // *POINTER -> Variable
                     if (dimension == '*') {
                         this.setOutputType('VAR', varType);

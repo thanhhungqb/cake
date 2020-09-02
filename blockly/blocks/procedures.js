@@ -1110,8 +1110,13 @@ Blockly.Blocks['procedures_callnoreturn'] = {
                     .appendField(this.types_[x])
                     .appendField(this.arguments_[x]);
               //  Blockly.Blocks.setCheckVariable(this, this.types_[x], 'ARG'+x);
-            }
-            else if(this.dist_[x]=='a'){
+            } else if(this.dist_[x]=='r') {
+                input = this.appendValueInput('ARG' + x)
+                    .setAlign(Blockly.ALIGN_RIGHT)
+                    .appendField(this.types_[x])
+                    .appendField('&'+this.arguments_[x]);
+              //  Blockly.Blocks.setCheckVariable(this, this.types_[x], 'ARG'+x);
+            } else if(this.dist_[x]=='a'){
                 if(this.spec_[x][0] ==1){
                     input = this.appendValueInput('ARG' + x)
                         .setAlign(Blockly.ALIGN_RIGHT)

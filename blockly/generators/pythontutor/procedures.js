@@ -88,8 +88,14 @@ Blockly.PythonTutor['procedures_callreturn'] = function(block) {
       block.getFieldValue('NAME'), Blockly.Procedures.NAME_TYPE);
   var args = [];
   for (var x = 0; x < block.arguments_.length; x++) {
+    if (block.dist_[x] == 'r') {
+      var refName = Blockly.PythonTutor.variableDB_.getName(block.getInputTargetBlock('ARG' + x).getFieldValue('VAR'),
+                                                            Blockly.Variables.NAME_TYPE);
+      args[x] = 'locals.' + refName;
+    } else {
     args[x] = Blockly.PythonTutor.valueToCode(block, 'ARG' + x,
         Blockly.PythonTutor.ORDER_COMMA) || 'null';
+    }
   }
   var code = '(function(){ pyt.generate_trace('+block.id+'); ' +
              'return fn.'+funcName + '(' + args.join(', ') + ');})()';

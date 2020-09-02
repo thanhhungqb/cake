@@ -350,6 +350,8 @@ Blockly.Procedures.getTypePlusArgs = function(block) {
         }
         else if(argDist[x] =='p'){
             typePlusArgs[x] = argTypes[x] + argSpec[x] + ' ' + args[x];
+        } else if(argDist[x] =='r'){
+            typePlusArgs[x] = argTypes[x] + '& ' + args[x];
         }
     }
     return typePlusArgs;
