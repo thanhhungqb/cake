@@ -609,14 +609,7 @@ Blockly.Blocks['procedures_defreturn'] = {
      * @this Blockly.Block
      */
     init: function() {
-        var TYPE =
-            [
-                [Blockly.Msg.VARIABLES_SET_TYPE_INT, 'int'],
-                [Blockly.Msg.VARIABLES_SET_TYPE_UNSIGNED_INT, 'unsigned int'],
-                [Blockly.Msg.VARIABLES_SET_TYPE_FLOAT, 'float'],
-                [Blockly.Msg.VARIABLES_SET_TYPE_DOUBLE, 'double'],
-                [Blockly.Msg.VARIABLES_SET_TYPE_CHAR, 'char'],
-                [Blockly.Msg.VARIABLES_SET_TYPE_STRING, 'std::string']];
+        var TYPE = Blockly.Blocks.VariableTypes;
         var DIST = [
             [Blockly.Msg.VARIABLES_SET_DIST_VARIABLE, 'variable'],
             [Blockly.Msg.VARIABLES_SET_DIST_POINTER, 'pointer'],
@@ -784,14 +777,7 @@ Blockly.Blocks['procedures_mutatorarg'] = {
      * @this Blockly.Block
      */
     init: function() {
-        var TYPE =
-            [
-                [Blockly.Msg.VARIABLES_SET_TYPE_INT, 'int'],
-                [Blockly.Msg.VARIABLES_SET_TYPE_UNSIGNED_INT, 'unsigned int'],
-                [Blockly.Msg.VARIABLES_SET_TYPE_FLOAT, 'float'],
-                [Blockly.Msg.VARIABLES_SET_TYPE_DOUBLE, 'double'],
-                [Blockly.Msg.VARIABLES_SET_TYPE_CHAR, 'char'],
-                [Blockly.Msg.VARIABLES_SET_TYPE_STRING, 'std::string']];
+        var TYPE = Blockly.Blocks.VariableTypes;
         this.setColour(350);
         this.appendDummyInput()
             .appendField('variable')
@@ -833,14 +819,7 @@ Blockly.Blocks['procedures_mutatorarg_array'] = {
      * @this Blockly.Block
      */
     init: function() {
-        var TYPE =
-            [
-                [Blockly.Msg.VARIABLES_SET_TYPE_INT, 'int'],
-                [Blockly.Msg.VARIABLES_SET_TYPE_UNSIGNED_INT, 'unsigned int'],
-                [Blockly.Msg.VARIABLES_SET_TYPE_FLOAT, 'float'],
-                [Blockly.Msg.VARIABLES_SET_TYPE_DOUBLE, 'double'],
-                [Blockly.Msg.VARIABLES_SET_TYPE_CHAR, 'char'],
-                [Blockly.Msg.VARIABLES_SET_TYPE_STRING, 'std::string']];
+        var TYPE = Blockly.Blocks.VariableTypes;
         this.setColour(48);
         this.interpolateMsg(
             // TODO: Combine these messages instead of using concatenation.
@@ -898,14 +877,7 @@ Blockly.Blocks['procedures_mutatorarg_pointer'] = {
      * @this Blockly.Block
      */
     init: function() {
-        var TYPE =
-            [
-                [Blockly.Msg.VARIABLES_SET_TYPE_INT, 'int'],
-                [Blockly.Msg.VARIABLES_SET_TYPE_UNSIGNED_INT, 'unsigned int'],
-                [Blockly.Msg.VARIABLES_SET_TYPE_FLOAT, 'float'],
-                [Blockly.Msg.VARIABLES_SET_TYPE_DOUBLE, 'double'],
-                [Blockly.Msg.VARIABLES_SET_TYPE_CHAR, 'char'],
-                [Blockly.Msg.VARIABLES_SET_TYPE_STRING, 'std::string']];
+        var TYPE = Blockly.Blocks.VariableTypes;
         var ITERATION =
             [
                 [Blockly.Msg.VARIABLES_SET_ITERATION_NORMAL, '*'],
@@ -955,14 +927,7 @@ Blockly.Blocks['procedures_mutatorarg_reference'] = {
      * @this Blockly.Block
      */
     init: function() {
-        var TYPE =
-            [
-                [Blockly.Msg.VARIABLES_SET_TYPE_INT, 'int'],
-                [Blockly.Msg.VARIABLES_SET_TYPE_UNSIGNED_INT, 'unsigned int'],
-                [Blockly.Msg.VARIABLES_SET_TYPE_FLOAT, 'float'],
-                [Blockly.Msg.VARIABLES_SET_TYPE_DOUBLE, 'double'],
-                [Blockly.Msg.VARIABLES_SET_TYPE_CHAR, 'char'],
-                [Blockly.Msg.VARIABLES_SET_TYPE_STRING, 'std::string']];
+        var TYPE = Blockly.Blocks.VariableTypes;
         this.setColour(365);
         this.interpolateMsg(
             // TODO: Combine these messages instead of using concatenation.

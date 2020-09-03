@@ -519,13 +519,7 @@ Blockly.Blocks['structure_mutatormem'] = {
      * @this Blockly.Block
      */
     init: function() {
-        var TYPE =
-            [
-                [Blockly.Msg.VARIABLES_SET_TYPE_INT, 'int'],
-                [Blockly.Msg.VARIABLES_SET_TYPE_UNSIGNED_INT, 'unsigned int'],
-                [Blockly.Msg.VARIABLES_SET_TYPE_FLOAT, 'float'],
-                [Blockly.Msg.VARIABLES_SET_TYPE_DOUBLE, 'double'],
-                [Blockly.Msg.VARIABLES_SET_TYPE_CHAR, 'char']];
+        var TYPE = Blockly.Blocks.VariableTypes;
         this.setColour(370);
         this.appendDummyInput()
             .appendField(Blockly.Msg.STRUCTURE_MUTATORMEM_VAR)
@@ -567,13 +561,7 @@ Blockly.Blocks['structure_mutatormem_array'] = {
      * @this Blockly.Block
      */
     init: function() {
-        var TYPE =
-            [
-                [Blockly.Msg.VARIABLES_SET_TYPE_INT, 'int'],
-                [Blockly.Msg.VARIABLES_SET_TYPE_UNSIGNED_INT, 'unsigned int'],
-                [Blockly.Msg.VARIABLES_SET_TYPE_FLOAT, 'float'],
-                [Blockly.Msg.VARIABLES_SET_TYPE_DOUBLE, 'double'],
-                [Blockly.Msg.VARIABLES_SET_TYPE_CHAR, 'char']];
+        var TYPE = Blockly.Blocks.VariableTypes;
         this.setColour(370);
         this.interpolateMsg(
             // TODO: Combine these messages instead of using concatenation.
@@ -615,13 +603,7 @@ Blockly.Blocks['structure_mutatormem_pointer'] = {
      * @this Blockly.Block
      */
     init: function() {
-        var TYPE =
-            [
-                [Blockly.Msg.VARIABLES_SET_TYPE_INT, 'int'],
-                [Blockly.Msg.VARIABLES_SET_TYPE_UNSIGNED_INT, 'unsigned int'],
-                [Blockly.Msg.VARIABLES_SET_TYPE_FLOAT, 'float'],
-                [Blockly.Msg.VARIABLES_SET_TYPE_DOUBLE, 'double'],
-                [Blockly.Msg.VARIABLES_SET_TYPE_CHAR, 'char']];
+        var TYPE = Blockly.Blocks.VariableTypes;
         var ITERATION =
             [
                 [Blockly.Msg.VARIABLES_SET_ITERATION_NORMAL, '*'],

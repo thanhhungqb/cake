@@ -28,6 +28,13 @@ goog.provide('Blockly.Blocks.variables');
 
 goog.require('Blockly.Blocks');
 
+Blockly.Blocks.VariableTypes = [
+    [Blockly.Msg.VARIABLES_SET_TYPE_INT, 'int'],
+    [Blockly.Msg.VARIABLES_SET_TYPE_UNSIGNED_INT, 'unsigned int'],
+    [Blockly.Msg.VARIABLES_SET_TYPE_FLOAT, 'float'],
+    [Blockly.Msg.VARIABLES_SET_TYPE_DOUBLE, 'double'],
+    [Blockly.Msg.VARIABLES_SET_TYPE_CHAR, 'char'],
+    [Blockly.Msg.VARIABLES_SET_TYPE_STRING, 'std::string']];
 
 Blockly.Blocks['define_get'] = {
     init: function() {
@@ -398,14 +405,7 @@ Blockly.Blocks['variables_set'] = {
 
 Blockly.Blocks['variables_declare'] = {
     init: function() {
-        var TYPE =
-            [
-                [Blockly.Msg.VARIABLES_SET_TYPE_INT, 'int'],
-                [Blockly.Msg.VARIABLES_SET_TYPE_UNSIGNED_INT, 'unsigned int'],
-                [Blockly.Msg.VARIABLES_SET_TYPE_FLOAT, 'float'],
-                [Blockly.Msg.VARIABLES_SET_TYPE_DOUBLE, 'double'],
-                [Blockly.Msg.VARIABLES_SET_TYPE_CHAR, 'char'],
-                [Blockly.Msg.VARIABLES_SET_TYPE_STRING, 'std::string']];
+        var TYPE = Blockly.Blocks.VariableTypes;
         this.setColour(350);
         var name = Blockly.Procedures.findLegalName(
             Blockly.Msg.VARIABLES_DECLARE_DEFAULT_NAME, this);
@@ -726,14 +726,7 @@ Blockly.Blocks['variables_pointer_star_set'] = {
 
 Blockly.Blocks['variables_pointer_declare'] = {
     init: function() {
-        var TYPE =
-            [
-                [Blockly.Msg.VARIABLES_SET_TYPE_INT, 'int'],
-                [Blockly.Msg.VARIABLES_SET_TYPE_UNSIGNED_INT, 'unsigned int'],
-                [Blockly.Msg.VARIABLES_SET_TYPE_FLOAT, 'float'],
-                [Blockly.Msg.VARIABLES_SET_TYPE_DOUBLE, 'double'],
-                [Blockly.Msg.VARIABLES_SET_TYPE_CHAR, 'char'],
-                [Blockly.Msg.VARIABLES_SET_TYPE_STRING, 'std::string']];
+        var TYPE = Blockly.Blocks.VariableTypes;
         this.setColour(25);
         var name = Blockly.Procedures.findLegalName(
             Blockly.Msg.VARIABLES_POINTER_DECLARE_DEFAULT_NAME, this);
@@ -1130,14 +1123,7 @@ Blockly.Blocks['variables_array_set'] = {
 
 Blockly.Blocks['variables_array_declare'] = {
     init: function() {
-        var TYPE =
-            [
-                [Blockly.Msg.VARIABLES_SET_TYPE_INT, 'int'],
-                [Blockly.Msg.VARIABLES_SET_TYPE_UNSIGNED_INT, 'unsigned int'],
-                [Blockly.Msg.VARIABLES_SET_TYPE_FLOAT, 'float'],
-                [Blockly.Msg.VARIABLES_SET_TYPE_DOUBLE, 'double'],
-                [Blockly.Msg.VARIABLES_SET_TYPE_CHAR, 'char'],
-                [Blockly.Msg.VARIABLES_SET_TYPE_STRING, 'std::string']];
+        var TYPE = Blockly.Blocks.VariableTypes;
         this.setColour(48);
         var name = Blockly.Procedures.findLegalName(
             Blockly.Msg.VARIABLES_ARRAY_DECLARE_DEFAULT_NAME, this);
