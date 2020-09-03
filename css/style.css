@@ -9,7 +9,6 @@
 /* Reset the container */
 .container {
   max-width: none !important;
-  width: 1280px;
 }
 .container .navbar-header,
 .container .navbar-collapse {
