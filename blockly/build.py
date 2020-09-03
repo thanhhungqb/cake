@@ -168,6 +168,7 @@ class Gen_compressed(threading.Thread):
   def run(self):
     self.gen_core()
     self.gen_blocks()
+    self.gen_pytutor()
     self.gen_generator("cake")
     self.gen_generator("pythontutor")
 
@@ -186,6 +187,22 @@ class Gen_compressed(threading.Thread):
         continue
 
     self.do_compile(params, target_filename, filenames, "")
+
+  def gen_pytutor(self):
+    target_filename = "pytutor.js"
+    params = [
+        ("--compilation_level", "SIMPLE"),
+    ]
+
+    # Read in all the source files.
+    filenames = calcdeps.CalculateDependencies(self.search_paths,
+        [os.path.join("..", "js", "pytutor.js")])
+    for filename in filenames:
+      # Filter out the Closure files (the compiler will add them).
+      if filename.startswith(os.pardir + os.sep):  # '../'
+        continue
+
+    self.do_compile(params, target_filename, filenames)
 
   def gen_blocks(self):
     target_filename = "blocks_compressed.js"
