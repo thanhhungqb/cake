@@ -1,3 +1,7 @@
 [submodule "closure-library"]
 	path = closure-library
 	url = git@github.com:google/closure-library.git
+[submodule "gh-pages"]
+	path = gh-pages
+	url = git@github.com:BTechSCALE/cake.git
+	branch = gh-pages-wk04

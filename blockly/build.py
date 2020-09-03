@@ -169,6 +169,7 @@ class Gen_compressed(threading.Thread):
     self.gen_core()
     self.gen_blocks()
     self.gen_generator("cake")
+    self.gen_generator("pythontutor")
 
   def gen_core(self):
     target_filename = "blockly_compressed.js"
@@ -199,7 +200,7 @@ class Gen_compressed(threading.Thread):
 
     # Remove Blockly.Blocks to be compatible with Blockly.
     remove = "var Blockly={Blocks:{}};"
-    self.do_compile(params, target_filename, filenames, remove, extra_code)
+    self.do_compile(params, target_filename, filenames, remove, extra_code)                  
 
   def gen_generator(self, language):
     target_filename = language + "_compressed.js"
@@ -352,6 +353,8 @@ https://developers.google.com/blockly/hacking/closure""")
   # Compressed is limited by network and server speed.
   Gen_uncompressed(search_paths).start()
   Gen_compressed(search_paths).start()
+
+
 
   # This is run locally in a separate thread.
   #Gen_langfiles().start()
