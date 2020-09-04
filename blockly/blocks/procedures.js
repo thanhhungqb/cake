@@ -200,45 +200,31 @@ Blockly.Blocks['procedures_defnoreturn'] = {
             this.setWarningText(null);
         }
         // Merge the arguments into a human-readable list.
-        var paramString = '';
+        var params = '';
         if (this.arguments_.length) {
-            paramString = Blockly.Msg.PROCEDURES_BEFORE_PARAMS;
+            var paramString = [];
             for (var x = 0; x < this.arguments_.length; x++) {
-                if (x == 0) {
-                    if(this.dist_[x]=='v'){
-                        paramString = paramString + ' ' + this.types_[x] + ' ' + this.arguments_[x];
-                    }
-                    else if(this.dist_[x]=='a'){
-                        if(this.spec_[x][0]==1)
-                            paramString = paramString + ' ' + this.types_[x] + ' '+ this.arguments_[x] + '[' + this.spec_[x][1] + ']';
-                        else if(this.spec_[x][0]==2)
-                            paramString = paramString + ' ' + this.types_[x] + ' '+ this.arguments_[x] + '[' + this.spec_[x][1] + ']' + '[' + this.spec_[x][2] + ']';
-                        else if(this.spec_[x][0]==3)
-                            paramString = paramString + ' ' + this.types_[x] + ' '+ this.arguments_[x] + '[' + this.spec_[x][1] + ']' + '[' + this.spec_[x][2] + ']' + '[' + this.spec_[x][3] + ']';
-                    }
-                    else if(this.dist_[x]=='p' || this.dist_[x]=='r' ){
-                        paramString = paramString + ' ' + this.types_[x] + ' &' + this.arguments_[x];
-                    }
+
+                if(this.dist_[x]=='v'){
+                    paramString.push(this.types_[x] + ' ' + this.arguments_[x]);
                 }
-                else {
-                    if(this.dist_[x]=='v'){
-                        paramString = paramString + ', ' + this.types_[x] + ' ' + this.arguments_[x];
-                    }
-                    else if(this.dist_[x]=='a'){
-                        if(this.spec_[x][0]==1)
-                            paramString = paramString + ' ' + this.types_[x] + ' '+ this.arguments_[x] + '[' + this.spec_[x][1] + ']';
-                        else if(this.spec_[x][0]==2)
-                            paramString = paramString + ' ' + this.types_[x] + ' '+ this.arguments_[x] + '[' + this.spec_[x][1] + ']' + '[' + this.spec_[x][2] + ']';
-                        else if(this.spec_[x][0]==3)
-                            paramString = paramString + ' ' + this.types_[x] + ' '+ this.arguments_[x] + '[' + this.spec_[x][1] + ']' + '[' + this.spec_[x][2] + ']' + '[' + this.spec_[x][3] + ']';
-                    }
-                    else if(this.dist_[x]=='p' || this.dist_[x]=='r'){
-                        paramString = paramString + ', ' + this.types_[x] + ' &' + this.arguments_[x];
-                    }
+                else if(this.dist_[x]=='a'){
+                    if(this.spec_[x][0]==1)
+                        paramString.push(this.types_[x] + ' '+ this.arguments_[x] + '[' + this.spec_[x][1] + ']');
+                    else if(this.spec_[x][0]==2)
+                        paramString.push(this.types_[x] + ' '+ this.arguments_[x] + '[' + this.spec_[x][1] + ']' + '[' + this.spec_[x][2] + ']');
+                    else if(this.spec_[x][0]==3)
+                        paramString.push(this.types_[x] + ' '+ this.arguments_[x] + '[' + this.spec_[x][1] + ']' + '[' + this.spec_[x][2] + ']' + '[' + this.spec_[x][3] + ']');
+                }
+                else if(this.dist_[x]=='p') {
+                    paramString.push(this.types_[x] + this.spec_[x] + ' ' + this.arguments_[x]);
+                }else if(this.dist_[x]=='r') {
+                    paramString.push(this.types_[x] + ' &' + this.arguments_[x]);
                 }
             }
+            params = Blockly.Msg.PROCEDURES_BEFORE_PARAMS + paramString.join(', ');
         }
-        this.setFieldValue(paramString, 'PARAMS');
+        this.setFieldValue(params, 'PARAMS');
     },
     /**
      * Create XML to represent the argument inputs.

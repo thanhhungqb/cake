@@ -48,7 +48,7 @@ Blockly.PythonTutor['variables_set'] = function(block) {
   if (block._dist == 'r')
     code += '.v';
   return  code + ' = ' + argument0 + ';\n'+
-         'pyt.generate_trace('+block.id+')\n';
+         'pyt.generate_trace('+block.id+');\n';
 };
 
 Blockly.PythonTutor['variables_declare'] = function(block) {
@@ -64,7 +64,7 @@ Blockly.PythonTutor['variables_declare'] = function(block) {
   }
   return 'pyt.allocate_stack(frame, "'+varName+'",'+JSON.stringify(varInfo)+');\n'+
          'locals.'+varName+'.v = '+argument0+';\n'+
-         'pyt.generate_trace('+block.id+')\n';
+         'pyt.generate_trace('+block.id+');\n';
 };
 
 Blockly.PythonTutor.variables_pointer_get = function(block) {
@@ -80,7 +80,7 @@ Blockly.PythonTutor.variables_pointer_set = function(block) {
             Blockly.PythonTutor.ORDER_ASSIGNMENT);
     var varName = Blockly.PythonTutor.variableDB_.getName(block.getFieldValue('VAR'), Blockly.Variables.NAME_TYPE);
     return 'locals.'+varName+'.v='+ argument0 + ';\n' +
-           'pyt.generate_trace('+block.id+')\n';
+           'pyt.generate_trace('+block.id+');\n';
 };
 
 Blockly.PythonTutor.variables_pointer_star_set = function(block) {
@@ -89,7 +89,7 @@ Blockly.PythonTutor.variables_pointer_star_set = function(block) {
             Blockly.PythonTutor.ORDER_ASSIGNMENT);
     var varName = Blockly.PythonTutor.variableDB_.getName(block.getFieldValue('VAR'), Blockly.Variables.NAME_TYPE);
     return 'locals.'+varName+'.v.v='+ argument0 + ';\n' +
-           'pyt.generate_trace('+block.id+')\n';
+           'pyt.generate_trace('+block.id+');\n';
 };
 
 Blockly.PythonTutor.variables_pointer_declare = function(block) {
@@ -112,7 +112,7 @@ Blockly.PythonTutor.variables_pointer_declare = function(block) {
     }
     return 'pyt.allocate_stack(frame, "'+varName+'",'+JSON.stringify(varInfo)+');\n'+
            'locals.'+varName+'.v = '+argument0+';\n'+
-           'pyt.generate_trace('+block.id+')\n';
+           'pyt.generate_trace('+block.id+');\n';
 
 };
 

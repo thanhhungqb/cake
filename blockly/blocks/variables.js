@@ -392,6 +392,9 @@ Blockly.Blocks['variables_set'] = {
         // check if block is within a for init or inc statement
         Blockly.Blocks.forPlacementCheck(this);
         var varName = this.getFieldValue('VAR');
+        if (!varName)
+            return;
+
         var info = Blockly.FieldDropdown.prototype.getTypefromVars(varName , ["type", "dist"], this)
         var varType = info[0];
         this._dist = info[1];
