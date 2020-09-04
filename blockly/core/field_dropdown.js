@@ -290,7 +290,7 @@ Blockly.FieldDropdown.prototype.dispose = function() {
  */
 Blockly.FieldDropdown.prototype.getTypefromVars = function(blockVars, option, block) {
   var wantedValue = Blockly.Variables.getVariableBlocks({name: blockVars}, block);
-  if (!wantedValue)
+  if (!wantedValue || !wantedValue.length)
     return null;
   if (option instanceof Array) {
     return option.map(function(opt){ return wantedValue[0][opt]});

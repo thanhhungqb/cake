@@ -261,7 +261,7 @@ Blockly.PythonTutor.generate_trace = function(id, event="step_line") {
     stack.ordered_locals.flat().forEach(function(arg) {
       var a = ['C_DATA', "0x"+("0000"+arg.a.toString(16)).substr(-4), arg.t, arg.v];
       if (arg.d == 'p') {
-        a[2] += ' pointer';
+        a[2] = 'pointer';
         a[3] = "0x"+("0000"+arg.v.a.toString(16)).substr(-4);
       } else if (arg.d == 'r') {
         a[0] = 'C++_REF';

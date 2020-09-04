@@ -56,6 +56,8 @@ Blockly.PythonTutor['math_arithmetic'] = function(block) {
     return [code, Blockly.PythonTutor.ORDER_FUNCTION_CALL];
   }
   code = argument0 + operator + argument1;
+  if (block.getOutput()[0] == 'INT')
+    code = '~~(' + code + ')';
   return [code, order];
 };
 

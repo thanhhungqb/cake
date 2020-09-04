@@ -285,10 +285,12 @@ Blockly.Blocks['variables_get'] = {
     onchange: function() {
         var varName = this.getFieldValue('VAR');
         var info = Blockly.FieldDropdown.prototype.getTypefromVars(varName, ["type", "dist"], this);
-        var varType = info[0];
-        var varDist = info[1];
-        this.setOutputType('VAR', varType);
-        this._dist = varDist;
+        if (info && info.length) {
+            var varType = info[0];
+            var varDist = info[1];
+            this.setOutputType('VAR', varType);
+            this._dist = varDist;
+        }
     },
 
     setOutputType: function(dist, varType) {
@@ -392,6 +394,9 @@ Blockly.Blocks['variables_set'] = {
         // check if block is within a for init or inc statement
         Blockly.Blocks.forPlacementCheck(this);
         var varName = this.getFieldValue('VAR');
+        if (!varName)
+            return;
+
         var info = Blockly.FieldDropdown.prototype.getTypefromVars(varName , ["type", "dist"], this)
         var varType = info[0];
         this._dist = info[1];

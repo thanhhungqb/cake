@@ -1391,6 +1391,12 @@ Blockly.Block.prototype.changeOutput = function(check) {
   this.outputConnection.setCheck(check);
 };
 
+Blockly.Block.prototype.getOutput = function() {
+  if (!this.outputConnection)
+    return null;
+  return this.outputConnection.check_;
+}
+
 /**
  * Set whether value inputs are arranged horizontally or vertically.
  * @param {boolean} newBoolean True if inputs are horizontal.
