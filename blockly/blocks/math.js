@@ -98,6 +98,32 @@ Blockly.Blocks['math_arithmetic'] = {
       return TOOLTIPS[mode];
     });
   },
+  // Change block output when both inputs are integers
+  onchange: function() {
+      if (!this.getInputTargetBlock('A') || !this.getInputTargetBlock('B')) {
+          return;
+      }
+      var int = false;
+      var intTypes = ['INT', 'VAR_INT', 'VAR_UNINT', 'NEGATIVE'];
+      var a_out = this.getInputTargetBlock('A').getOutput();
+      for (var i = 0; i < a_out.length; i++) {
+        if (intTypes.indexOf(a_out[i]) != -1) {
+            int = true;
+            break;
+        }
+      }
+      if (int) {
+        var b_out = this.getInputTargetBlock('B').getOutput();
+        for (var i = 0; i < b_out.length; i++) {
+            if (intTypes.indexOf(b_out[i]) != -1) {
+                this.changeOutput('INT');
+                return;
+            }
+        }
+      }
+      this.changeOutput('Number');
+      return;
+  }
 };
 
 Blockly.Blocks['math_modulo'] = {
@@ -109,8 +135,8 @@ Blockly.Blocks['math_modulo'] = {
     this.setColour(240);
     this.setOutput(true, 'Number');
     this.interpolateMsg(Blockly.Msg.MATH_MODULO_TITLE,
-                        ['DIVIDEND', ['Number', 'INT', 'NEGATIVE', 'Variable', 'VAR_INT', 'VAR_UNINT', 'DOUBLE', 'VAR_DOUBLE', 'VAR_FLOAT', 'Aster'], Blockly.ALIGN_RIGHT],
-                        ['DIVISOR', ['Number', 'INT', 'NEGATIVE', 'Variable', 'VAR_INT', 'VAR_UNINT', 'DOUBLE', 'VAR_DOUBLE', 'VAR_FLOAT', 'Aster'], Blockly.ALIGN_RIGHT],
+                        ['DIVIDEND', ['Number', 'INT', 'NEGATIVE', 'Variable', 'VAR_INT', 'VAR_UNINT', 'Aster'], Blockly.ALIGN_RIGHT],
+                        ['DIVISOR', ['Number', 'INT', 'NEGATIVE', 'Variable', 'VAR_INT', 'VAR_UNINT', 'Aster'], Blockly.ALIGN_RIGHT],
                         Blockly.ALIGN_RIGHT);
     this.setInputsInline(true);
     this.setTooltip(Blockly.Msg.MATH_MODULO_TOOLTIP);

@@ -285,10 +285,12 @@ Blockly.Blocks['variables_get'] = {
     onchange: function() {
         var varName = this.getFieldValue('VAR');
         var info = Blockly.FieldDropdown.prototype.getTypefromVars(varName, ["type", "dist"], this);
-        var varType = info[0];
-        var varDist = info[1];
-        this.setOutputType('VAR', varType);
-        this._dist = varDist;
+        if (info && info.length) {
+            var varType = info[0];
+            var varDist = info[1];
+            this.setOutputType('VAR', varType);
+            this._dist = varDist;
+        }
     },
 
     setOutputType: function(dist, varType) {
