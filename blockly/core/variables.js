@@ -57,7 +57,7 @@ Blockly.Variables.allVariables = function(block) {
         blocks.push(parent.getInputTargetBlock("INIT"));
       } else if (parent.type == "procedures_defreturn"
                  && parent.getInputTargetBlock("RETURN") == block) {
-        for (parent = parent.getInputTargetBlock("STACK"); parent.getNextBlock(); parent = parent.getNextBlock());
+        for (parent = parent.getInputTargetBlock("STACK"); parent.getNextBlock(); parent = parent.getNextBlock()) {}
       }
       block = parent;
       blocks.push(block);

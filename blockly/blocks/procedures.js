@@ -28,16 +28,11 @@ goog.provide('Blockly.Blocks.procedures');
 
 goog.require('Blockly.Blocks');
 
-Blockly.Blocks.Types = [[Blockly.Msg.VARIABLES_SET_TYPE_INT, 'int'],
-                        [Blockly.Msg.VARIABLES_SET_TYPE_UNSIGNED_INT, 'unsigned int'],
-                        [Blockly.Msg.VARIABLES_SET_TYPE_FLOAT, 'float'],
-                        [Blockly.Msg.VARIABLES_SET_TYPE_DOUBLE, 'double'],
-                        [Blockly.Msg.VARIABLES_SET_TYPE_CHAR, 'char'],
-                        [Blockly.Msg.VARIABLES_SET_TYPE_STRING, 'std::string']];
-
-Blockly.Blocks.Dists = [[Blockly.Msg.VARIABLES_SET_DIST_VARIABLE, 'variable'],
-                        [Blockly.Msg.VARIABLES_SET_DIST_POINTER, 'pointer'],
-                        [Blockly.Msg.VARIABLES_SET_DIST_ARRAY, 'array']];
+Blockly.Blocks.VariableDists = [
+    [Blockly.Msg.VARIABLES_SET_DIST_VARIABLE, 'variable'],
+    [Blockly.Msg.VARIABLES_SET_DIST_POINTER, 'pointer'],
+//    [Blockly.Msg.VARIABLES_SET_DIST_ARRAY, 'array']
+];
 
 
 Blockly.Blocks['main_block'] = {
@@ -128,9 +123,7 @@ Blockly.Blocks['procedures_return'] = {
             var type = block.getFieldValue('TYPES');
             if (dist == 'array') {
                 dist = 'variable';
-                //dist = 'pointer';
             }
-
             // variable
             if (dist == 'variable') {
                 Blockly.Blocks.setCheckVariable(block, type, 'RETURN');
@@ -160,7 +153,12 @@ Blockly.Blocks['procedures_defnoreturn'] = {
             .appendField('', 'PARAMS');
         this.appendStatementInput('STACK')
             .appendField(Blockly.Msg.PROCEDURES_DEFNORETURN_DO);
-        this.setMutator(new Blockly.Mutator(['procedures_mutatorarg', 'procedures_mutatorarg_reference', 'procedures_mutatorarg_pointer', 'procedures_mutatorarg_array']));
+        this.setMutator(new Blockly.Mutator([
+            'procedures_mutatorarg',
+            'procedures_mutatorarg_reference',
+            'procedures_mutatorarg_pointer',
+//            'procedures_mutatorarg_array'
+        ]));
         this.setTooltip(Blockly.Msg.PROCEDURES_DEFNORETURN_TOOLTIP);
         this.arguments_ = [];
         this.types_ = [];
@@ -596,11 +594,7 @@ Blockly.Blocks['procedures_defreturn'] = {
      */
     init: function() {
         var TYPE = Blockly.Blocks.VariableTypes;
-        var DIST = [
-            [Blockly.Msg.VARIABLES_SET_DIST_VARIABLE, 'variable'],
-            [Blockly.Msg.VARIABLES_SET_DIST_POINTER, 'pointer'],
-            [Blockly.Msg.VARIABLES_SET_DIST_ARRAY, 'array']
-        ];
+        var DIST = Blockly.Blocks.VariableDists;
         this.setColour(300);
         var name = Blockly.Procedures.findLegalName(
             Blockly.Msg.PROCEDURES_DEFRETURN_PROCEDURE, this);

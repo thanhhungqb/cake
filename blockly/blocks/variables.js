@@ -30,11 +30,12 @@ goog.require('Blockly.Blocks');
 
 Blockly.Blocks.VariableTypes = [
     [Blockly.Msg.VARIABLES_SET_TYPE_INT, 'int'],
-    [Blockly.Msg.VARIABLES_SET_TYPE_UNSIGNED_INT, 'unsigned int'],
-    [Blockly.Msg.VARIABLES_SET_TYPE_FLOAT, 'float'],
+//    [Blockly.Msg.VARIABLES_SET_TYPE_UNSIGNED_INT, 'unsigned int'],
+//    [Blockly.Msg.VARIABLES_SET_TYPE_FLOAT, 'float'],
     [Blockly.Msg.VARIABLES_SET_TYPE_DOUBLE, 'double'],
     [Blockly.Msg.VARIABLES_SET_TYPE_CHAR, 'char'],
-    [Blockly.Msg.VARIABLES_SET_TYPE_STRING, 'std::string']];
+//    [Blockly.Msg.VARIABLES_SET_TYPE_STRING, 'std::string']
+];
 
 Blockly.Blocks['define_get'] = {
     init: function() {
@@ -398,13 +399,15 @@ Blockly.Blocks['variables_set'] = {
             return;
 
         var info = Blockly.FieldDropdown.prototype.getTypefromVars(varName , ["type", "dist"], this)
-        var varType = info[0];
-        this._dist = info[1];
+        if (info) {
+            var varType = info[0];
+            this._dist = info[1];
 
-        if (varType == false) {
-            varType = 'int';
+            if (varType == false) {
+                varType = 'int';
+            }
+            Blockly.Blocks.setCheckVariable(this, varType, 'VALUE');
         }
-        Blockly.Blocks.setCheckVariable(this, varType, 'VALUE');
     }
 };
 
@@ -589,13 +592,15 @@ Blockly.Blocks['variables_pointer_get'] = {
     onchange: function() {
         var varName = this.getFieldValue('VAR');
         var info = Blockly.FieldDropdown.prototype.getTypefromVars(varName , ["type", "spec"], this)
-        var varType = info[0];
-        var dimension = info[1];
-        if (dimension == '*') {
-            this.setOutputType('PTR', varType);
-        }
-        else if(dimension == '**') {
-            this.setOutputType('DBPTR', varType);
+        if (info) {
+            var varType = info[0];
+            var dimension = info[1];
+            if (dimension == '*') {
+                this.setOutputType('PTR', varType);
+            }
+            else if(dimension == '**') {
+                this.setOutputType('DBPTR', varType);
+            }
         }
     },
     setOutputType: Blockly.Blocks['variables_get'].setOutputType
@@ -1316,12 +1321,14 @@ Blockly.Blocks['variables_pointer_*'] = {
                      if (nextblock.type.search('variables') == 0) {
                          if (nextblock.type.search('pointer') > 0) {
                              var varName = nextblock.getVars();
-                             var info = Blockly.FieldDropdown.prototype.getTypefromVars(varName , ["type", "spec"], this)
-                             var varType = info[0];
-                             var dimension = info[1];
-                             // **DOUBLE POINTER -> Variable
-                             if (dimension == '**') {
-                                 this.setOutputType('VAR', varType);
+                             var info = Blockly.FieldDropdown.prototype.getTypefromVars(varName , ["type", "spec"], this);
+                             if (info) {
+                                var varType = info[0];
+                                var dimension = info[1];
+                                // **DOUBLE POINTER -> Variable
+                                if (dimension == '**') {
+                                    this.setOutputType('VAR', varType);
+                                }
                              }
                          }
                      }
@@ -1332,6 +1339,8 @@ Blockly.Blocks['variables_pointer_*'] = {
             else if (nextblock.type.search('variables') == 0) {
                 var varName = nextblock.getVars();
                 var info = Blockly.FieldDropdown.prototype.getTypefromVars(varName , ["type", "spec"], this)
+                if (!info)
+                    return;
                 var varType = info[0];
                 var dimension = info[1];
 
