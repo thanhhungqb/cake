@@ -181,7 +181,7 @@ Blockly.PythonTutor.allocate_stack = function(frame, name, arg) {
                   n:arg.name,
                   s:arg.scope,
                   c:arg.spec,
-                  v:undefined};
+                  v:arg.value};
   frame.locals[name] = variable;
   frame.ordered_locals[frame.ordered_locals.length-1].push(variable);
 };
@@ -200,8 +200,9 @@ Blockly.PythonTutor.create_stack_frame = function(name, args) {
   return '  var locals = {}; var frame = {frame_id:'+frame_id+', top:top, func_name: "' + name + '", locals, ordered_locals:[[]]}\n' +
          args.map(function(arg) {
            var varName = Blockly.PythonTutor.variableDB_.getName(arg.name, Blockly.Variables.NAME_TYPE);
-            return 'pyt.allocate_stack(frame, "'+varName+'", '+JSON.stringify(arg)+');' +
-                   'locals.'+varName+'.v = '+varName;
+            return 'pyt.allocate_stack(frame, "'+varName+'", '+JSON.stringify(arg)+'); ' +
+                   'locals.'+varName+'.v = '+varName +
+                   (arg.dist == 'r' ? '; locals.'+varName+'='+varName : '') + ';';
           }).join('\n') +
          '\n  env.push(frame);\n';
 }

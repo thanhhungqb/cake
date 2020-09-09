@@ -33,8 +33,8 @@ Blockly.PythonTutor['variables_get'] = function(block) {
   // Variable getter.
   var code = 'locals.'+Blockly.PythonTutor.variableDB_.getName(block.getFieldValue('VAR'),
       Blockly.Variables.NAME_TYPE)+'.v';
-  if (block._dist == 'r')
-    code += '.v';
+//   if (block._dist == 'r')
+//     code += '.v';
   return [code, Blockly.PythonTutor.ORDER_ATOMIC];
 };
 
@@ -45,8 +45,8 @@ Blockly.PythonTutor['variables_set'] = function(block) {
   var varName = Blockly.PythonTutor.variableDB_.getName(
       block.getFieldValue('VAR'), Blockly.Variables.NAME_TYPE);
   var code = 'locals.'+varName + '.v';
-  if (block._dist == 'r')
-    code += '.v';
+//   if (block._dist == 'r')
+//     code += '.v';
   return  code + ' = ' + argument0 + ';\n'+
          'pyt.generate_trace('+block.id+');\n';
 };
