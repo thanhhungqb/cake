@@ -285,6 +285,8 @@ Blockly.PythonTutor.generate_trace = function(id, event="step_line") {
       stdout: stack.stdout,
     })
   });
+  // highlight last frame
+  frame.stack_to_render[frame.stack_to_render.length-1].is_highlighted = true;
   Blockly.PythonTutor.trace_.push(frame);
 };
 

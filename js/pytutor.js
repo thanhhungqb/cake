@@ -211,12 +211,12 @@ function ExecutionVisualizer(domRootID, dat, params) {
     PaintStyle: {lineWidth:1, strokeStyle: connectorBaseColor},
 
     // bezier curve style:
-    //Connector: [ "Bezier", { curviness:15 }], /* too much 'curviness' causes lines to run together */
-    //Overlays: [[ "Arrow", { length: 14, width:10, foldback:0.55, location:0.35 }]],
+    Connector: [ "Bezier", { curviness:50 }], /* too much 'curviness' causes lines to run together */
+    //Overlays: [[ "Arrow", { length: 14, width:10, foldback:0.55, location:1 }]],
 
     // state machine curve style:
-    Connector: [ "StateMachine" ],
-    Overlays: [[ "Arrow", { length: 10, width:7, foldback:0.55, location:1 }]],
+    //Connector: [ "StateMachine" ],
+    Overlays: [[ "Arrow", { length: 10, width:7, foldback:0.7, location:1 }]],
     EndpointHoverStyles: [{fillStyle: connectorHighlightColor}, {fillstyle: null} /* make right endpoint invisible */],
     HoverPaintStyle: {lineWidth: 1, strokeStyle: connectorHighlightColor},
   });
@@ -3144,7 +3144,7 @@ ExecutionVisualizer.prototype.renderDataStructures = function(curEntry, curTople
     // the boat on my existing (battle-tested) code
     if (myViz.isCppMode()) {
       if (myViz.domRoot.find('#' + valueID).length) {
-        myViz.jsPlumbInstance.connect({source: varID, target: valueID, curviness:300, anchors:["RightMiddle", "RightMiddle"], scope: 'varValuePointer'});
+        myViz.jsPlumbInstance.connect({source: varID, target: valueID, anchors:["RightMiddle", "RightMiddle"], scope: 'varValuePointer'});
       } else {
         // pointer isn't pointing to anything valid; put a poo emoji here
         myViz.domRoot.find('#' + varID).html('\uD83D\uDCA9' /* pile of poo emoji */);
