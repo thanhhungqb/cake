@@ -41,7 +41,7 @@ Blockly.cake['lists_create_with'] = function(block) {
     code[n] = Blockly.cake.valueToCode(block, 'ADD' + n,
         Blockly.cake.ORDER_COMMA) || 'null';
   }
-  code = '[' + code.join(', ') + ']';
+  code = '{' + code.join(', ') + '}';
   return [code, Blockly.cake.ORDER_ATOMIC];
 };
 

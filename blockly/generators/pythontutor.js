@@ -173,8 +173,18 @@ Blockly.PythonTutor.type_sizes = {
 
 Blockly.PythonTutor.allocate_stack = function(frame, name, arg) {
   var a = Blockly.PythonTutor.top_of_stack;
-  if (arg.dist != 'r')
+  if (arg.dist == 'a') {
+    arg.value = [];
+    // allocate array elements
+    for (var i = 0; i < arg.spec[1]; i++) {
+      arg.value.push({a:Blockly.PythonTutor.top_of_stack,
+                      t:arg.type,
+                      v:undefined});
+      Blockly.PythonTutor.top_of_stack += Blockly.PythonTutor.type_sizes[arg.type];
+    }
+  } else if (arg.dist != 'r') {
     Blockly.PythonTutor.top_of_stack += Blockly.PythonTutor.type_sizes[arg.type];
+  }
   var variable = {a:a,
                   t:arg.type,
                   d:arg.dist,
@@ -199,10 +209,21 @@ Blockly.PythonTutor.create_stack_frame = function(name, args) {
   var frame_id = Blockly.PythonTutor.frame_id++;
   return '  var locals = {}; var frame = {frame_id:'+frame_id+', top:top, func_name: "' + name + '", locals, ordered_locals:[[]]}\n' +
          args.map(function(arg) {
-           var varName = Blockly.PythonTutor.variableDB_.getName(arg.name, Blockly.Variables.NAME_TYPE);
+            var varName = Blockly.PythonTutor.variableDB_.getName(arg.name, Blockly.Variables.NAME_TYPE);
+            var tail = ";";
+
+            switch (arg.dist) {
+              case 'a':
+                // passing an array is decomposed to a pointer
+                arg.dist = 'p';
+                // fall through. array works like reference.
+              case 'r':
+                tail += ' locals.'+varName+'='+varName + ';';
+                break;
+            }
+
             return 'pyt.allocate_stack(frame, "'+varName+'", '+JSON.stringify(arg)+'); ' +
-                   'locals.'+varName+'.v = '+varName +
-                   (arg.dist == 'r' ? '; locals.'+varName+'='+varName : '') + ';';
+                   'locals.'+varName+'.v = '+varName + tail;
           }).join('\n') +
          '\n  env.push(frame);\n';
 }
@@ -243,6 +264,9 @@ Blockly.PythonTutor.pop_scope = function(frame) {
 // }
 
 Blockly.PythonTutor.generate_trace = function(id, event="step_line") {
+  var toHex = function(addr) {
+    return "0x"+("0000"+addr.toString(16)).substr(-4);
+  }
   // limit trace
   if (Blockly.PythonTutor.trace_.length >= 1000) {
     throw new Error('Execution has reached 1000 step limit. Check for infinite loops or reduce number of loops.');
@@ -260,14 +284,19 @@ Blockly.PythonTutor.generate_trace = function(id, event="step_line") {
   env.stacks.forEach(function(stack) {
     var locals = []
     stack.ordered_locals.flat().forEach(function(arg) {
-      var a = ['C_DATA', "0x"+("0000"+arg.a.toString(16)).substr(-4), arg.t, arg.v];
+      var a = ['C_DATA', toHex(arg.a), arg.t, arg.v];
       if (arg.d == 'p') {
         a[2] = 'pointer';
-        a[3] = "0x"+("0000"+arg.v.a.toString(16)).substr(-4);
+        a[3] = toHex(arg.v.a);
       } else if (arg.d == 'r') {
         a[0] = 'C++_REF';
-        a[1] = "0x"+("0000"+arg.v.a.toString(16)).substr(-4);
+        a[1] = toHex(arg.v.a);
         a[3] = arg.v.v;
+      } else if (arg.d == 'a') {
+        a = ['C_ARRAY', toHex(arg.a)];
+        arg.v.forEach(function(ele) {
+          a.push(['C_DATA', toHex(ele.a), ele.t, ele.v]);
+        });
       }
 
       a['n'] = arg.n;
@@ -286,6 +315,7 @@ Blockly.PythonTutor.generate_trace = function(id, event="step_line") {
       stdout: stack.stdout,
     })
   });
+  frame.stack_to_render[frame.stack_to_render.length-1].is_highlighted = true;
   Blockly.PythonTutor.trace_.push(frame);
 };
 

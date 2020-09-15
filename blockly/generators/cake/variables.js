@@ -143,66 +143,14 @@ Blockly.cake['variables_pointer_*'] = function(block) {
     return ['*' + argument0, Blockly.cake.ORDER_ATOMIC];
 };
 
+Blockly.cake['variables_array_get_array'] = Blockly.cake['variables_get'];
+
 Blockly.cake['variables_array_get'] = function(block) {
     var varName = Blockly.cake.variableDB_.getName(block.getFieldValue('VAR'),
         Blockly.Variables.NAME_TYPE);
     varName = Blockly.Blocks.checkUnselect(varName);
-
-    var length_1 = block.getIndices()[0];
-    var length_2 = block.getIndices()[1];
-    var length_3 = block.getIndices()[2];
-
-    // if length_1 is number
-    if (isNaN(length_1) == false) {
-        length_1 = (length_1 == '' ? -1 :length_1 * 1);
-    }
-    if (isNaN(length_2) == false) {
-        length_2 = (length_2 == '' ? -1 :length_2 * 1);
-    }
-    if (isNaN(length_3) == false) {
-        length_3 = (length_3 == '' ? -1 : length_3 * 1);
-    }
-    // get array list
-    var arrList = Blockly.Variables.getVariableBlocks({dist: 'a'});
-
-    // get index of array from array list
-    var idxList = Blockly.Blocks.getIndexArray(arrList, varName);
-
-    var code;
-    var isAvbNum1, isAvbNum2, isAvbNum3;
-
-    isAvbNum1 = Blockly.Blocks.checkArrayIndex(length_1, idxList[0]);
-    isAvbNum2 = Blockly.Blocks.checkArrayIndex(length_2, idxList[1]);
-    isAvbNum3 = Blockly.Blocks.checkArrayIndex(length_3, idxList[2]);
-
-    // index over -> msg
-    if ((isAvbNum1 == false && length_1 != -1) || (isAvbNum2 == false && length_2 != -1) || (isAvbNum3 == false && length_3 != -1)) {
-        window.alert('out of index');
-        block.initIdx(isAvbNum1, isAvbNum2, isAvbNum3);
-    }
-
-    else if (isAvbNum1 == true && isAvbNum2 == false && isAvbNum3 == false)
-        code = varName + '[' + length_1 + ']';
-    else if (isAvbNum1 == true && isAvbNum2 == true && isAvbNum3 == false)
-        code = varName + '[' + length_1 + ']' + '[' + length_2 + ']';
-    else if (isAvbNum1 == true && isAvbNum2 == true && isAvbNum3 == true)
-        code = varName + '[' + length_1 + ']' + '[' + length_2 + ']' + '[' + length_3 + ']';
-    else if (isAvbNum1 == false && isAvbNum2 == false && isAvbNum3 == false) {
-        var arrName = this.getFieldValue('VAR');
-        var arrIdxLength = Blockly.FieldVariableArray.getBlockIdxLength(arrName);
-        if (arrIdxLength == 1) {
-            code = varName + '[]';
-        }
-        else if (arrIdxLength == 2) {
-            code = varName + '[][]';
-        }
-        else {
-            code = varName + '[][][]';
-        }
-    }
-    else
-        block.initIdx(isAvbNum1, isAvbNum2, isAvbNum3);
-
+    var index = Blockly.cake.valueToCode(block, 'LENGTH_1', Blockly.cake.ORDER_ATOMIC);
+    var code = varName + '[' + index + ']';
     return [code, Blockly.cake.ORDER_ATOMIC];
 };
 
@@ -210,54 +158,12 @@ Blockly.cake['variables_array_set'] = function(block) {
     // Variable setter.
     var argument0 = Blockly.cake.valueToCode(block, 'VALUE',
             Blockly.cake.ORDER_ASSIGNMENT) || '0';
-    var varName = Blockly.cake.variableDB_.getName(
-        block.getFieldValue('VAR'), Blockly.Variables.NAME_TYPE);
-
+    var varName = Blockly.cake.variableDB_.getName(block.getFieldValue('VAR'),
+            Blockly.Variables.NAME_TYPE);
     varName = Blockly.Blocks.checkUnselect(varName);
+    var index = Blockly.cake.valueToCode(block, 'LENGTH_1', Blockly.cake.ORDER_ATOMIC);
+    return varName + '[' + index + '] = ' + argument0 + '\n';
 
-    var length_1 = block.getIndices()[0];
-    var length_2 = block.getIndices()[1];
-    var length_3 = block.getIndices()[2];
-
-    // if no-input : regarded as -1 to distinguish with 0
-    length_1 = (length_1 == '' ? -1 :length_1);
-    length_2 = (length_2 == '' ? -1 :length_2);
-    length_3 = (length_3 == '' ? -1 :length_3);
-
-    // get array list
-    var arrList = Blockly.Variables.getVariableBlocks({dist: 'a'});
-
-    // get index of array from array list
-    var idxList = Blockly.Blocks.getIndexArray(arrList, varName);
-
-    var code;
-    /* if (isNaN(length_1) == true || isNaN(length_2) == true || isNaN(length_3) == true) {
-     window.alert('Error, you have to enter the number in length');
-     }
-     else {*/
-    var isAvbNum1, isAvbNum2, isAvbNum3;
-
-    isAvbNum1 = Blockly.Blocks.checkArrayIndex(length_1, idxList[0]);
-    isAvbNum2 = Blockly.Blocks.checkArrayIndex(length_2, idxList[1]);
-    isAvbNum3 = Blockly.Blocks.checkArrayIndex(length_3, idxList[2]);
-
-    // index over -> msg
-    if ((isAvbNum1 == false && length_1 != -1) || (isAvbNum2 == false && length_2 != -1) || (isAvbNum3 == false && length_3 != -1)) {
-        window.alert('out of Index');
-        block.initIdx(isAvbNum1, isAvbNum2, isAvbNum3);
-    }
-    else if (isAvbNum1 == true && isAvbNum2 == false)
-        code = varName + '[' + length_1 + ']' + ' = ' + argument0 + ';\n';
-    else if (isAvbNum1 == true && isAvbNum2 == true && isAvbNum3 == false)
-        code = varName + '[' + length_1 + ']' + '[' + length_2 + ']' + ' = ' + argument0 + ';\n';
-    else if (isAvbNum1 == true && isAvbNum2 == true && isAvbNum3 == true)
-        code = varName + '[' + length_1 + ']' + '[' + length_2 + ']' + '[' + length_3 + ']' + ' = ' + argument0 + ';\n';
-    else{
-        code = varName + '[0][0][0] = ' + argument0 + ';\n';
-    }
-
-    //}
-    return code;
 };
 
 Blockly.cake['variables_array_declare'] = function(block) {
@@ -282,14 +188,20 @@ Blockly.cake['variables_array_declare'] = function(block) {
     }
     */
     if (length_1 != 0 && length_2 == 0 && length_3 == 0)
-        code = varType + ' ' + varName + '[' + length_1 + '];\n';
+        code = varType + ' ' + varName + '[' + length_1 + ']';
     else if (length_1 != 0 && length_2 != 0 && length_3 == 0)
-        code = varType + ' ' + varName + '[' + length_1 + ']' + '[' + length_2 + '];\n';
+        code = varType + ' ' + varName + '[' + length_1 + ']' + '[' + length_2 + ']';
     else if (length_1 != 0 && length_2 != 0 && length_3 != 0)
-        code = varType + ' ' + varName +  '[' + length_1 + ']' + '[' + length_2 + ']' + '[' + length_3 + '];\n';
+        code = varType + ' ' + varName +  '[' + length_1 + ']' + '[' + length_2 + ']' + '[' + length_3 + ']';
     /*else
         window.alert('Please confirm array index');
 */
+    var init = Blockly.cake.valueToCode(block, 'VALUE',
+                  Blockly.cake.ORDER_ASSIGNMENT);
+    if (init) {
+        code += ' = ' + init;
+    }
+    code += ';\n';
     if (Blockly.Blocks.checkLegalName(Blockly.Msg.VARIABLES_ILLEGALNAME, varName) == -1){
         this.initVar();
     }

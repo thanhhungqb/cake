@@ -126,3 +126,57 @@ Blockly.PythonTutor['variables_pointer_*'] = function(block) {
     var argument0 = Blockly.PythonTutor.valueToCode(block, 'VALUE', Blockly.PythonTutor.ORDER_ASSIGNMENT);
     return [argument0+'.v', Blockly.PythonTutor.ORDER_ATOMIC];
 };
+
+Blockly.PythonTutor.variables_array_declare = function(block) {
+    // Array declare.
+    var varName = Blockly.PythonTutor.variableDB_.getName(
+        block.getFieldValue('VAR'), Blockly.Variables.NAME_TYPE);
+    var varInfo = block.getInfo();
+
+    var argument0 = Blockly.PythonTutor.valueToCode(block, 'VALUE',
+            Blockly.PythonTutor.ORDER_ASSIGNMENT);
+
+    var code = "";
+    if (argument0) {
+        code += "var c="+argument0+';\n';
+        for (var i = 0; i < varInfo.spec[1]; i++) {
+            code += 'locals.'+varName+'.v['+i+'].v = ';
+            code += ' c['+i+'] || 0;\n';
+        }
+    }
+
+    if (Blockly.Blocks.checkLegalName(Blockly.Msg.VARIABLES_ILLEGALNAME, varName) == -1){
+        this.initVar();
+    }
+
+    return 'pyt.allocate_stack(frame, "'+varName+'",'+JSON.stringify(varInfo)+');\n'+
+           code + 'pyt.generate_trace('+block.id+');\n';
+
+};
+
+Blockly.PythonTutor.variables_array_set = function(block) {
+    // Array setter.
+    var argument0 = Blockly.PythonTutor.valueToCode(block, 'VALUE',
+            Blockly.PythonTutor.ORDER_ASSIGNMENT);
+    var index = Blockly.PythonTutor.valueToCode(block, 'LENGTH_1', Blockly.PythonTutor.ORDER_ATOMIC)
+    var varName = Blockly.PythonTutor.variableDB_.getName(block.getFieldValue('VAR'), Blockly.Variables.NAME_TYPE);
+
+    return 'locals.'+varName+'.v['+index+'].v = '+ argument0 + ';\n' +
+           'pyt.generate_trace('+block.id+');\n';
+};
+
+Blockly.PythonTutor.variables_array_get_array = function(block) {
+    // Variable getter.
+    var code = 'locals.' + Blockly.PythonTutor.variableDB_.getName(block.getFieldValue('VAR'),
+        Blockly.Variables.NAME_TYPE);
+    return [code, Blockly.PythonTutor.ORDER_ATOMIC];
+}
+
+Blockly.PythonTutor.variables_array_get = function(block) {
+    // Array getter.
+    var index = Blockly.PythonTutor.valueToCode(block, 'LENGTH_1', Blockly.PythonTutor.ORDER_ATOMIC)
+    var varName = Blockly.PythonTutor.variableDB_.getName(block.getFieldValue('VAR'), Blockly.Variables.NAME_TYPE);
+
+    var code =  'locals.'+varName+'.v['+index+'].v';
+    return [code, Blockly.PythonTutor.ORDER_ATOMIC];
+};

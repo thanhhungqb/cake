@@ -337,22 +337,15 @@ Blockly.Procedures.getTypePlusArgs = function(block) {
         argTypes[x] = block.types_[x];
         argDist[x] = block.dist_[x];
         argSpec[x] = block.spec_[x];
-        if(argDist[x] == 'v'){
+        if (argDist[x] == 'v'){
             typePlusArgs[x] = argTypes[x] + ' ' + args[x];
-        }
-        else if(argDist[x] =='a'){
-            if(argSpec[x][0] == 1)
-                typePlusArgs[x] = argTypes[x] + ' ' + args[x] + '[' + argSpec[x][1] + ']';
-            else if(argSpec[x][0] == 2)
-                typePlusArgs[x] = argTypes[x] + ' ' + args[x] + '[' + argSpec[x][1] + ']' + '[' + argSpec[x][2] + ']';
-            else if(argSpec[x][0] == 3)
-                typePlusArgs[x] = argTypes[x] + ' ' + args[x] + '[' + argSpec[x][1] + ']' + '[' + argSpec[x][2] + ']' + '[' + argSpec[x][2] + ']';
-        }
-        else if(argDist[x] =='p'){
-            typePlusArgs[x] = argTypes[x] + argSpec[x] + ' ' + args[x];
+        } else if(argDist[x] =='p'){
+            typePlusArgs[x] = argTypes[x] + '* ' + args[x];
         } else if(argDist[x] =='r'){
             typePlusArgs[x] = argTypes[x] + '& ' + args[x];
-        }
+        } else if(argDist[x] =='a'){
+          typePlusArgs[x] = argTypes[x] + ' ' + args[x] + '[]';
+      }
     }
     return typePlusArgs;
 };

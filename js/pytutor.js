@@ -211,11 +211,11 @@ function ExecutionVisualizer(domRootID, dat, params) {
     PaintStyle: {lineWidth:1, strokeStyle: connectorBaseColor},
 
     // bezier curve style:
-    //Connector: [ "Bezier", { curviness:15 }], /* too much 'curviness' causes lines to run together */
+    Connector: [ "Bezier", { curviness:70 }], /* too much 'curviness' causes lines to run together */
     //Overlays: [[ "Arrow", { length: 14, width:10, foldback:0.55, location:0.35 }]],
 
     // state machine curve style:
-    Connector: [ "StateMachine" ],
+    //Connector: [ "StateMachine" ],
     Overlays: [[ "Arrow", { length: 10, width:7, foldback:0.55, location:1 }]],
     EndpointHoverStyles: [{fillStyle: connectorHighlightColor}, {fillstyle: null} /* make right endpoint invisible */],
     HoverPaintStyle: {lineWidth: 1, strokeStyle: connectorHighlightColor},
@@ -3144,7 +3144,7 @@ ExecutionVisualizer.prototype.renderDataStructures = function(curEntry, curTople
     // the boat on my existing (battle-tested) code
     if (myViz.isCppMode()) {
       if (myViz.domRoot.find('#' + valueID).length) {
-        myViz.jsPlumbInstance.connect({source: varID, target: valueID, curviness:300, anchors:["RightMiddle", "RightMiddle"], scope: 'varValuePointer'});
+        myViz.jsPlumbInstance.connect({source: varID, target: valueID, anchors:["RightMiddle", "RightMiddle"], scope: 'varValuePointer'});
       } else {
         // pointer isn't pointing to anything valid; put a poo emoji here
         myViz.domRoot.find('#' + varID).html('\uD83D\uDCA9' /* pile of poo emoji */);
@@ -3971,26 +3971,23 @@ ExecutionVisualizer.prototype.renderCStructArray = function(obj, stepNum, d3DomE
     var addr = obj[1];
 
     var leader = '';
-    if (myViz.debugMode || myViz.showAddr) {
-      leader = addr + '<br/>';
-    }
-    d3DomElement.append('<div class="typeLabel">' + leader + 'array</div>');
-    d3DomElement.append('<table class="cArrayTbl"></table>');
-    var tbl = d3DomElement.children('table');
+    // if (myViz.debugMode || myViz.showAddr) {
+    //   leader = addr + '<br/>';
+    // }
+    d3DomElement.append('<div class="typeLabel">' + leader + 'array<table class="cArrayTbl"></table></div>');
+    var tbl = d3DomElement.find('table');
 
-    tbl.append('<tr></tr><tr></tr>');
-    var headerTr = tbl.find('tr:first');
-    var contentTr = tbl.find('tr:last');
+    //tbl.append('<tr></tr><tr></tr>');
+    //var contentTr = tbl.find('tr:last');
     $.each(obj, function(ind, val) {
       if (ind < 2) return; // skip 'C_ARRAY' and addr
 
       // add a new column and then pass in that newly-added column
       // as d3DomElement to the recursive call to child:
-      headerTr.append('<td class="cArrayHeader"></td>');
-      headerTr.find('td:last').append(ind - 2 /* adjust */);
-
-      contentTr.append('<td class="cArrayElt"></td>');
-      myViz.renderNestedObject(val, stepNum, contentTr.find('td:last'));
+      tbl.append('<tr></tr>');
+      var headerTr = tbl.find('tr:last');
+      headerTr.append('<td class="cArrayHeader">'+ (ind - 2) + '</td><td class="cArrayElt"></td>');
+      myViz.renderNestedObject(val, stepNum, headerTr.find('td:last'));
     });
   }
 }

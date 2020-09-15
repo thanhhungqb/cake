@@ -55,7 +55,7 @@ Blockly.Blocks['lists_create_with'] = {
         .appendField(Blockly.Msg.LISTS_CREATE_WITH_INPUT_WITH);
     this.appendValueInput('ADD1');
     this.appendValueInput('ADD2');
-    this.setOutput(true, 'Array');
+    this.setOutput(true, 'InitList');
     this.setMutator(new Blockly.Mutator(['lists_create_with_item']));
     this.setTooltip(Blockly.Msg.LISTS_CREATE_WITH_TOOLTIP);
     this.itemCount_ = 3;
