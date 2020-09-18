@@ -216,9 +216,34 @@ Blockly.PythonTutor['math_number_property'] = function(block) {
   return [code, Blockly.PythonTutor.ORDER_EQUALITY];
 };
 
+Blockly.PythonTutor['library_math_assignment_by'] = function(block) {
+  var varName = Blockly.PythonTutor.variableDB_.getName(block.getFieldValue('VAR'), Blockly.Variables.NAME_TYPE);
+  var operator = block.getFieldValue('OP');
+  var argument0 = Blockly.PythonTutor.valueToCode(block, 'VALUE',
+          Blockly.PythonTutor.ORDER_ASSIGNMENT) || '0';
+
+  var op = '';
+  switch (operator) {
+      case 'INCREMENT':
+        op = '+='; break;
+      case 'DECREMENT':
+        op = '-='; break;
+      case 'MULTIPLY':
+        op = '*='; break;
+      case 'DIVIDE':
+        op = '/='; break;
+      case 'MODULO':
+        op = '%='; break;
+      default:
+          throw 'Unknown assignment by operator: ' + operator;
+  }
+  return 'locals.'+varName+'.v' + op + argument0 + ';\n'+
+         'pyt.generate_trace('+block.id+');\n';
+};
+
 Blockly.PythonTutor['math_change'] = function(block) {
   // Add to a variable in place.
-  var argument0 = Blockly.PythonTutor.valueToCode(block, 'DELTA',
+  var argument0 = Blockly.PythonTutor.valueToCode(block, 'VALUE',
       Blockly.PythonTutor.ORDER_ADDITION) || '0';
   var varName = Blockly.PythonTutor.variableDB_.getName(
       block.getFieldValue('VAR'), Blockly.Variables.NAME_TYPE);

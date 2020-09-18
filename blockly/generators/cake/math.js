@@ -121,7 +121,7 @@ Blockly.cake['library_math_logs'] = function(block) {
             break;
         case 'EXP':
             code = 'exp(' + arg + ')';
-            break;            
+            break;
         case 'LOG':
             code = 'log(' + arg + ')';
             break;
@@ -198,6 +198,28 @@ Blockly.cake['library_math_round'] = function(block) {
     Blockly.cake.definitions_['include_cake_math'] =
         '#include <cmath>';
     return [code, Blockly.cake.ORDER_NONE];
+};
+
+Blockly.cake['library_math_assignment_by'] = function(block) {
+    var varName = Blockly.cake.variableDB_.getName(block.getFieldValue('VAR'), Blockly.Variables.NAME_TYPE);
+    var operator = block.getFieldValue('OP');
+    var argument0 = Blockly.cake.valueToCode(block, 'VALUE',
+            Blockly.cake.ORDER_ASSIGNMENT) || '0';
+
+    switch (operator) {
+        case 'INCREMENT':
+            return varName + ' += ' + argument0 + ';\n';
+        case 'DECREMENT':
+            return varName + ' -= ' + argument0 + ';\n';
+        case 'MULTIPLY':
+            return varName + ' *= ' + argument0 + ';\n';
+        case 'DIVIDE':
+            return varName + ' /= ' + argument0 + ';\n';
+        case 'MODULO':
+            return varName + ' %= ' + argument0 + ';\n';
+        default:
+            throw 'Unknown assignment by operator: ' + operator;
+    }
 };
 
 Blockly.cake['library_math_numcheck'] = function(block) {
