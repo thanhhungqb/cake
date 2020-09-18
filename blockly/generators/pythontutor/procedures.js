@@ -29,9 +29,9 @@ goog.provide('Blockly.PythonTutor.procedures');
 goog.require('Blockly.PythonTutor');
 
 Blockly.PythonTutor['procedures_return'] = function(block) {
-  var code = '  pyt.pop_stack_frame(env);\n  return;\n';
+  var code = '  pyt.pop_stack_frame(env);\n  return';
   if (!block.getReturnInfo)
-    return 'pyt.generate_trace('+block.id+', "return");\n'+code;
+    return 'pyt.generate_trace('+block.id+', "return");\n'+code+';\n';
 
   var returnInfo = block.getReturnInfo();
   returnInfo.name = '__return__';
@@ -42,9 +42,9 @@ Blockly.PythonTutor['procedures_return'] = function(block) {
     return 'var r = '+returnValue+';\n' +
            'pyt.allocate_stack(frame, "__return__", '+JSON.stringify(returnInfo)+');\n'+
            'locals.__return__.v = r;\n'+
-           'pyt.generate_trace('+block.id+', "return");\n'+ code;
+           'pyt.generate_trace('+block.id+', "return");\n'+ code + ' r;\n';
   } else {
-    return 'pyt.generate_trace('+block.id+', "uncaught_exception");\n'+ code;
+    return 'pyt.generate_trace('+block.id+', "uncaught_exception");\n'+ code+';\n';
   }
 };
 

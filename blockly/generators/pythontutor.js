@@ -218,7 +218,7 @@ Blockly.PythonTutor.create_stack_frame = function(name, args) {
                 arg.dist = 'p';
                 // fall through. array works like reference.
               case 'r':
-                tail += ' locals.'+varName+'='+varName + ';';
+                tail += 'locals.'+varName+'.w='+varName+'; locals.'+varName+'='+varName + ';';
                 break;
             }
 
@@ -254,7 +254,7 @@ Blockly.PythonTutor.pop_scope = function(frame) {
   }
   // remap existing variables in scope to frame.locals
   frame.ordered_locals.flat().forEach(function (arg) {
-    frame.locals[arg.n] = arg;
+    frame.locals[arg.n] = (arg.w ? arg.w : arg);
   });
 }
 
@@ -298,7 +298,8 @@ Blockly.PythonTutor.generate_trace = function(id, event="step_line") {
           a.push(['C_DATA', toHex(ele.a), ele.t, ele.v]);
         });
       }
-
+      if (a[3] == undefined)
+        a[3] = '<UNINITIALIZED>';
       a['n'] = arg.n;
       locals.push(a);
     });

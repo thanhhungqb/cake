@@ -68,6 +68,9 @@ Blockly.Variables.allVariables = function(block) {
   var variableList = [];
   // Iterate through every block and add each variable to the list.
   for (var x = 0; x < blocks.length; x++) {
+    if (!blocks[x]) {
+      continue;
+    }
     var funcVar = blocks[x].getDeclare;
     var funcParamInfo = blocks[x].getParamInfo;
 
