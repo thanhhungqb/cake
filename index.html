@@ -95,6 +95,33 @@
                     <block type="variables_pointer_&"></block>
                     <block type="variables_pointer_*"></block>
                 </category>
+                <category name="Array">
+                    <block type="variables_array_declare">
+                        <value name="LENGTH_1">
+                            <block type="math_number">
+                                <field name="NUM">1</field>
+                            </block>
+                        </value>
+                    </block>
+                    <block type="variables_array_get_array"></block>
+                    <block type="variables_array_get">
+                        <value name="LENGTH_1">
+                            <block type="math_number">
+                                <field name="NUM">1</field>
+                            </block>
+                        </value>
+                    </block>
+                    <block type="variables_array_set">
+                        <value name="LENGTH_1">
+                            <block type="math_number">
+                                <field name="NUM">1</field>
+                            </block>
+                        </value>
+                    </block>
+                    <block type='lists_create_empty'></block>
+                    <block type="lists_create_with"></block>
+
+                </category>
             </category>
             <div class="blocklyTreeSeparator" style="border-left: 8px solid rgb(221, 221, 221); height: 10px;">
                 <hr>
@@ -137,6 +164,11 @@
                 <block type="math_number"></block>
                 <block type="math_arithmetic"></block>
                 <block type="math_modulo"></block>
+                <block type="library_math_assignment_by">
+                    <value name="VALUE">
+                            <block type="math_number"></block>
+                    </value>
+                </block>
                 <block type="library_stdio_char"></block>
                 <block type="library_math_trig"></block>
                 <block type="library_math_logs"></block>
